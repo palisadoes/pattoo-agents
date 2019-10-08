@@ -1,0 +1,7 @@
+# These additional PIP3 packages are required
+psutil
+flask
+gunicorn
+requests
+yaml
+ipaddress
