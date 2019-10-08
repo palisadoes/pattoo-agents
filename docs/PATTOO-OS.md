@@ -95,10 +95,10 @@ main:
     polling_interval: 300
 
 remote_api:
-    api_server_name: 192.168.1.100
-    api_server_port: 6000
-    api_server_https: False
-    api_server_uri: /pattoo/post
+    api_ip_address: 192.168.1.100
+    api_ip_bind_port: 6000
+    api_uses_https: False
+    api_uri: /pattoo/post
 
 ```
 
@@ -115,10 +115,10 @@ This table outlines the purpose of each configuration parameter
 || `language` | Language  to be used in reporting statistics in JSON output. Language files can be found in the `metadata/language/agents/` directory.|
 || `polling_interval`              | Interval of data collection and posting in seconds   |
 | `remote_api` |||
-|| `api_server_name`       | IP address of remote `pattoodb` server      |
-|| `api_server_port`       | Port of remote `pattoodb` server     |
-|| `api_server_https`      | Use `https` when sending data  to remote `pattoodb` server|
-|| `api_server_uri`        | Remote `pattoodb` route prefix       |
+|| `api_ip_address`       | IP address of remote `pattoodb` server      |
+|| `api_ip_bind_port`       | Port of remote `pattoodb` server     |
+|| `api_uses_https`      | Use `https` when sending data  to remote `pattoodb` server|
+|| `api_uri`        | Remote `pattoodb` route prefix       |
 
 
 ### Directory etc/pattoo-os.d/

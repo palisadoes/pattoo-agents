@@ -52,8 +52,8 @@ class Config(object):
             result = int(intermediate)
         return result
 
-    def api_server_name(self):
-        """Get api_server_name.
+    def api_ip_address(self):
+        """Get api_ip_address.
 
         Args:
             None
@@ -64,7 +64,7 @@ class Config(object):
         """
         # Initialize key variables
         key = 'remote_api'
-        sub_key = 'api_server_name'
+        sub_key = 'api_ip_address'
 
         # Get result
         result = search(key, sub_key, self._config_dict, die=False)
@@ -72,8 +72,8 @@ class Config(object):
             result = 'localhost'
         return result
 
-    def api_server_port(self):
-        """Get api_server_port.
+    def api_ip_bind_port(self):
+        """Get api_ip_bind_port.
 
         Args:
             None
@@ -84,7 +84,7 @@ class Config(object):
         """
         # Initialize key variables
         key = 'remote_api'
-        sub_key = 'api_server_port'
+        sub_key = 'api_ip_bind_port'
 
         # Get result
         intermediate = search(key, sub_key, self._config_dict, die=False)
@@ -94,8 +94,8 @@ class Config(object):
             result = int(intermediate)
         return result
 
-    def api_server_https(self):
-        """Get api_server_https.
+    def api_uses_https(self):
+        """Get api_uses_https.
 
         Args:
             None
@@ -106,7 +106,7 @@ class Config(object):
         """
         # Initialize key variables
         key = 'remote_api'
-        sub_key = 'api_server_https'
+        sub_key = 'api_uses_https'
 
         # Get result
         result = search(key, sub_key, self._config_dict, die=False)
@@ -114,8 +114,8 @@ class Config(object):
             result = False
         return result
 
-    def api_server_uri(self):
-        """Get api_server_uri.
+    def api_uri(self):
+        """Get api_uri.
 
         Args:
             None
@@ -126,7 +126,7 @@ class Config(object):
         """
         # Initialize key variables
         key = 'remote_api'
-        sub_key = 'api_server_uri'
+        sub_key = 'api_uri'
 
         # Get result
         received = search(key, sub_key, self._config_dict, die=False)
@@ -154,7 +154,7 @@ class Config(object):
 
         """
         # Construct URL for server
-        if self.api_server_https() is True:
+        if self.api_uses_https() is True:
             prefix = 'https://'
         else:
             prefix = 'http://'
@@ -162,8 +162,8 @@ class Config(object):
         # Return
         result = (
             '{}{}:{}/{}/receive/{}'.format(
-                prefix, self.api_server_name(),
-                self.api_server_port(), self.api_server_uri(), agent_id))
+                prefix, self.api_ip_address(),
+                self.api_ip_bind_port(), self.api_uri(), agent_id))
         return result
 
     def log_directory(self):
