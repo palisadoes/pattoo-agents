@@ -2,6 +2,7 @@
 
 # Create global variables for the API
 API_PREFIX = '/pattoo-os'
-API_EXECUTABLE = 'pattoo-os-spoked'
-API_GUNICORN_AGENT = '{}-gunicorn'.format(API_EXECUTABLE)
-POLLER_EXECUTABLE = 'pattoo-os-autonomousd'
+PATTOO_OS_SPOKED = 'pattoo-os-spoked'
+PATTOO_OS_SPOKED_PROXY = '{}-gunicorn'.format(PATTOO_OS_SPOKED)
+PATTOO_OS_AUTONOMOUSD = 'pattoo-os-autonomousd'
+PATTOO_OS_HUBD = 'pattoo-os-hubd'

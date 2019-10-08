@@ -6,7 +6,7 @@ from flask import Flask, jsonify
 
 # Pattoo imports
 from pattoo.os import data
-from pattoo.os.pattoo import API_PREFIX, API_EXECUTABLE
+from pattoo.os.pattoo import API_PREFIX, PATTOO_OS_SPOKED
 from pattoo.os import configuration
 
 # Define flask parameters
@@ -25,5 +25,5 @@ def home():
 
     """
     # Return
-    data_dict = data.poll(API_EXECUTABLE)
+    data_dict = data.poll(PATTOO_OS_SPOKED)
     return jsonify(data_dict)

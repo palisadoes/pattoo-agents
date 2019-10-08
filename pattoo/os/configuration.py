@@ -8,7 +8,7 @@ import os
 from pattoo.shared import general
 from pattoo.shared import log
 from pattoo.shared import configuration
-from pattoo.os.pattoo import API_EXECUTABLE
+from pattoo.os.pattoo import PATTOO_OS_SPOKED
 
 
 class ConfigAPI(configuration.ConfigAPI):
@@ -45,7 +45,7 @@ class ConfigAPI(configuration.ConfigAPI):
 
         """
         # Get result
-        key = API_EXECUTABLE
+        key = PATTOO_OS_SPOKED
         sub_key = 'listen_address'
         result = configuration.search(
             key, sub_key, self._config_pattoo_os, die=False)
@@ -66,7 +66,7 @@ class ConfigAPI(configuration.ConfigAPI):
 
         """
         # Get result
-        key = API_EXECUTABLE
+        key = PATTOO_OS_SPOKED
         sub_key = 'bind_port'
         intermediate = configuration.search(
             key, sub_key, self._config_pattoo_os, die=False)
