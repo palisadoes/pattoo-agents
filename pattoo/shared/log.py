@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Nagios check general library."""
+"""Nagios check logging library."""
 
 import sys
 import datetime

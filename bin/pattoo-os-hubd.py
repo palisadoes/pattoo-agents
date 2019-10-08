@@ -9,6 +9,7 @@ Posts system data to remote host over HTTP.
 from time import sleep
 import sys
 import os
+import multiprocessing
 
 # Try to create a working PYTHONPATH
 _BIN_DIRECTORY = os.path.dirname(os.path.realpath(__file__))
@@ -22,12 +23,10 @@ else:
     sys.exit(2)
 
 # Pattoo libraries
-from pattoo.os.pattoo import PATTOO_OS_AUTONOMOUSD
-from pattoo.os import data
+from pattoo.os.pattoo import PATTOO_OS_HUBD, PATTOO_OS_SPOKED_API_PREFIX
 from pattoo.shared import agent
-from pattoo.shared import log
-from pattoo.shared import post
-from pattoo.shared import configuration
+from pattoo.os import get_post
+from pattoo.os import configuration
 
 
 class PollingAgent(agent.Agent):
@@ -47,7 +46,7 @@ class PollingAgent(agent.Agent):
         agent.Agent.__init__(self, parent)
 
         # Initialize key variables
-        self._agent_program_pattoo_os = PATTOO_OS_AUTONOMOUSD
+        self._agent_program_pattoo_os = PATTOO_OS_HUBD
 
     def name(self):
         """Return agent name.
@@ -74,38 +73,56 @@ class PollingAgent(agent.Agent):
 
         """
         # Initialize key variables
-        config = configuration.Config()
+        config = configuration.ConfigHubd()
         interval = config.polling_interval()
 
         # Post data to the remote server
         while True:
-            self.upload()
+            _parallel_poll()
 
             # Sleep
             sleep(interval)
 
-    def upload(self):
-        """Post system data to the central server.
 
-        Args:
-            None
+def _parallel_poll():
+    """Poll each spoke in parallel.
 
-        Returns:
-            None
+    Args:
+        None
 
-        """
-        # Get system data
-        data_dict = data.poll(self._agent_program_pattoo_os)
+    Returns:
+        none: result
 
-        # Post to remote server
-        server = post.Data(data_dict)
+    """
+    # Initialize key variables
+    sub_processes_in_pool = max(1, multiprocessing.cpu_count())
+    config = configuration.ConfigHubd()
+    ip_devices = config.ip_devices()
+    argument_list = []
 
-        # Post data
-        success = server.post()
+    # Create tuple list of parameters
+    for ip_device in ip_devices:
+        # Test
+        if isinstance(ip_device, dict) is False:
+            continue
+        if 'ip_address' not in ip_device:
+            continue
+        if 'ip_bind_port' not in ip_device:
+            continue
 
-        # Purge cache if success is True
-        if success is True:
-            server.purge()
+        # Append argument
+        argument_list.append(
+            (ip_device['ip_address'], ip_device['ip_bind_port'])
+        )
+
+    # Create a pool of sub process resources
+    with multiprocessing.Pool(processes=sub_processes_in_pool) as pool:
+
+        # Create sub processes from the pool
+        pool.starmap(get_post.poll, argument_list)
+
+    # Wait for all the processes to end
+    pool.join()
 
 
 def main():
@@ -118,8 +135,8 @@ def main():
         None
 
     """
-    # Get configuration
-    agent_poller = PollingAgent(PATTOO_OS_AUTONOMOUSD)
+    # Poll
+    agent_poller = PollingAgent(PATTOO_OS_HUBD)
 
     # Do control
     cli = agent.AgentCLI()

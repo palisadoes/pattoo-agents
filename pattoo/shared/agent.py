@@ -27,7 +27,7 @@ from gunicorn.six import iteritems
 # Pattoo libraries
 from pattoo.shared import daemon
 from pattoo.shared import log
-from pattoo.shared import general
+from pattoo.shared import data
 from pattoo.os.api import API
 
 
@@ -258,7 +258,7 @@ class AgentAPI(Agent):
         Args:
             parent: Name of parent daemon
             child: Name of child daemon
-            config_api: ConfigAPI object
+            config_api: ConfigSpoked object
 
         Returns:
             None
@@ -326,7 +326,7 @@ class AgentAPI(Agent):
             'Pattoo API running on {}:{} and logging to file {}.'
             ''.format(
                 config.listen_address(),
-                config.bind_port(),
+                config.ip_bind_port(),
                 config.log_file_api()))
         log.log2info(1022, log_message)
 
@@ -380,7 +380,7 @@ def _ip_binding(config):
     """Create IPv4 / IPv6 binding for Gunicorn.
 
     Args:
-        config: ConfigAPI object
+        config: ConfigSpoked object
 
     Returns:
         result: bind
@@ -402,15 +402,15 @@ def _ip_binding(config):
     # Is this an IPv4 address?
     ipv4 = isinstance(ip_object, ipaddress.IPv4Address)
     if ipv4 is True:
-        result = '{}:{}'.format(ip_address, config.bind_port())
+        result = '{}:{}'.format(ip_address, config.ip_bind_port())
     else:
-        result = '[{}]:{}'.format(ip_address, config.bind_port())
+        result = '[{}]:{}'.format(ip_address, config.ip_bind_port())
 
     return result
 
 
 def get_agent_id(agent_name):
-    """Create a permanent UID for the _data.
+    """Create a permanent UID for the agent_name.
 
     Args:
         agent_name: Agent name
@@ -449,7 +449,7 @@ def _generate_agent_id():
     # Create a UID and save
     prehash = '{}{}{}{}{}'.format(
         random(), random(), random(), random(), time.time())
-    agent_id = general.hashstring(prehash)
+    agent_id = data.hashstring(prehash)
 
     # Return
     return agent_id

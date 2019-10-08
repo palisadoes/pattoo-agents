@@ -19,7 +19,6 @@ import psutil
 # Pattoo libraries
 from pattoo.os import language
 from pattoo.shared import log
-from pattoo.shared import general
 from pattoo.shared import daemon
 from pattoo.shared import agent
 from pattoo.shared.data import Data

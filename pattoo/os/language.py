@@ -14,7 +14,7 @@ import yaml
 # Pattoo libraries
 from pattoo.shared import log
 from pattoo.shared import configuration
-from pattoo.shared import general
+from pattoo.shared import files
 
 
 class Agent(object):
@@ -39,7 +39,7 @@ class Agent(object):
         lang = config.language()
 
         # Determine the agent's language yaml file
-        root_directory = general.root_directory()
+        root_directory = files.root_directory()
         yaml_file = (
             '{}/metadata/language/agents/{}/{}.yaml'.format(
                 root_directory, lang, self._agent_name))
