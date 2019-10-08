@@ -72,8 +72,8 @@ Edit the `etc/config.yaml` file to change configuration options. An explanation 
 ```yaml
 main:
     log_level: debug
-    log_directory: ~/GitHub/pattoo-os/log
-    agent_cache_directory: ~/GitHub/pattoo-os/cache
+    log_directory: ~/GitHub/pattoo-agents/log
+    agent_cache_directory: ~/GitHub/pattoo-agents/cache
     language: en
     interval: 300
 
