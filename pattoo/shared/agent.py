@@ -326,7 +326,7 @@ class AgentAPI(Agent):
             'Pattoo API running on {}:{} and logging to file {}.'
             ''.format(
                 config.listen_address(),
-                config.bind_port(),
+                config.ip_bind_port(),
                 config.log_file_api()))
         log.log2info(1022, log_message)
 
@@ -402,9 +402,9 @@ def _ip_binding(config):
     # Is this an IPv4 address?
     ipv4 = isinstance(ip_object, ipaddress.IPv4Address)
     if ipv4 is True:
-        result = '{}:{}'.format(ip_address, config.bind_port())
+        result = '{}:{}'.format(ip_address, config.ip_bind_port())
     else:
-        result = '[{}]:{}'.format(ip_address, config.bind_port())
+        result = '[{}]:{}'.format(ip_address, config.ip_bind_port())
 
     return result
 

@@ -21,6 +21,7 @@ $ sudo pip3 install -r pip_requirements.txt
 
 1. `pattoo-os-autonomousd.py` which will post `linux` system data in `json` format to a remote `pattoo` server
 1. `pattoo-os-spoked.py` which will make the same `linux` system data in `json` format available for viewing on the local server. This allows the server to be polled for data from remote servers running  `pattoo-os-hubd` software agents.
+1. `pattoo-os-hubd.py` which polls `pattoo-os-spoked` enables devices for data to be posted to the `patoo` server.
 
 Both daemons will require configuration files in one or more subdirectories of the `etc/`directory. See the configuration section for details.
 
@@ -46,6 +47,22 @@ $
 $ bin/pattoo-os-spoked.py --help
 usage: pattoo-os-spoked.py [-h] [--start] [--stop] [--status] [--restart]
                              [--force]
+
+optional arguments:
+  -h, --help  show this help message and exit
+  --start     Start the agent daemon.
+  --stop      Stop the agent daemon.
+  --status    Get daemon daemon status.
+  --restart   Restart the agent daemon.
+  --force     Stops or restarts the agent daemon ungracefully when used with --stop or
+              --restart.
+$
+```
+
+```bash
+$ bin/pattoo-os-hubd.py --help
+usage: pattoo-os-hubd.py [-h] [--start] [--stop] [--status] [--restart]
+                         [--force]
 
 optional arguments:
   -h, --help  show this help message and exit
@@ -114,7 +131,14 @@ Edit the `etc/pattoo-os.d/config.yaml` file to change configuration options. An 
 ```yaml
 pattoo-os-spoked:
     listen_address: 0.0.0.0
-    bind_port: 5000
+    ip_bind_port: 5000
+
+pattoo-os-hubd:
+    ip_devices:
+      - ip_address: 127.0.0.1
+        ip_bind_port: 5000    
+      - ip_address: 127.0.0.2
+        ip_bind_port: 5000            
 ```
 
 #### Configuration Explanation
@@ -123,9 +147,11 @@ This table outlines the purpose of each configuration parameter
 
 |Section | Config Options          | Description                    |
 |--|--|--|
-| `pattoo-os-spoked` | | |
+| `pattoo-os-spoked` | | **Note:** Only required for devices running `pattoo-os-spoked` |
 || `listen_address` | IP address on which the API server will listen. Setting this to `0.0.0.0` will make it listen on all IPv4 addresses. Setting to `"0::"` will make it listen on all IPv6 configured interfaces. It will not listen on IPv4 and IPv6 addresses simultaneously. You must **quote** all IPv6 addresses.|
-|| `bind_port`              | TCP port on which the API will listen|
+|| `ip_bind_port`              | TCP port on which the API will listen|
+| `pattoo-os-hubd` | | **Note:** Only required for devices running `pattoo-os-hubd` |
+|| `ip_devices` | List of IP addresses or hostnames running `pattoo-os-spoked` that need to be polled for data. You must specify an `ip_address` and TCP `ip_bind_port`for these devices.
 
 ## JSON Data Format
 

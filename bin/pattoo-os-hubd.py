@@ -107,12 +107,12 @@ def _parallel_poll():
             continue
         if 'ip_address' not in ip_device:
             continue
-        if 'bind_port' not in ip_device:
+        if 'ip_bind_port' not in ip_device:
             continue
 
         # Append argument
         argument_list.append(
-            (ip_device['ip_address'], ip_device['bind_port'])
+            (ip_device['ip_address'], ip_device['ip_bind_port'])
         )
 
     # Create a pool of sub process resources

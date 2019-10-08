@@ -7,12 +7,12 @@ from pattoo.shared import post
 from pattoo.shared import get
 
 
-def spoked_url(ip_device, bind_port):
+def spoked_url(ip_device, ip_bind_port):
     """Poll a spoke.
 
     Args:
         ip_device: IP device to poll for data
-        bind_port: TCP listening port
+        ip_bind_port: TCP listening port
 
     Returns:
         url: URL of spoke
@@ -25,11 +25,11 @@ def spoked_url(ip_device, bind_port):
 
     # Return
     url = 'http://{}:{}{}'.format(
-        ip_device, bind_port, PATTOO_OS_SPOKED_API_PREFIX)
+        ip_device, ip_bind_port, PATTOO_OS_SPOKED_API_PREFIX)
     return url
 
 
-def poll(ip_device, bind_port):
+def poll(ip_device, ip_bind_port):
     """Poll a spoke.
 
     Args:
@@ -40,7 +40,7 @@ def poll(ip_device, bind_port):
 
     """
     # Get data
-    url = spoked_url(ip_device, bind_port)
+    url = spoked_url(ip_device, ip_bind_port)
     data_dict = get.get_url_json(url)
 
     # Post data

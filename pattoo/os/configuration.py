@@ -55,8 +55,8 @@ class ConfigSpoked(configuration.ConfigSpoked):
             result = '0.0.0.0'
         return result
 
-    def bind_port(self):
-        """Get bind_port.
+    def ip_bind_port(self):
+        """Get ip_bind_port.
 
         Args:
             None
@@ -67,7 +67,7 @@ class ConfigSpoked(configuration.ConfigSpoked):
         """
         # Get result
         key = PATTOO_OS_SPOKED
-        sub_key = 'bind_port'
+        sub_key = 'ip_bind_port'
         intermediate = configuration.search(
             key, sub_key, self._config_pattoo_os, die=False)
 

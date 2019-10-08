@@ -347,8 +347,8 @@ class ConfigSpoked(Config):
         # Placeholder
         pass
 
-    def bind_port(self):
-        """Get bind_port.
+    def ip_bind_port(self):
+        """Get ip_bind_port.
 
         Args:
             None
