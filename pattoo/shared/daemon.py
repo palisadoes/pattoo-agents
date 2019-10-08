@@ -34,7 +34,7 @@ class Daemon(object):
         self.pidfile = agent.pidfile_parent
         self.lockfile = agent.lockfile_parent
 
-    def daemonize(self):
+    def _daemonize(self):
         """Deamonize class. UNIX double fork mechanism.
 
         Args:
@@ -80,6 +80,10 @@ class Daemon(object):
         f_handle_so = open(os.devnull, 'a+')
         f_handle_se = open(os.devnull, 'a+')
 
+        #######################################################################
+        # Temporarily comment out these three lines when troubleshooting daemon
+        # operation. Errors will become immediately apparent.
+        #######################################################################
         os.dup2(f_handle_si.fileno(), sys.stdin.fileno())
         os.dup2(f_handle_so.fileno(), sys.stdout.fileno())
         os.dup2(f_handle_se.fileno(), sys.stderr.fileno())
@@ -143,7 +147,7 @@ class Daemon(object):
             log.log2die(1062, log_message)
 
         # Start the daemon
-        self.daemonize()
+        self._daemonize()
 
         # Log success
         log_message = (

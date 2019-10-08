@@ -19,15 +19,15 @@ $ sudo pip3 install -r pip_requirements.txt
 
 `pattoo-os` contains multiple daemons.
 
-1. `pattoo-os-actived.py` which will post `linux` system data in `json` format to a remote `pattoo` server
-1. `pattoo-os-passived.py` which will make the same `linux` system data in `json` format available for viewing on the local server. This allows the server to be polled for data from remote servers running  `pattoo-os-hub` software agents.
+1. `pattoo-os-autonomousd.py` which will post `linux` system data in `json` format to a remote `pattoo` server
+1. `pattoo-os-spoked.py` which will make the same `linux` system data in `json` format available for viewing on the local server. This allows the server to be polled for data from remote servers running  `pattoo-os-hubd` software agents.
 
 Both daemons will require configuration files in one or more subdirectories of the `etc/`directory. See the configuration section for details.
 
 ###
 ```bash
-$ bin/pattoo-os-actived.py --help
-usage: pattoo-os-actived.py [-h] [--start] [--stop] [--status] [--restart]
+$ bin/pattoo-os-autonomousd.py --help
+usage: pattoo-os-autonomousd.py [-h] [--start] [--stop] [--status] [--restart]
                             [--force]
 
 optional arguments:
@@ -43,8 +43,8 @@ $
 
 
 ```bash
-$ bin/pattoo-os-passived.py --help
-usage: pattoo-os-passived.py [-h] [--start] [--stop] [--status] [--restart]
+$ bin/pattoo-os-spoked.py --help
+usage: pattoo-os-spoked.py [-h] [--start] [--stop] [--status] [--restart]
                              [--force]
 
 optional arguments:
@@ -61,11 +61,11 @@ $
 
 ## Configuration
 
-You will need to edit configuration files in both the `etc/` and `etc/pattoo-os-passived` directories.
+You will need to edit configuration files in both the `etc/` and `etc/pattoo-os.d` directories.
 
 ### Directory etc/
 
-This directory contains configuration `.yaml` files used by all polling agents. The files in this directory contain shared or common configuration parameters. 
+This directory contains configuration `.yaml` files used by all polling agents. The files in this directory contain shared or common configuration parameters.
 
 Edit the `etc/config.yaml` file to change configuration options. An explanation follows.
 
@@ -106,13 +106,13 @@ This table outlines the purpose of each configuration parameter
 
 ### Directory etc/pattoo-os.d/
 
-Place a configuration file here if you intend to use the `pattoo-os-passived` daemon. 
+Place a configuration file here if you intend to use the `pattoo-os-spoked` daemon.
 
 Edit the `etc/pattoo-os.d/config.yaml` file to change configuration options. An explanation follows.
 
 
 ```yaml
-pattoo-os-passived:
+pattoo-os-spoked:
     listen_address: 0.0.0.0
     bind_port: 5000
 ```
@@ -123,7 +123,7 @@ This table outlines the purpose of each configuration parameter
 
 |Section | Config Options          | Description                    |
 |--|--|--|
-| `pattoo-os-passived` | | |
+| `pattoo-os-spoked` | | |
 || `listen_address` | IP address on which the API server will listen. Setting this to `0.0.0.0` will make it listen on all IPv4 addresses. Setting to `"0::"` will make it listen on all IPv6 configured interfaces. It will not listen on IPv4 and IPv6 addresses simultaneously. You must **quote** all IPv6 addresses.|
 || `bind_port`              | TCP port on which the API will listen|
 
