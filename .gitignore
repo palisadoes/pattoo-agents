@@ -1,3 +1,24 @@
+###############################################################################
+# Pattoo exlcusions
+###############################################################################
+
+# Ignore hidden environment files / directory
+*.pattoo
+
+# Ignore files in these directories and ALL subdirectories
+# _AND_ maintain the directory structure
+
+etc/**
+!etc/.gitkeep
+cache/**
+!cache/.gitkeep
+log/**
+!log/.gitkeep
+
+###############################################################################
+# Generic Python Exlcusions (Provided by GitHub)
+###############################################################################
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
