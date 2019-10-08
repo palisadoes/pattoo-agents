@@ -6,14 +6,14 @@ from flask import Flask, jsonify
 
 # Pattoo imports
 from pattoo.os import data
-from pattoo.os.pattoo import API_PREFIX, PATTOO_OS_SPOKED
+from pattoo.os.pattoo import PATTOO_OS_SPOKED_API_PREFIX, PATTOO_OS_SPOKED
 from pattoo.os import configuration
 
 # Define flask parameters
 API = Flask(__name__)
 
 
-@API.route(API_PREFIX)
+@API.route(PATTOO_OS_SPOKED_API_PREFIX)
 def home():
     """Display api data on home page.
 

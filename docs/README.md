@@ -4,6 +4,10 @@
 
 `pattoo` agents can be used to easily poll IoT data.
 
+## Terminology
+
+A comprehensive list of `pattoo` terminologies [ can be found here.](GLOSSARY.md)
+
 ## Agents
 Here is a description of currently supported `pattoo` agents.
 

@@ -8,7 +8,7 @@ import time
 
 # Pattoo imports
 from pattoo.shared import log
-from pattoo.shared import general
+from pattoo.shared import files
 
 
 class Daemon(object):
@@ -283,7 +283,7 @@ class _Directory:
 
         """
         # Initialize key variables
-        self.root = '{}/.pattoo'.format(general.root_directory())
+        self.root = '{}/.pattoo'.format(files.root_directory())
 
     def pid(self):
         """Define the hidden pid directory.
@@ -355,7 +355,7 @@ class _File:
 
         """
         # Return
-        _mkdir(self.directory.pid())
+        files.mkdir(self.directory.pid())
         value = '{}/{}.pid'.format(self.directory.pid(), prefix)
         return value
 
@@ -370,7 +370,7 @@ class _File:
 
         """
         # Return
-        _mkdir(self.directory.lock())
+        files.mkdir(self.directory.lock())
         value = '{}/{}.lock'.format(self.directory.lock(), prefix)
         return value
 
@@ -385,7 +385,7 @@ class _File:
 
         """
         # Return
-        _mkdir(self.directory.agent_id())
+        files.mkdir(self.directory.agent_id())
         value = '{}/{}.agent_id'.format(self.directory.agent_id(), prefix)
         return value
 
@@ -436,24 +436,3 @@ def agent_id_file(agent_name):
     f_obj = _File()
     result = f_obj.agent_id(agent_name)
     return result
-
-
-def _mkdir(directory):
-    """Create a directory if it doesn't already exist.
-
-    Args:
-        directory: Directory name
-
-    Returns:
-        None
-
-    """
-    # Do work
-    if os.path.exists(directory) is False:
-        os.makedirs(directory, mode=0o775)
-    else:
-        if os.path.isfile(directory) is True:
-            log_message = (
-                '{} is not a directory.'
-                ''.format(directory))
-            log.log2die(1043, log_message)

@@ -6,7 +6,7 @@ import os
 import sys
 
 # Import project libraries
-from pattoo.shared import general
+from pattoo.shared import files
 from pattoo.shared import log
 
 
@@ -25,12 +25,12 @@ class Config(object):
         """
         # Update the configuration directory
 
-        config_directory = '{}/etc'.format(general.root_directory())
+        config_directory = '{}/etc'.format(files.root_directory())
 
         # Return data
-        self._config_dict = general.read_yaml_files(config_directory)
+        self._config_dict = files.read_yaml_files(config_directory)
 
-    def interval(self):
+    def polling_interval(self):
         """Get interval.
 
         Args:
@@ -143,6 +143,29 @@ class Config(object):
         result = received
         return result
 
+    def api_server_url(self, agent_id):
+        """Get pattoo server's remote URL.
+
+        Args:
+            agent_id: Agent ID
+
+        Returns:
+            result: URL.
+
+        """
+        # Construct URL for server
+        if self.api_server_https() is True:
+            prefix = 'https://'
+        else:
+            prefix = 'http://'
+
+        # Return
+        result = (
+            '{}{}:{}/{}/receive/{}'.format(
+                prefix, self.api_server_name(),
+                self.api_server_port(), self.api_server_uri(), agent_id))
+        return result
+
     def log_directory(self):
         """Get log_directory.
 
@@ -249,19 +272,19 @@ class Config(object):
         # Return
         return result
 
-    def agent_cache_directory(self):
-        """Determine the agent_cache_directory.
+    def cache_directory(self):
+        """Determine the cache_directory.
 
         Args:
             None
 
         Returns:
-            value: configured agent_cache_directory
+            value: configured cache_directory
 
         """
         # Initialize key variables
         key = 'main'
-        sub_key = 'agent_cache_directory'
+        sub_key = 'cache_directory'
 
         # Get result
         _value = search(key, sub_key, self._config_dict)
@@ -269,78 +292,34 @@ class Config(object):
         # Expand linux ~ notation for home directories if provided.
         value = os.path.expanduser(_value)
 
-        # Check if value exists
-        if os.path.isdir(value) is False:
-            log_message = (
-                'agent_cache_directory: "{}" '
-                'in configuration doesn\'t exist!'.format(value))
-            log.log2die(1031, log_message)
+        # Create directory if it doesn't exist
+        files.mkdir(value)
 
         # Return
         return value
 
-    def agent_subprocesses(self):
-        """Get agent_subprocesses.
+    def agent_cache_directory(self, agent_program):
+        """Get agent_cache_directory.
 
         Args:
-            None
+            agent_program: Name of agent
 
         Returns:
             result: result
 
         """
         # Get result
-        key = 'main'
-        sub_key = 'agent_subprocesses'
-        result = search(key, sub_key, self._config_dict, die=False)
+        result = '{}/{}'.format(self.cache_directory(), agent_program)
 
-        # Default to 20
-        if result is None:
-            result = 20
-        return result
-
-    def agents(self):
-        """Get agents.
-
-        Args:
-            None
-
-        Returns:
-            result: list of agents
-
-        """
-        # Initialize key variables
-        key = 'agents'
-        result = None
-
-        # Verify data
-        if key not in self._config_dict:
-            log_message = ('No agents configured')
-            log.log2die(1100, log_message)
-
-        # Process agents
-        result = self._config_dict[key]
+        # Create directory if it doesn't exist
+        files.mkdir(result)
 
         # Return
         return result
 
-    def _config(self):
-        """Get the config as a dict.
 
-        Args:
-            None
-
-        Returns:
-            data: configuration
-
-        """
-        # Initialize key variables
-        data = self._config_dict
-        return data
-
-
-class ConfigAPI(Config):
-    """Placeholder class for API configuration information."""
+class ConfigSpoked(Config):
+    """Template for PATTOO_OS_AUTONOMOUSD configuration information."""
 
     def __init__(self):
         """Initialize the class.
@@ -370,6 +349,36 @@ class ConfigAPI(Config):
 
     def bind_port(self):
         """Get bind_port.
+
+        Args:
+            None
+
+        Returns:
+            result: result
+
+        """
+        # Placeholder
+        pass
+
+
+class ConfigHubd(Config):
+    """Template for PATTOO_OS_HUBD configuration information."""
+
+    def __init__(self):
+        """Initialize the class.
+
+        Args:
+            None
+
+        Returns:
+            None
+
+        """
+        # Instantiate the Config parent
+        Config.__init__(self)
+
+    def devices(self):
+        """Get devices.
 
         Args:
             None

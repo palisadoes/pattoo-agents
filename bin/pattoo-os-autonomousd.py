@@ -75,7 +75,7 @@ class PollingAgent(agent.Agent):
         """
         # Initialize key variables
         config = configuration.Config()
-        interval = config.interval()
+        interval = config.polling_interval()
 
         # Post data to the remote server
         while True:

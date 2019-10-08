@@ -73,9 +73,9 @@ Edit the `etc/config.yaml` file to change configuration options. An explanation 
 main:
     log_level: debug
     log_directory: ~/GitHub/pattoo-agents/log
-    agent_cache_directory: ~/GitHub/pattoo-agents/cache
+    cache_directory: ~/GitHub/pattoo-agents/cache
     language: en
-    interval: 300
+    polling_interval: 300
 
 remote_api:
     api_server_name: 192.168.1.100
@@ -94,9 +94,9 @@ This table outlines the purpose of each configuration parameter
 | `main` |||
 ||  `log_directory` | Path to logging directory. Make sure the username running the daemons have RW access to files there. |
 ||  `log_level` | Default level of logging. `debug` is best for troubleshooting. |
-|| `agent_cache_directory` | Directory of unsuccessful data posts to `pattoodb`|
+|| `cache_directory` | Directory of unsuccessful data posts to `pattoodb`|
 || `language` | Language  to be used in reporting statistics in JSON output. Language files can be found in the `metadata/language/agents/` directory.|
-|| `interval`              | Interval of data collection and posting in seconds   |
+|| `polling_interval`              | Interval of data collection and posting in seconds   |
 | `remote_api` |||
 || `api_server_name`       | IP address of remote `pattoodb` server      |
 || `api_server_port`       | Port of remote `pattoodb` server     |

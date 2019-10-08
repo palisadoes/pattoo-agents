@@ -31,7 +31,7 @@ def main():
     agent_gunicorn = Agent(PATTOO_OS_SPOKED_PROXY)
 
     # Create Flask object to daemonize
-    config = configuration.ConfigAPI()
+    config = configuration.ConfigSpoked()
     agent_api = AgentAPI(PATTOO_OS_SPOKED, PATTOO_OS_SPOKED_PROXY, config)
 
     # Do control (API first, Gunicorn second)
