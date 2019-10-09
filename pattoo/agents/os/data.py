@@ -17,11 +17,11 @@ from collections import defaultdict
 import psutil
 
 # Pattoo libraries
-from pattoo.os import language
-from pattoo.shared import log
-from pattoo.shared import daemon
-from pattoo.shared import agent
-from pattoo.shared.data import Data
+from pattoo.agents.os import language
+from pattoo import log
+from pattoo import daemon
+from pattoo import agent
+from pattoo.data import Data
 
 
 def poll(agent_program):

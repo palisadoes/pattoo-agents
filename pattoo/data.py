@@ -15,10 +15,10 @@ import hashlib
 
 
 # Pattoo libraries
-from pattoo.os import language
-from pattoo.shared import log
-from pattoo.shared import times
-from pattoo.shared import agent as agent_lib
+from pattoo.agents.os import language
+from pattoo import log
+from pattoo import times
+from pattoo import agent as agent_lib
 
 
 class Data(object):

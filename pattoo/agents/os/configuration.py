@@ -5,10 +5,10 @@ import os.path
 import os
 
 # Import project libraries
-from pattoo.shared import files
-from pattoo.shared import log
-from pattoo.shared import configuration
-from pattoo.os.pattoo import PATTOO_OS_SPOKED, PATTOO_OS_HUBD
+from pattoo import files
+from pattoo import log
+from pattoo import configuration
+from pattoo.agents.os.pattoo import PATTOO_OS_SPOKED, PATTOO_OS_HUBD
 
 
 class ConfigSpoked(configuration.ConfigSpoked):

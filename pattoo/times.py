@@ -4,7 +4,7 @@
 import time
 
 # Pattoo libraries
-from pattoo.shared import configuration
+from pattoo import configuration
 
 
 def validate_timestamp(timestamp):

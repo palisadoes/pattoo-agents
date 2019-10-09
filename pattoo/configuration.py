@@ -6,8 +6,8 @@ import os
 import sys
 
 # Import project libraries
-from pattoo.shared import files
-from pattoo.shared import log
+from pattoo import files
+from pattoo import log
 
 
 class Config(object):

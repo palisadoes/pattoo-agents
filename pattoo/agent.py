@@ -25,10 +25,10 @@ from gunicorn.app.base import BaseApplication
 from gunicorn.six import iteritems
 
 # Pattoo libraries
-from pattoo.shared import daemon
-from pattoo.shared import log
-from pattoo.shared import data
-from pattoo.os.api import API
+from pattoo import daemon
+from pattoo import log
+from pattoo import data
+from pattoo.agents.os.api import API
 
 
 class Agent(object):

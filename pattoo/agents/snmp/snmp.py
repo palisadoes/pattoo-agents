@@ -7,7 +7,7 @@ import easysnmp
 from easysnmp import exceptions
 
 # Import Pattoo libraries
-from pattoo.shared import log
+from pattoo import log
 from pattoo.snmp import oid as class_oid
 
 

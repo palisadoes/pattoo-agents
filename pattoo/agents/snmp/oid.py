@@ -1,8 +1,8 @@
 """Module used to manipulate OID strings and validate OIDs."""
 
 # Import pattoo libraries
-from pattoo.shared import log
-from pattoo.shared import data
+from pattoo import log
+from pattoo import data
 
 
 

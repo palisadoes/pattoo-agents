@@ -2,9 +2,9 @@
 """Pattoo get library."""
 
 # Pattoo libraries
-from pattoo.os.pattoo import PATTOO_OS_SPOKED_API_PREFIX
-from pattoo.shared import post
-from pattoo.shared import get
+from pattoo.agents.os.pattoo import PATTOO_OS_SPOKED_API_PREFIX
+from pattoo import post
+from pattoo import get
 
 
 def spoked_url(ip_device, ip_bind_port):

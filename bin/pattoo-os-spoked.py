@@ -21,9 +21,9 @@ else:
     sys.exit(2)
 
 # Pattoo libraries
-from pattoo.shared.agent import Agent, AgentAPI, AgentCLI
-from pattoo.os.pattoo import PATTOO_OS_SPOKED, PATTOO_OS_SPOKED_PROXY
-from pattoo.os import configuration
+from pattoo.agent import Agent, AgentAPI, AgentCLI
+from pattoo.agents.os.pattoo import PATTOO_OS_SPOKED, PATTOO_OS_SPOKED_PROXY
+from pattoo.agents.os import configuration
 
 def main():
     """Control the Gunicorn WSGI."""

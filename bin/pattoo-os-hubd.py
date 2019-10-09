@@ -23,10 +23,10 @@ else:
     sys.exit(2)
 
 # Pattoo libraries
-from pattoo.os.pattoo import PATTOO_OS_HUBD, PATTOO_OS_SPOKED_API_PREFIX
-from pattoo.shared import agent
-from pattoo.os import get_post
-from pattoo.os import configuration
+from pattoo.agents.os.pattoo import PATTOO_OS_HUBD, PATTOO_OS_SPOKED_API_PREFIX
+from pattoo import agent
+from pattoo.agents.os import get_post
+from pattoo.agents.os import configuration
 
 
 class PollingAgent(agent.Agent):

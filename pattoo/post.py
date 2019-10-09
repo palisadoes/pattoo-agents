@@ -17,10 +17,10 @@ import json
 import requests
 
 # Pattoo libraries
-from pattoo.shared import log
-from pattoo.shared import data as lib_data
-from pattoo.shared import agent as lib_agent
-from pattoo.shared import configuration
+from pattoo import log
+from pattoo import data as lib_data
+from pattoo import agent as lib_agent
+from pattoo import configuration
 
 
 class Data(object):
