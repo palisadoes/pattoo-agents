@@ -3,15 +3,18 @@
 
 import os.path
 import os
+import yaml
 
 # Import project libraries
-from pattoo.shared import files
-from pattoo.shared import log
-from pattoo.shared import configuration
-from pattoo.os.pattoo import PATTOO_OS_SPOKED, PATTOO_OS_HUBD
+from pattoo import files
+from pattoo import log
+from pattoo import configuration
+from pattoo.configuration import Config 
+from pattoo import files
+from pattoo.agents.os.pattoo import PATTOO_OS_SPOKED, PATTOO_OS_HUBD
 
 
-class ConfigSpoked(configuration.ConfigSpoked):
+class ConfigSpoked(Config):
     """Class gathers all configuration information."""
 
     def __init__(self):
@@ -25,7 +28,7 @@ class ConfigSpoked(configuration.ConfigSpoked):
 
         """
         # Instantiate the Config parent
-        configuration.ConfigSpoked.__init__(self)
+        Config.__init__(self)
 
         # Update the configuration directory
         config_directory = '{}/etc/pattoo-os.d'.format(
@@ -78,8 +81,48 @@ class ConfigSpoked(configuration.ConfigSpoked):
             result = int(intermediate)
         return result
 
+    def translations(self, agent_program):
+        """Get translations.
 
-class ConfigHubd(configuration.ConfigHubd):
+        Args:
+            agent_program: Agent program
+
+        Returns:
+            result: result
+
+        """
+        # Intialize key variables
+        result = {}
+        language = self.language()
+        filepath = (
+            '{0}{1}metadata{1}language{1}agents{1}{2}{1}{3}.yaml'
+            ''.format(
+                files.root_directory(), os.sep, language, agent_program))
+
+        # Read data
+        if os.path.isfile(filepath) is False:
+            log_message = (
+                'Translation file {} for language {} does not exist.'
+                ''.format(filepath, language))
+            log.log2die(1022, log_message)
+
+        # Load yaml file
+        with open(filepath, 'r') as stream:
+            try:
+                data_dict = yaml.safe_load(stream)
+            except:
+                log_message = 'Unable to read file {}.'.format(filepath)
+                log.log2die(1022, log_message)
+
+        # Get data
+        if 'agent_source_descriptions' in data_dict:
+            result = data_dict['agent_source_descriptions']
+
+        # Return
+        return result
+
+
+class ConfigHubd(Config):
     """Class for PATTOO_OS_HUBD configuration information."""
 
     def __init__(self):
@@ -93,7 +136,7 @@ class ConfigHubd(configuration.ConfigHubd):
 
         """
         # Instantiate the Config parent
-        configuration.ConfigHubd.__init__(self)
+        Config.__init__(self)
 
         # Update the configuration directory
         config_directory = '{}/etc/pattoo-os.d'.format(

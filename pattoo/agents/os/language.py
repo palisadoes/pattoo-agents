@@ -12,9 +12,9 @@ import os
 import yaml
 
 # Pattoo libraries
-from pattoo.shared import log
-from pattoo.shared import configuration
-from pattoo.shared import files
+from pattoo import log
+from pattoo import configuration
+from pattoo import files
 
 
 class Agent(object):

@@ -6,7 +6,7 @@ import sys
 import yaml
 
 # Pattoo libraries
-from pattoo.shared import log
+from pattoo import log
 import pattoo
 
 

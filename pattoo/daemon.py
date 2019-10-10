@@ -7,8 +7,8 @@ import os
 import time
 
 # Pattoo imports
-from pattoo.shared import log
-from pattoo.shared import files
+from pattoo import log
+from pattoo import files
 
 
 class Daemon(object):

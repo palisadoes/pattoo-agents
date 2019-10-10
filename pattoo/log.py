@@ -9,7 +9,7 @@ import logging
 
 
 # Pattoo libraries
-from pattoo.shared import configuration
+from pattoo import configuration
 
 # Define global variable
 LOGGER = {}
@@ -204,7 +204,7 @@ def log2die(code, message):
 
 
 def _logit(error_num, error_string, error=False, verbose=False, level='info'):
-    """Log slurpy errors to file and STDOUT.
+    """Log errors to file and STDOUT.
 
     Args:
         error_num: Error number

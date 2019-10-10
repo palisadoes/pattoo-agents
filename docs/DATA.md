@@ -13,7 +13,7 @@ This is a sample of the formatting of JSON data created by `pattoo-agents`. This
       "swim" : {
          "timefixed" : {
             "system" : {
-               "base_type" : null,
+               "data_type" : null,
                "description" : "Operating System",
                "data" : [
                   [
@@ -30,10 +30,10 @@ This is a sample of the formatting of JSON data created by `pattoo-agents`. This
                      "Ubuntu 18.04 Bionic Beaver"
                   ]
                ],
-               "base_type" : null
+               "data_type" : null
             },
             "release" : {
-               "base_type" : null,
+               "data_type" : null,
                "data" : [
                   [
                      null,
@@ -43,7 +43,7 @@ This is a sample of the formatting of JSON data created by `pattoo-agents`. This
                "description" : "Kernel Version"
             },
             "version" : {
-               "base_type" : null,
+               "data_type" : null,
                "data" : [
                   [
                      null,
@@ -55,7 +55,7 @@ This is a sample of the formatting of JSON data created by `pattoo-agents`. This
          },
          "timeseries" : {
             "network_bytes_sent" : {
-               "base_type" : 64,
+               "data_type" : 64,
                "data" : [
                   [
                      "enp3s0f1",
@@ -73,7 +73,7 @@ This is a sample of the formatting of JSON data created by `pattoo-agents`. This
                "description" : "Bytes (Out)"
             },
             "cpu_count" : {
-               "base_type" : 1,
+               "data_type" : 1,
                "data" : [
                   [
                      null,
@@ -83,7 +83,7 @@ This is a sample of the formatting of JSON data created by `pattoo-agents`. This
                "description" : "CPU Count"
             },
             "disk_usage_percent" : {
-               "base_type" : 1,
+               "data_type" : 1,
                "data" : [
                   [
                      "/",

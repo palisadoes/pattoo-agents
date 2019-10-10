@@ -22,12 +22,12 @@ else:
     sys.exit(2)
 
 # Pattoo libraries
-from pattoo.os.pattoo import PATTOO_OS_AUTONOMOUSD
-from pattoo.os import data
-from pattoo.shared import agent
-from pattoo.shared import log
-from pattoo.shared import post
-from pattoo.shared import configuration
+from pattoo.agents.os.pattoo import PATTOO_OS_AUTONOMOUSD
+from pattoo.agents.os import data
+from pattoo import agent
+from pattoo import log
+from pattoo import post
+from pattoo import configuration
 
 
 class PollingAgent(agent.Agent):

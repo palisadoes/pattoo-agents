@@ -6,8 +6,8 @@ import os
 import sys
 
 # Import project libraries
-from pattoo.shared import files
-from pattoo.shared import log
+from pattoo import files
+from pattoo import log
 
 
 class Config(object):
@@ -187,14 +187,13 @@ class Config(object):
         # Expand linux ~ notation for home directories if provided.
         result = os.path.expanduser(_result)
 
-        # Check if value exists. We cannot use logging as it requires a
-        # log directory location to work properly
+        # Check if value exists. We cannot use log2die_safe as it does not
+        # require a log directory location to work properly
         if os.path.isdir(result) is False:
             log_message = (
                 'log_directory: "{}" '
                 'in configuration doesn\'t exist!'.format(result))
-            print(log_message)
-            sys.exit(1)
+            log.log2die_safe(1022, log_message)
 
         # Return
         return result
@@ -317,78 +316,6 @@ class Config(object):
         # Return
         return result
 
-
-class ConfigSpoked(Config):
-    """Template for PATTOO_OS_AUTONOMOUSD configuration information."""
-
-    def __init__(self):
-        """Initialize the class.
-
-        Args:
-            None
-
-        Returns:
-            None
-
-        """
-        # Instantiate the Config parent
-        Config.__init__(self)
-
-    def listen_address(self):
-        """Get listen_address.
-
-        Args:
-            None
-
-        Returns:
-            result: result
-
-        """
-        # Placeholder
-        pass
-
-    def ip_bind_port(self):
-        """Get ip_bind_port.
-
-        Args:
-            None
-
-        Returns:
-            result: result
-
-        """
-        # Placeholder
-        pass
-
-
-class ConfigHubd(Config):
-    """Template for PATTOO_OS_HUBD configuration information."""
-
-    def __init__(self):
-        """Initialize the class.
-
-        Args:
-            None
-
-        Returns:
-            None
-
-        """
-        # Instantiate the Config parent
-        Config.__init__(self)
-
-    def devices(self):
-        """Get devices.
-
-        Args:
-            None
-
-        Returns:
-            result: result
-
-        """
-        # Placeholder
-        pass
 
 
 def search(key, sub_key, config_dict, die=True):

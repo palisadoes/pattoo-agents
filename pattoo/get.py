@@ -10,8 +10,8 @@ import json
 import urllib
 
 # Pattoo libraries
-from pattoo.shared import configuration
-from pattoo.shared import log
+from pattoo import configuration
+from pattoo import log
 import pattoo
 
 

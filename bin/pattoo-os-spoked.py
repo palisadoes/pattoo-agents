@@ -21,23 +21,26 @@ else:
     sys.exit(2)
 
 # Pattoo libraries
-from pattoo.shared.agent import Agent, AgentAPI, AgentCLI
-from pattoo.os.pattoo import PATTOO_OS_SPOKED, PATTOO_OS_SPOKED_PROXY
-from pattoo.os import configuration
+from pattoo.agent import Agent, AgentAPI, AgentCLI
+from pattoo.agents.os.pattoo import PATTOO_OS_SPOKED, PATTOO_OS_SPOKED_PROXY
+from pattoo.agents.os import configuration
+from pattoo.agents.os.api import API
+
 
 def main():
     """Control the Gunicorn WSGI."""
     # Create Gunicorn object to daemonize
-    agent_gunicorn = Agent(PATTOO_OS_SPOKED_PROXY)
+    agent_api = Agent(PATTOO_OS_SPOKED_PROXY)
 
     # Create Flask object to daemonize
     config = configuration.ConfigSpoked()
-    agent_api = AgentAPI(PATTOO_OS_SPOKED, PATTOO_OS_SPOKED_PROXY, config)
+    agent_gunicorn = AgentAPI(
+        PATTOO_OS_SPOKED, PATTOO_OS_SPOKED_PROXY, config, API)
 
-    # Do control (API first, Gunicorn second)
+    # Do control (Gunicorn first, Daemonized query second)
     cli = AgentCLI()
-    cli.control(agent_api)
     cli.control(agent_gunicorn)
+    cli.control(agent_api)
 
 
 if __name__ == '__main__':
