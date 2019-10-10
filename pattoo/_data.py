@@ -19,19 +19,16 @@ from pattoo.agents.os import language
 from pattoo import log
 from pattoo import times
 from pattoo import agent as agent_lib
-from pattoo.variables import DataVariable, DATA_INT, DATA_STRING
 
 
 class Data(object):
     """Pattoo agent that gathers data."""
 
-    def __init__(self, agent_program, polled_data, device_polled):
+    def __init__(self, agent_program):
         """Initialize the class.
 
         Args:
             agent_program: Name of agent program
-            polled_data: DataVariableList object
-            device_polled: Name of device polled
 
         Returns:
             None
@@ -41,7 +38,6 @@ class Data(object):
         self._data = defaultdict(lambda: defaultdict(dict))
         agent_id = agent_lib.get_agent_id(agent_program)
         self._lang = language.Agent(agent_program)
-        self._polled_data = polled_data
 
         # Get devicename
         self._devicename = socket.getfqdn()
@@ -54,7 +50,7 @@ class Data(object):
         self._data['devices'] = defaultdict(
             lambda: defaultdict(lambda: defaultdict(lambda: defaultdict())))
 
-    def _process(self):
+    def name(self):
         """Return the name of the _data.
 
         Args:
@@ -64,28 +60,9 @@ class Data(object):
             value: Name of agent
 
         """
-        # Intitialize key variables
-        timeseries = defaultdict(lambda: defaultdict(dict))
-        timefixed = defaultdict(lambda: defaultdict(dict))
-
-        # Get information from data
-        for item in self._polled_data:
-            data_tuple = (item.data_index. item.value)
-            if item.data_type == DATA_STRING:
-                if item.data_label in timefixed:
-                    timefixed['data'].append(data_tuple)
-                else:
-                    timefixed[item.data_label]['base_type'] = item.data_type
-                    timefixed['data'] = data_tuple
-            else:
-                if item.data_label in timeseries:
-                    timeseries['data'].append(data_tuple)
-                else:
-                    timeseries[item.data_label]['base_type'] = item.data_type
-                    timeseries['data'] = data_tuple
-
         # Return
-        return (timeseries, timefixed)
+        value = self._data['agent_program']
+        return value
 
     def populate(self, data_in):
         """Populate data for agent to eventually send to server.
@@ -117,6 +94,96 @@ class Data(object):
             self._data['devices'][self._devicename]['timeseries'].update(data)
         else:
             self._data['devices'][self._devicename]['timefixed'].update(data)
+
+    def populate_single(self, label, value, base_type=None, source=None):
+        """Populate a single value in the _data.
+
+        Args:
+            label: Agent label for data
+            value: Value of data
+            source: Source of the data
+            base_type: Base type of data
+
+        Returns:
+            None
+
+        """
+        # Initialize key variables
+        data = defaultdict(lambda: defaultdict(dict))
+        data[label]['base_type'] = base_type
+        data[label]['data'] = [[source, value]]
+
+        # Update
+        self.populate(data)
+
+    def populate_named_tuple(self, prefix, named_tuple, base_type=1):
+        """Post system data to the central server.
+
+        Args:
+            prefix: Prefix to append to data keys when populating the agent
+            named_tuple: Named tuple with data values
+            base_type: SNMP style base_type (integer, counter32, etc.)
+
+        Returns:
+            None
+
+        """
+        # Get data
+        system_dict = named_tuple._asdict()
+        return_data = defaultdict(lambda: defaultdict(dict))
+        data = []
+
+        # Do nothing if there is no prefix
+        if bool(prefix) is False:
+            return
+
+        # Cycle through results
+        for label, value in system_dict.items():
+            # Convert the dict to list of lists [label][value]
+            data.append([label, value])
+
+        # Add data
+        return_data[prefix]['data'] = data
+        return_data[prefix]['base_type'] = base_type
+
+        # Update
+        self.populate(return_data)
+
+    def populate_dict(self, prefix, data_in, base_type=1):
+        """Populate agent with data that's a dict keyed by [label][source].
+
+        Args:
+            prefix: Prefix to append to data keys when populating the agent
+            data_in: Dict of data to post "X[label][source] = value"
+            base_type: SNMP style base_type (integer, counter32, etc.)
+
+        Returns:
+            None
+
+        """
+        # Initialize data
+        data_input = deepcopy(data_in)
+
+        # Iterate over labels
+        for label in data_input.keys():
+            # Initialize tuple list to use by _data.populate
+            value_sources = []
+            new_label = '{}_{}'.format(prefix, label)
+
+            # Initialize data
+            data = defaultdict(lambda: defaultdict(dict))
+            data[new_label]['base_type'] = base_type
+
+            # Append to tuple list
+            # (Sorting is important to keep consistent ordering)
+            for source, value in sorted(data_input[label].items()):
+                value_sources.append(
+                    [source, value]
+                )
+            data[new_label]['data'] = value_sources
+
+            # Update
+            self.populate(data)
 
     def data(self):
         """Return that that should be posted.
@@ -243,33 +310,3 @@ def is_numeric(val):
         return False
     except:
         return False
-
-
-def named_tuple_to_dv(
-        values, data_label=None, data_type=DATA_INT):
-    """Convert a named tuple to a list of DataVariable objects.
-
-    Args:
-        values: Named tuple
-        data_label: data_label
-        data_type: Data type
-
-    Returns:
-        result: List of DataVariable
-
-    """
-    # Get data
-    data_dict = values._asdict()
-    result = []
-
-    # Cycle through results
-    for data_index, value in data_dict.items():
-        _dv = DataVariable(
-            value=value,
-            data_label=data_label,
-            data_index=data_index,
-            data_type=data_type)
-        result.append(_dv)
-
-    # Return
-    return result

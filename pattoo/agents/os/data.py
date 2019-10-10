@@ -21,7 +21,10 @@ from pattoo.agents.os import language
 from pattoo import log
 from pattoo import daemon
 from pattoo import agent
-from pattoo.data import Data
+from pattoo import data
+from pattoo.variables import (
+    DataVariable, DataVariableList, DATA_INT, DATA_COUNT64,
+    DATA_COUNT, DATA_STRING, DATA_FLOAT)
 
 
 def poll(agent_program):
@@ -37,27 +40,30 @@ def poll(agent_program):
 
     """
     # Intialize data gathering
-    data = Data(agent_program)
+    # data = Data(agent_program)
+    _data = DataVariableList()
 
     # Update agent with system data
-    _get_data_system(data)
+    _stats_system(_data)
 
     # Update agent with disk data
-    _get_data_storage(data)
+    _stats_disk_swap(_data)
+    _stats_disk_partitions(_data)
+    _stats_disk_io(_data)
 
     # Update agent with network data
-    _get_data_network(data)
+    _stats_network(_data)
 
     #
-    result = data.data()
-    return result
+    # result = data.data()
+    # return result
 
 
-def _get_data_system(_data):
+def _stats_system(_data):
     """Update agent with system data.
 
     Args:
-        _data: Data object
+        _data: DataVariableList object
 
     Returns:
         None
@@ -67,46 +73,144 @@ def _get_data_system(_data):
     # Set non timeseries values
     #########################################################################
 
-    _data.populate_single('release', platform.release(), base_type=None)
-    _data.populate_single('system', platform.system(), base_type=None)
-    _data.populate_single('version', platform.version(), base_type=None)
-    _data.populate_single('cpu_count', psutil.cpu_count(), base_type=1)
+    _data.append(DataVariable(value=platform.release(),
+                              data_label='release',
+                              data_type=DATA_STRING))
+
+    _data.append(DataVariable(value=platform.system(),
+                              data_label='system',
+                              data_type=DATA_STRING))
+
+    _data.append(DataVariable(value=platform.version(),
+                              data_label='version',
+                              data_type=DATA_STRING))
+
+    _data.append(DataVariable(value=psutil.cpu_count(),
+                              data_label='cpu_count',
+                              data_type=DATA_INT))
 
     #########################################################################
-    # Set timeseries values
+    # Set timeseries values (Integers)
     #########################################################################
-    _data.populate_single(
-        'process_count', len(psutil.pids()), base_type=1)
-
-    _data.populate_named_tuple(
-        'cpu_times_percent', psutil.cpu_times_percent(), base_type=1)
+    _data.append(DataVariable(value=len(psutil.pids()),
+                              data_label='process_count',
+                              data_type=DATA_INT))
 
     # Load averages
     (la_01, la_05, la_15) = os.getloadavg()
-    _data.populate_single(
-        'load_average_01min', la_01, base_type=1)
-    _data.populate_single(
-        'load_average_05min', la_05, base_type=1)
-    _data.populate_single(
-        'load_average_15min', la_15, base_type=1)
 
-    # Get CPU times
-    _data.populate_named_tuple(
-        'cpu_times', psutil.cpu_times(), base_type=64)
+    _data.append(DataVariable(value=la_01,
+                              data_label='load_average_01min',
+                              data_type=DATA_INT))
+
+    _data.append(DataVariable(value=la_05,
+                              data_label='load_average_05min',
+                              data_type=DATA_INT))
+
+    _data.append(DataVariable(value=la_15,
+                              data_label='load_average_15min',
+                              data_type=DATA_INT))
+
+    #########################################################################
+    # Set timeseries values (Named Tuples)
+    #########################################################################
+
+    # Percentage CPU utilization
+    _data.extend(data.named_tuple_to_dv(
+        psutil.cpu_times_percent(),
+        data_label='cpu_times_percent', data_type=DATA_FLOAT))
+
+    # Get CPU runtimes
+    _data.extend(data.named_tuple_to_dv(
+        psutil.cpu_times(),
+        data_label='cpu_times', data_type=DATA_COUNT64))
 
     # Get CPU stats
-    _data.populate_named_tuple(
-        'cpu_stats', psutil.cpu_stats(), base_type=64)
+    _data.extend(data.named_tuple_to_dv(
+        psutil.cpu_stats(),
+        data_label='cpu_stats', data_type=DATA_COUNT64))
 
     # Get memory utilization
-    _data.populate_named_tuple('memory', psutil.virtual_memory())
+    _data.extend(data.named_tuple_to_dv(
+        psutil.virtual_memory(),
+        data_label='memory', data_type=DATA_INT))
 
 
-def _get_data_storage(_data):
-    """Update agent with disk data.
+def _stats_disk_swap(_data):
+    """Update agent with disk swap data.
 
     Args:
-        _data: Data object
+        _data: DataVariableList object
+
+    Returns:
+        None
+
+    """
+    # Initialize key variables
+    result = []
+    prefix = 'swap'
+
+    # Get swap information
+    system_list = psutil.swap_memory()._asdict()
+    for suffix, value in system_list.items():
+        # Different suffixes have different data types
+        if suffix in ['sin', 'sout']:
+            data_type = DATA_COUNT64
+        else:
+            data_type = DATA_INT
+
+        # Create records
+        data_label = '{}_{}'.format(prefix, suffix)
+
+        # No need to specify a suffix as there is only one swap
+        _dv = DataVariable(
+            value=value, data_label=data_label, data_type=data_type)
+        result.append(_dv)
+
+    # Add the result to data
+    _data.extend(result)
+
+
+def _stats_disk_partitions(_data):
+    """Update agent with disk partition data.
+
+    Args:
+        _data: DataVariableList object
+
+    Returns:
+        None
+
+    """
+    # Initialize key variables
+    prefix = 'disk_usage'
+    result = []
+
+    # Get filesystem partition utilization
+    disk_data = psutil.disk_partitions()
+    # "disk_data" is named tuple describing partitions
+    for item in disk_data:
+        # "source" is the partition mount point
+        mountpoint = item.mountpoint
+        if "docker" in str(mountpoint):
+            pass
+        else:
+            partition = psutil.disk_usage(mountpoint)._asdict()
+            for suffix, value in partition.items():
+                data_label = '{}_{}'.format(prefix, suffix)
+                _dv = DataVariable(
+                    value=value, data_label=data_label,
+                    data_index=mountpoint, data_type=DATA_INT)
+                result.append(_dv)
+
+    # Add the result to data
+    _data.extend(result)
+
+
+def _stats_disk_io(_data):
+    """Update agent with disk io data.
+
+    Args:
+        _data: DataVariableList object
 
     Returns:
         None
@@ -114,70 +218,58 @@ def _get_data_storage(_data):
     """
     # Initialize key variables
     regex = re.compile(r'^ram\d+$')
-
-    # Get swap utilization
-    multikey = defaultdict(lambda: defaultdict(dict))
-    counterkey = defaultdict(lambda: defaultdict(dict))
-    swap_data = psutil.swap_memory()
-    system_list = swap_data._asdict()
-    # "label" is named tuple describing partitions
-    for label in system_list:
-        value = system_list[label]
-        if label in ['sin', 'sout']:
-            counterkey[label][None] = value
-        else:
-            multikey[label][None] = value
-    _data.populate_dict('swap', multikey)
-    _data.populate_dict('swap', counterkey, base_type=64)
-
-    # Get filesystem partition utilization
-    disk_data = psutil.disk_partitions()
-    multikey = defaultdict(lambda: defaultdict(dict))
-    # "disk" is named tuple describing partitions
-    for disk in disk_data:
-        # "source" is the partition mount point
-        source = disk.mountpoint
-        if "docker" in str(source):
-            pass
-        else:
-            system_data = psutil.disk_usage(source)
-            system_dict = system_data._asdict()
-            for label, value in system_dict.items():
-                multikey[label][source] = value
-    _data.populate_dict('disk_usage', multikey)
+    prefix = 'disk_io'
+    result = []
 
     # Get disk I/O usage
     io_data = psutil.disk_io_counters(perdisk=True)
-    counterkey = defaultdict(lambda: defaultdict(dict))
+
     # "source" is disk name
-    for source in io_data.keys():
+    for disk, disk_named_tuple in io_data.items():
         # No RAM pseudo disks. RAM disks OK.
-        if bool(regex.match(source)) is True:
+        if bool(regex.match(disk)) is True:
             continue
-        system_data = io_data[source]
-        system_dict = system_data._asdict()
-        for label, value in system_dict.items():
-            counterkey[label][source] = value
-    _data.populate_dict('disk_io', counterkey, base_type=64)
+        # No loopbacks
+        if disk.startswith('loop') is True:
+            continue
+
+        # Populate data
+        disk_dict = disk_named_tuple._asdict()
+        for suffix, value in disk_dict.items():
+            data_label = '{}_{}'.format(prefix, suffix)
+            _dv = DataVariable(
+                value=value, data_label=data_label,
+                data_index=disk, data_type=DATA_COUNT64)
+            result.append(_dv)
+
+    # Add the result to data
+    _data.extend(result)
 
 
-def _get_data_network(_data):
+def _stats_network(_data):
     """Update agent with network data.
 
     Args:
-        _data: Data object
+        _data: DataVariableList object
 
     Returns:
         None
 
     """
+    # Initialize key variables
+    result = []
+    prefix = 'network'
+
     # Get network utilization
     nic_data = psutil.net_io_counters(pernic=True)
-    counterkey = defaultdict(lambda: defaultdict(dict))
-    for source in nic_data.keys():
-        # "source" is nic name
-        system_data = nic_data[source]
-        system_dict = system_data._asdict()
-        for label, value in system_dict.items():
-            counterkey[label][source] = value
-    _data.populate_dict('network', counterkey, base_type=64)
+    for nic, nic_named_tuple in nic_data.items():
+        nic_dict = nic_named_tuple._asdict()
+        for suffix, value in nic_dict.items():
+            data_label = '{}_{}'.format(prefix, suffix)
+            _dv = DataVariable(
+                value=value, data_label=data_label,
+                data_index=nic, data_type=DATA_COUNT64)
+            result.append(_dv)
+
+    # Add the result to data
+    _data.extend(result)
