@@ -9,11 +9,12 @@ import yaml
 from pattoo import files
 from pattoo import log
 from pattoo import configuration
+from pattoo.configuration import Config 
 from pattoo import files
 from pattoo.agents.os.pattoo import PATTOO_OS_SPOKED, PATTOO_OS_HUBD
 
 
-class ConfigSpoked(configuration.ConfigSpoked):
+class ConfigSpoked(Config):
     """Class gathers all configuration information."""
 
     def __init__(self):
@@ -27,7 +28,7 @@ class ConfigSpoked(configuration.ConfigSpoked):
 
         """
         # Instantiate the Config parent
-        configuration.ConfigSpoked.__init__(self)
+        Config.__init__(self)
 
         # Update the configuration directory
         config_directory = '{}/etc/pattoo-os.d'.format(
@@ -121,7 +122,7 @@ class ConfigSpoked(configuration.ConfigSpoked):
         return result
 
 
-class ConfigHubd(configuration.ConfigHubd):
+class ConfigHubd(Config):
     """Class for PATTOO_OS_HUBD configuration information."""
 
     def __init__(self):
@@ -135,7 +136,7 @@ class ConfigHubd(configuration.ConfigHubd):
 
         """
         # Instantiate the Config parent
-        configuration.ConfigHubd.__init__(self)
+        Config.__init__(self)
 
         # Update the configuration directory
         config_directory = '{}/etc/pattoo-os.d'.format(
