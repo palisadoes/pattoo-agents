@@ -120,6 +120,124 @@ class DataVariableList(object):
             self.append(item)
 
 
+class SNMPVariable(object):
+    """Variable representation for data for SNMP polling."""
+
+    def __init__(self, version=2, community='public', port=161,
+                 secname=None,
+                 authprotocol=None, authpassword=None,
+                 privprotocol=None, privpassword=None,
+                 ip_devices=None):
+        """Initialize the class.
+
+        Args:
+            version: SNMP version
+            community: SNMP community
+            port: SNMP port
+            secname: SNMP secname
+            authprotocol: SNMP authprotocol
+            authpassword: SNMP authpassword
+            privprotocol: SNMP privprotocol
+            privpassword: SNMP privpassword
+            ip_devices: Devices that have these SNMP security parameters
+
+        Returns:
+            None
+
+        """
+        # Initialize variables
+        self.version = int(version)
+        self.community = community
+        self.port = int(port)
+        self.secname = secname
+        self.authprotocol = authprotocol
+        self.authpassword = authpassword
+        self.privprotocol = privprotocol
+        self.privpassword = privpassword
+        if isinstance(ip_devices, str) is True:
+            self.ip_devices = [ip_devices]
+        elif isinstance(ip_devices, list) is True:
+            self.ip_devices = ip_devices
+        else:
+            self.ip_devices = []
+
+    def __repr__(self):
+        """Return a representation of the attributes of the class.
+
+        Args:
+            None
+
+        Returns:
+            result: String representation.
+
+        """
+        # Return repr
+        return (
+            '<{0} version={2}, community={3}, port={8}, secname={4}, '
+            'authprotocol={1} authpassword={5}, '
+            'privpassword={6}, privprotocol={7}, '
+            'ip_devices={9}>'
+            ''.format(
+                self.__class__.__name__,
+                repr(self.authprotocol), repr(self.version),
+                repr(self.community), repr(self.secname),
+                repr(self.authpassword), repr(self.privpassword),
+                repr(self.privprotocol), repr(self.port),
+                repr(self.ip_devices)
+            )
+        )
+
+
+class OIDVariable(object):
+    """Variable representation for OID data for SNMP polling."""
+
+    def __init__(self, oids=2, ip_devices=None):
+        """Initialize the class.
+
+        Args:
+            oids: SNMP oids
+            ip_devices: Devices that require data from oids
+
+        Returns:
+            None
+
+        """
+        # Initialize ip_devices
+        if isinstance(ip_devices, str) is True:
+            self.ip_devices = [ip_devices]
+        elif isinstance(ip_devices, list) is True:
+            self.ip_devices = ip_devices
+        else:
+            self.ip_devices = []
+
+        # Initialize oids
+        if isinstance(oids, str) is True:
+            self.oids = [oids]
+        elif isinstance(oids, list) is True:
+            self.oids = oids
+        else:
+            self.oids = []
+
+    def __repr__(self):
+        """Return a representation of the attributes of the class.
+
+        Args:
+            None
+
+        Returns:
+            result: String representation.
+
+        """
+        # Return repr
+        return (
+            '<{0} oids={1}, ip_devices={2}>'
+            ''.format(
+                self.__class__.__name__,
+                repr(self.oids), repr(self.ip_devices)
+            )
+        )
+
+
 def _strip_non_printable(value):
     """Strip non printable characters.
 

@@ -4,11 +4,13 @@
 import os.path
 import os
 import multiprocessing
+from copy import deepcopy
 
 # Import project libraries
 from pattoo import log
 from pattoo import files
 from pattoo.configuration import Config
+from pattoo.variables import SNMPVariable, OIDVariable
 
 
 class ConfigSNMP(Config):
@@ -59,6 +61,168 @@ class ConfigSNMP(Config):
 
         # Return
         return result
+
+    def snmpvariables(self):
+        """Get list of dicts of SNMP information in configuration file.
+
+        Args:
+            group: Group name to filter results by
+
+        Returns:
+            result: List of SNMPVariable items
+
+        """
+        # Initialize key variables
+        result = []
+        items = _validate_snmp(self.config_dict)
+
+        # Create snmp objects
+        for item in items:
+            snmpvariable = SNMPVariable(
+                version=item['snmp_version'],
+                community=item['snmp_community'],
+                port=item['snmp_port'],
+                secname=item['snmp_secname'],
+                authprotocol=item['snmp_authprotocol'],
+                authpassword=item['snmp_authpassword'],
+                privprotocol=item['snmp_privprotocol'],
+                privpassword=item['snmp_privpassword'],
+                ip_devices=item['ip_devices']
+            )
+            result.append(snmpvariable)
+        return result
+
+    def oidvariables(self):
+        """Get list of dicts of SNMP information in configuration file.
+
+        Args:
+            group: Group name to filter results by
+
+        Returns:
+            result: List of OIDVariable items
+
+        """
+        # Initialize key variables
+        result = []
+        items = _validate_oids(self.config_dict)
+
+        # Create snmp objects
+        for item in items:
+            oidvariable = OIDVariable(
+                oids=item['oids'],
+                ip_devices=item['ip_devices']
+            )
+            result.append(oidvariable)
+        return result
+
+
+def _validate_snmp(config_dict):
+    """Get list of dicts of SNMP information in configuration file.
+
+    Args:
+        config_dict: Configuration dict
+
+    Returns:
+        data: List of SNMP data dicts found in configuration file.
+
+    """
+    # Initialize key variables
+    nothing = []
+    seed_dict = {}
+    seed_dict['snmp_version'] = 2
+    seed_dict['snmp_secname'] = None
+    seed_dict['snmp_community'] = 'public'
+    seed_dict['snmp_authprotocol'] = None
+    seed_dict['snmp_authpassword'] = None
+    seed_dict['snmp_privprotocol'] = None
+    seed_dict['snmp_privpassword'] = None
+    seed_dict['snmp_port'] = 161
+    seed_dict['ip_devices'] = []
+
+    # Read configuration's SNMP information. Return 'None' if none found
+    if 'snmp_groups' in config_dict:
+        if isinstance(config_dict['snmp_groups'], list) is True:
+            if len(config_dict['snmp_groups']) < 1:
+                return nothing
+        else:
+            return nothing
+
+    # Start populating information
+    data = []
+    for read_dict in config_dict['snmp_groups']:
+        # Next entry if this is not a dict
+        if isinstance(read_dict, dict) is False:
+            continue
+
+        # Assign data
+        new_dict = deepcopy(seed_dict)
+        for key in read_dict.keys():
+            new_dict[key] = read_dict[key]
+
+        # Verify the correct version keys
+        if new_dict['snmp_version'] not in [2, 3]:
+            continue
+
+        # Validate IP addresses and OIDs
+        if isinstance(new_dict['ip_devices'], list) is False:
+            continue
+
+        # Append data to list
+        data.append(new_dict)
+
+    # Return
+    return data
+
+
+def _validate_oids(config_dict):
+    """Get list of dicts of SNMP information in configuration file.
+
+    Args:
+        config_dict: Configuration dict
+
+    Returns:
+        snmp_data: List of SNMP data dicts found in configuration file.
+
+    """
+    # Initialize key variables
+    nothing = []
+    seed_dict = {}
+    seed_dict['ip_devices'] = []
+    seed_dict['oids'] = []
+
+    # Read configuration's SNMP information. Return 'None' if none found
+    if 'oid_groups' in config_dict:
+        if isinstance(config_dict['oid_groups'], list) is True:
+            if len(config_dict['oid_groups']) < 1:
+                return nothing
+        else:
+            return nothing
+
+    # Start populating information
+    data = []
+    for read_dict in config_dict['oid_groups']:
+        # Next entry if this is not a dict
+        if isinstance(read_dict, dict) is False:
+            continue
+
+        # Assign data
+        new_dict = deepcopy(seed_dict)
+        for key in read_dict.keys():
+            if isinstance(read_dict[key], list) is True:
+                new_dict[key] = read_dict[key]
+
+        # Validate IP addresses and OIDs
+        if isinstance(new_dict['ip_devices'], list) is False:
+            continue
+        if isinstance(new_dict['oids'], list) is False:
+            continue
+
+        # Append data to list
+        data.append(new_dict)
+
+    # Return
+    return data
+
 
 
 class _ConfigSNMP(object):
