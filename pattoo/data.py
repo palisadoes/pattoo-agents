@@ -97,7 +97,7 @@ class Data(object):
                         key][_dvar.data_label]['data'].append(data_tuple)
                 else:
                     result[device][
-                        key][_dvar.data_label]['base_type'] = _dvar.data_type
+                        key][_dvar.data_label]['data_type'] = _dvar.data_type
                     result[device][
                         key][_dvar.data_label]['data'] = [data_tuple]
 
