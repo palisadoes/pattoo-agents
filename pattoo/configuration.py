@@ -187,14 +187,13 @@ class Config(object):
         # Expand linux ~ notation for home directories if provided.
         result = os.path.expanduser(_result)
 
-        # Check if value exists. We cannot use logging as it requires a
-        # log directory location to work properly
+        # Check if value exists. We cannot use log2die_safe as it does not
+        # require a log directory location to work properly
         if os.path.isdir(result) is False:
             log_message = (
                 'log_directory: "{}" '
                 'in configuration doesn\'t exist!'.format(result))
-            print(log_message)
-            sys.exit(1)
+            log.log2die_safe(1022, log_message)     
 
         # Return
         return result

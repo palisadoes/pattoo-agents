@@ -25,19 +25,20 @@ from pattoo.agent import Agent, AgentAPI, AgentCLI
 from pattoo.agents.os.pattoo import PATTOO_OS_SPOKED, PATTOO_OS_SPOKED_PROXY
 from pattoo.agents.os import configuration
 
+
 def main():
     """Control the Gunicorn WSGI."""
     # Create Gunicorn object to daemonize
-    agent_gunicorn = Agent(PATTOO_OS_SPOKED_PROXY)
+    agent_api = Agent(PATTOO_OS_SPOKED_PROXY)
 
     # Create Flask object to daemonize
     config = configuration.ConfigSpoked()
-    agent_api = AgentAPI(PATTOO_OS_SPOKED, PATTOO_OS_SPOKED_PROXY, config)
+    agent_gunicorn = AgentAPI(PATTOO_OS_SPOKED, PATTOO_OS_SPOKED_PROXY, config)
 
-    # Do control (API first, Gunicorn second)
+    # Do control (Gunicorn first, Daemonized query second)
     cli = AgentCLI()
-    cli.control(agent_api)
     cli.control(agent_gunicorn)
+    cli.control(agent_api)
 
 
 if __name__ == '__main__':

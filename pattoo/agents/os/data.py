@@ -18,7 +18,7 @@ import socket
 import psutil
 
 # Pattoo libraries
-from pattoo.agents.os import language
+from pattoo.agents.os import configuration
 from pattoo import log
 from pattoo import daemon
 from pattoo import agent
@@ -41,10 +41,12 @@ def poll(agent_program):
 
     """
     # Initialize key variables
-    device_polled = socket.getfqdn()
+    device = socket.getfqdn()
+    config = configuration.ConfigSpoked()
+    translations = config.translations(agent_program)
 
     # Intialize data gathering
-    _data = DataVariableList()
+    _data = DataVariableList(device, translations)
 
     # Update agent with system data
     _stats_system(_data)
@@ -58,7 +60,7 @@ def poll(agent_program):
     _stats_network(_data)
 
     # Return data
-    process = data.Data(agent_program, _data, device_polled)
+    process = data.Data(agent_program, _data)
     result = process.data()
     return result
 

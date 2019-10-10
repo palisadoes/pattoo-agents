@@ -9,14 +9,12 @@ Description:
 """
 # Standard libraries
 from collections import defaultdict
-from copy import deepcopy
 import socket
 import hashlib
 
 
 # Pattoo libraries
 from pattoo.agents.os import language
-from pattoo import log
 from pattoo import times
 from pattoo import agent as agent_lib
 from pattoo.variables import DataVariable, DATA_INT, DATA_STRING
@@ -25,13 +23,12 @@ from pattoo.variables import DataVariable, DATA_INT, DATA_STRING
 class Data(object):
     """Pattoo agent that gathers data."""
 
-    def __init__(self, agent_program, polled_data, device_polled):
+    def __init__(self, agent_program, polled_objects):
         """Initialize the class.
 
         Args:
             agent_program: Name of agent program
-            polled_data: DataVariableList object
-            device_polled: Name of device polled
+            polled_objects: One or more DataVariableList objects
 
         Returns:
             None
@@ -40,8 +37,12 @@ class Data(object):
         # Initialize key variables
         self._data = defaultdict(lambda: defaultdict(dict))
         agent_id = agent_lib.get_agent_id(agent_program)
-        self._lang = language.Agent(agent_program)
-        self._polled_data = polled_data
+
+        # Convert the polled objects for processing
+        if isinstance(polled_objects, list) is True:
+            self._polled_objects = polled_objects
+        else:
+            self._polled_objects = [polled_objects]
 
         # Get devicename
         self._devicename = socket.getfqdn()
@@ -51,8 +52,7 @@ class Data(object):
         self._data['agent_id'] = agent_id
         self._data['agent_program'] = agent_program
         self._data['agent_hostname'] = self._devicename
-        self._data['devices'] = defaultdict(
-            lambda: defaultdict(lambda: defaultdict(lambda: defaultdict())))
+        self._data['devices'] = self._process()
 
     def _process(self):
         """Return the name of the _data.
@@ -61,62 +61,53 @@ class Data(object):
             None
 
         Returns:
-            value: Name of agent
+            result: Data required
 
         """
         # Intitialize key variables
-        timeseries = defaultdict(lambda: defaultdict(dict))
-        timefixed = defaultdict(lambda: defaultdict(dict))
+        # Yes we could have used Lambdas but pprint wouldn't fit on the screen
+        result = {}
 
         # Get information from data
-        for item in self._polled_data:
-            data_tuple = (item.data_index. item.value)
-            if item.data_type == DATA_STRING:
-                if item.data_label in timefixed:
-                    timefixed['data'].append(data_tuple)
-                else:
-                    timefixed[item.data_label]['base_type'] = item.data_type
-                    timefixed['data'] = data_tuple
-            else:
-                if item.data_label in timeseries:
-                    timeseries['data'].append(data_tuple)
-                else:
-                    timeseries[item.data_label]['base_type'] = item.data_type
-                    timeseries['data'] = data_tuple
+        for polled_device in self._polled_objects:
+            # Initialize variable for code simplicity
+            device = polled_device.device
 
+            # Pre-populate the result with empty dicts
+            result[device] = {}
+            result[device]['timefixed'] = {}
+            result[device]['timestamp'] = {}
+
+            # Analyze each DataVariable for the polled_device
+            for _dvar in polled_device.data:
+                # Determine the type of data
+                if _dvar.data_type == DATA_STRING:
+                    key = 'timefixed'
+                else:
+                    key = 'timestamp'
+
+                # Add keys if not already there
+                if _dvar.data_label not in result[device][key]:
+                    result[device][key][_dvar.data_label] = {}
+
+                # Assign data values to result
+                data_tuple = (_dvar.data_index, _dvar.value)
+                if 'data' in result[device][key][_dvar.data_label]:
+                    result[device][
+                        key][_dvar.data_label]['data'].append(data_tuple)
+                else:
+                    result[device][
+                        key][_dvar.data_label]['base_type'] = _dvar.data_type
+                    result[device][
+                        key][_dvar.data_label]['data'] = [data_tuple]
+
+                    # Get a description to use for label value
+                    if _dvar.data_label in polled_device.translations:
+                        result[device][key][_dvar.data_label][
+                            'description'] = polled_device.translations[
+                                _dvar.data_label]
         # Return
-        return (timeseries, timefixed)
-
-    def populate(self, data_in):
-        """Populate data for agent to eventually send to server.
-
-        Args:
-            data_in: dict of datapoint values from agent
-            timeseries: TimeSeries data if True
-
-        Returns:
-            None
-
-        """
-        # Initialize data
-        data = deepcopy(data_in)
-
-        # Validate base_type
-        if len(data) != 1 or isinstance(data, defaultdict) is False:
-            log_message = 'Agent data "{}" is invalid'.format(data)
-            log.log2die(1025, log_message)
-
-        # Get a description to use for label value
-        for label in data.keys():
-            description = self._lang.label_description(label)
-            data[label]['description'] = description
-            break
-
-        # Add data to appropriate self._data key
-        if data[label]['base_type'] is not None:
-            self._data['devices'][self._devicename]['timeseries'].update(data)
-        else:
-            self._data['devices'][self._devicename]['timefixed'].update(data)
+        return result
 
     def data(self):
         """Return that that should be posted.

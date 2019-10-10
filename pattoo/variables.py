@@ -71,11 +71,12 @@ class DataVariable(object):
 class DataVariableList(object):
     """Object defining a list of DataVariable objects."""
 
-    def __init__(self):
+    def __init__(self, device, translations):
         """Initialize the class.
 
         Args:
-            None
+            device: Device polled
+            translations: Dict of translations
 
         Returns:
             None
@@ -83,6 +84,8 @@ class DataVariableList(object):
         """
         # Initialize key variables
         self.data = []
+        self.translations = translations
+        self.device = device
 
     def append(self, item):
         """Append DataVariable to the list.
