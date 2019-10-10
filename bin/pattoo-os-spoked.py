@@ -24,6 +24,7 @@ else:
 from pattoo.agent import Agent, AgentAPI, AgentCLI
 from pattoo.agents.os.pattoo import PATTOO_OS_SPOKED, PATTOO_OS_SPOKED_PROXY
 from pattoo.agents.os import configuration
+from pattoo.agents.os.api import API
 
 
 def main():
@@ -33,7 +34,8 @@ def main():
 
     # Create Flask object to daemonize
     config = configuration.ConfigSpoked()
-    agent_gunicorn = AgentAPI(PATTOO_OS_SPOKED, PATTOO_OS_SPOKED_PROXY, config)
+    agent_gunicorn = AgentAPI(
+        PATTOO_OS_SPOKED, PATTOO_OS_SPOKED_PROXY, config, API)
 
     # Do control (Gunicorn first, Daemonized query second)
     cli = AgentCLI()

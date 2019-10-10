@@ -28,7 +28,6 @@ from gunicorn.six import iteritems
 from pattoo import daemon
 from pattoo import log
 from pattoo import data
-from pattoo.agents.os.api import API
 
 
 class Agent(object):
@@ -252,13 +251,14 @@ class AgentAPI(Agent):
         post:
     """
 
-    def __init__(self, parent, child, config_api):
+    def __init__(self, parent, child, config_api, app):
         """Initialize the class.
 
         Args:
             parent: Name of parent daemon
             child: Name of child daemon
             config_api: ConfigSpoked object
+            app: Flask App
 
         Returns:
             None
@@ -267,6 +267,7 @@ class AgentAPI(Agent):
         # Initialize key variables
         Agent.__init__(self, parent, child)
         self._config_api = config_api
+        self._app = app
 
     def query(self):
         """Query all remote devices for data.
@@ -331,7 +332,7 @@ class AgentAPI(Agent):
         log.log2info(1022, log_message)
 
         # Run
-        StandaloneApplication(API, options).run()
+        StandaloneApplication(self._app, options).run()
 
 
 class StandaloneApplication(BaseApplication):
