@@ -29,7 +29,7 @@ def spoked_url(ip_device, ip_bind_port):
     return url
 
 
-def poll(ip_device, ip_bind_port):
+def relay(ip_device, ip_bind_port):
     """Poll a spoke.
 
     Args:

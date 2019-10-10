@@ -12,6 +12,7 @@ import os
 import re
 import platform
 from collections import defaultdict
+import socket
 
 # pip3 libraries
 import psutil
@@ -39,8 +40,10 @@ def poll(agent_program):
         None
 
     """
+    # Initialize key variables
+    device_polled = socket.getfqdn()
+
     # Intialize data gathering
-    # data = Data(agent_program)
     _data = DataVariableList()
 
     # Update agent with system data
@@ -54,9 +57,10 @@ def poll(agent_program):
     # Update agent with network data
     _stats_network(_data)
 
-    #
-    # result = data.data()
-    # return result
+    # Return data
+    process = data.Data(agent_program, _data, device_polled)
+    result = process.data()
+    return result
 
 
 def _stats_system(_data):
