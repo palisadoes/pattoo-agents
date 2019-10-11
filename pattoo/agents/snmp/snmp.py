@@ -51,7 +51,7 @@ class SNMP(object):
         """Initialize the class.
 
         Args:
-            snmpdata: SNMPData object
+            snmpdata: SNMPVariable object
 
         Returns:
             None
