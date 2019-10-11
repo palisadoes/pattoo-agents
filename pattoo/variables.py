@@ -80,8 +80,11 @@ class DataVariableList(object):
         """
         # Initialize key variables
         self.data = []
-        self.translations = translations
         self.device = device
+        if isinstance(translations, dict) is False:
+            self.translations = {}
+        else:
+            self.translations = translations
 
     def append(self, item):
         """Append DataVariable to the list.

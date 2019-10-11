@@ -330,7 +330,7 @@ your command AND make sure you set ---active=True. Error: {}\
             log.log2die(1029, log_message)
 
         # Format results
-        values = _format_results(results)
+        values = _convert_results(results)
 
         # Return
         return (_contactable, exists, values)
@@ -540,103 +540,89 @@ def _process_error(
     return None
 
 
-def _format_results(results):
-    """Normalize the results of an walk.
+def _convert_results(inbound):
+    """Convert results from easysnmp.variables.SNMPVariable to DataVariable.
 
     Args:
-        results: List of lists of results
+        inbound: SNMP query result as list of easysnmp.variables.SNMPVariable
 
     Returns:
-        return_results: Dict of results
+        outbound: DataVariable formatted equivalent
 
     """
     # Initialize key variables
-    return_results = []
+    outbound = []
 
     # Format the results to DataVariable format
-    for result in results:
-        return_results.append(_convert(result))
+    for item in inbound:
+        # Initialize loop variables
+        converted = None
+        snmp_type = item.snmp_type
+        data_type = DATA_INT
+
+        # Convert string type values to bytes
+        if snmp_type.upper() == 'OCTETSTR':
+            converted = item.value
+            data_type = DATA_STRING
+        elif snmp_type.upper() == 'OPAQUE':
+            converted = item.value
+            data_type = DATA_STRING
+        elif snmp_type.upper() == 'BITS':
+            converted = item.value
+            data_type = DATA_STRING
+        elif snmp_type.upper() == 'IPADDR':
+            converted = item.value
+            data_type = DATA_STRING
+        elif snmp_type.upper() == 'NETADDR':
+            converted = item.value
+            data_type = DATA_STRING
+        elif snmp_type.upper() == 'OBJECTID':
+            # DO NOT CHANGE !!!
+            # converted = bytes(str(value), 'utf-8')
+            converted = item.value
+            data_type = DATA_STRING
+        elif snmp_type.upper() == 'NOSUCHOBJECT':
+            # Nothing if OID not found
+            converted = None
+            data_type = DATA_NONE
+        elif snmp_type.upper() == 'NOSUCHINSTANCE':
+            # Nothing if OID not found
+            converted = None
+            data_type = DATA_NONE
+        elif snmp_type.upper() == 'ENDOFMIBVIEW':
+            # Nothing
+            converted = None
+            data_type = DATA_NONE
+        elif snmp_type.upper() == 'NULL':
+            # Nothing
+            converted = None
+            data_type = DATA_NONE
+        elif snmp_type.upper() == 'COUNTER':
+            # Numeric values
+            converted = int(item.value)
+            data_type = DATA_COUNT
+        elif snmp_type.upper() == 'COUNTER64':
+            # Numeric values
+            converted = int(item.value)
+            data_type = DATA_COUNT64
+        else:
+            # Convert everything else into integer values
+            # rfc1902.Integer
+            # rfc1902.Integer32
+            # rfc1902.Gauge32
+            # rfc1902.Unsigned32
+            # rfc1902.TimeTicks
+            converted = int(item.value)
+
+        # Convert result to DataVariable
+        datavariable = DataVariable(
+            value=converted,
+            data_label=item.oid,
+            data_index=item.oid_index,
+            data_type=data_type
+        )
+        # Append to outbound result
+        outbound.append(datavariable)
 
     # Return
-    return return_results
-
-
-def _convert(result):
-    """Convert value from pysnmp object to standard python types.
-
-    Args:
-        result: SNMP query result as easysnmp.variables.SNMPVariable
-
-    Returns:
-        datavariable: DataVariable formatted equivalent
-
-    """
-    # Initialieze key values
-    converted = None
-    snmp_type = result.snmp_type
-    data_type = DATA_INT
-
-    # Convert string type values to bytes
-    if snmp_type.upper() == 'OCTETSTR':
-        converted = result.value
-        data_type = DATA_STRING
-    elif snmp_type.upper() == 'OPAQUE':
-        converted = result.value
-        data_type = DATA_STRING
-    elif snmp_type.upper() == 'BITS':
-        converted = result.value
-        data_type = DATA_STRING
-    elif snmp_type.upper() == 'IPADDR':
-        converted = result.value
-        data_type = DATA_STRING
-    elif snmp_type.upper() == 'NETADDR':
-        converted = result.value
-        data_type = DATA_STRING
-    elif snmp_type.upper() == 'OBJECTID':
-        # DO NOT CHANGE !!!
-        # converted = bytes(str(value), 'utf-8')
-        converted = result.value
-        data_type = DATA_STRING
-    elif snmp_type.upper() == 'NOSUCHOBJECT':
-        # Nothing if OID not found
-        converted = None
-        data_type = DATA_NONE
-    elif snmp_type.upper() == 'NOSUCHINSTANCE':
-        # Nothing if OID not found
-        converted = None
-        data_type = DATA_NONE
-    elif snmp_type.upper() == 'ENDOFMIBVIEW':
-        # Nothing
-        converted = None
-        data_type = DATA_NONE
-    elif snmp_type.upper() == 'NULL':
-        # Nothing
-        converted = None
-        data_type = DATA_NONE
-    elif snmp_type.upper() == 'COUNTER':
-        # Numeric values
-        converted = int(result.value)
-        data_type = DATA_COUNT
-    elif snmp_type.upper() == 'COUNTER64':
-        # Numeric values
-        converted = int(result.value)
-        data_type = DATA_COUNT64
-    else:
-        # Convert everything else into integer values
-        # rfc1902.Integer
-        # rfc1902.Integer32
-        # rfc1902.Gauge32
-        # rfc1902.Unsigned32
-        # rfc1902.TimeTicks
-        converted = int(result.value)
-
-    # Convert result to DataVariable
-    datavariable = DataVariable(
-        value=converted,
-        data_label=result.oid,
-        data_index=result.oid_index,
-        data_type=data_type
-    )
-
-    # Return
-    return datavariable
+    return outbound
