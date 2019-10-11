@@ -33,7 +33,7 @@ def poll():
         None
 
     """
-    # Initialize key variables
+    # Initialize key variables.
     agent_program = PATTOO_SNMPD
     config = configuration.ConfigSNMP()
     ip_devices = {}
