@@ -22,7 +22,7 @@ else:
 
 # Pattoo libraries
 from pattoo.agent import Agent, AgentAPI, AgentCLI
-from pattoo.agents.os.pattoo import PATTOO_OS_SPOKED, PATTOO_OS_SPOKED_PROXY
+from pattoo.constants import PATTOO_OS_SPOKED, PATTOO_OS_SPOKED_PROXY
 from pattoo.agents.os import configuration
 from pattoo.agents.os.api import API
 

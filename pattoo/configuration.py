@@ -11,7 +11,14 @@ from pattoo import log
 
 
 class Config(object):
-    """Class gathers all configuration information."""
+    """Class gathers all configuration information.
+
+    Only processes the following YAML keys in the configuration file:
+
+        main:
+        remote_api:
+
+    """
 
     def __init__(self):
         """Initialize the class.
@@ -28,7 +35,7 @@ class Config(object):
         config_directory = '{}/etc'.format(files.root_directory())
 
         # Return data
-        self._config_dict = files.read_yaml_files(config_directory)
+        self._configuration = files.read_yaml_files(config_directory)
 
     def polling_interval(self):
         """Get interval.
@@ -43,7 +50,7 @@ class Config(object):
         # Get result
         key = 'main'
         sub_key = 'interval'
-        intermediate = search(key, sub_key, self._config_dict, die=False)
+        intermediate = search(key, sub_key, self._configuration, die=False)
 
         # Default to 300
         if intermediate is None:
@@ -67,7 +74,7 @@ class Config(object):
         sub_key = 'api_ip_address'
 
         # Get result
-        result = search(key, sub_key, self._config_dict, die=False)
+        result = search(key, sub_key, self._configuration, die=False)
         if result is None:
             result = 'localhost'
         return result
@@ -87,7 +94,7 @@ class Config(object):
         sub_key = 'api_ip_bind_port'
 
         # Get result
-        intermediate = search(key, sub_key, self._config_dict, die=False)
+        intermediate = search(key, sub_key, self._configuration, die=False)
         if intermediate is None:
             result = 6000
         else:
@@ -109,7 +116,7 @@ class Config(object):
         sub_key = 'api_uses_https'
 
         # Get result
-        result = search(key, sub_key, self._config_dict, die=False)
+        result = search(key, sub_key, self._configuration, die=False)
         if result is None:
             result = False
         return result
@@ -129,7 +136,7 @@ class Config(object):
         sub_key = 'api_uri'
 
         # Get result
-        received = search(key, sub_key, self._config_dict, die=False)
+        received = search(key, sub_key, self._configuration, die=False)
         if received is None:
             received = 'pattoo/api/v1.0'
 
@@ -182,7 +189,7 @@ class Config(object):
         key = 'main'
 
         # Get new result
-        _result = search(key, sub_key, self._config_dict)
+        _result = search(key, sub_key, self._configuration)
 
         # Expand linux ~ notation for home directories if provided.
         result = os.path.expanduser(_result)
@@ -243,7 +250,7 @@ class Config(object):
         result = None
 
         # Return
-        intermediate = search(key, sub_key, self._config_dict, die=False)
+        intermediate = search(key, sub_key, self._configuration, die=False)
         if intermediate is None:
             result = 'debug'
         else:
@@ -266,7 +273,7 @@ class Config(object):
         key = 'main'
 
         # Get new result
-        result = search(key, sub_key, self._config_dict)
+        result = search(key, sub_key, self._configuration)
 
         # Return
         return result
@@ -286,7 +293,7 @@ class Config(object):
         sub_key = 'cache_directory'
 
         # Get result
-        _value = search(key, sub_key, self._config_dict)
+        _value = search(key, sub_key, self._configuration)
 
         # Expand linux ~ notation for home directories if provided.
         value = os.path.expanduser(_value)
