@@ -1,11 +1,7 @@
 """Module for classes that format variables."""
 
-# Set Constants
-DATA_FLOAT = 1
-DATA_INT = 0
-DATA_COUNT64 = 64
-DATA_COUNT = 32
-DATA_STRING = None
+# pattoo imports
+from pattoo.constants import DATA_INT
 
 
 class DataVariable(object):
@@ -84,8 +80,11 @@ class DataVariableList(object):
         """
         # Initialize key variables
         self.data = []
-        self.translations = translations
         self.device = device
+        if isinstance(translations, dict) is False:
+            self.translations = {}
+        else:
+            self.translations = translations
 
     def append(self, item):
         """Append DataVariable to the list.
@@ -97,7 +96,7 @@ class DataVariableList(object):
             None
 
         """
-        # Initialize key variables
+        # Only append approved data types
         if isinstance(item, DataVariable) is True:
             self.data.append(item)
 

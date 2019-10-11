@@ -9,23 +9,26 @@ from easysnmp import exceptions
 # Import Pattoo libraries
 from pattoo import log
 from pattoo.agents.snmp import oid as class_oid
+from pattoo.variables import DataVariable
+from pattoo.constants import (
+    DATA_INT, DATA_COUNT64, DATA_COUNT, DATA_STRING, DATA_NONE)
 
 
 class SNMP(object):
     """Class to interact with devices using SNMP."""
 
-    def __init__(self, snmpdata):
+    def __init__(self, snmpvariable):
         """Initialize the class.
 
         Args:
-            snmpdata: SNMPVariable object
+            snmpvariable: SNMPVariable object
 
         Returns:
             None
 
         """
         # Initialize key variables
-        self._snmpvariable = snmpdata
+        self._snmpvariable = snmpvariable
 
     def contactable(self):
         """Check if device is contactable.
@@ -126,9 +129,8 @@ your command AND make sure you set ---active=True. Error: {}\
         # If we get no result, then override validity
         if bool(result) is False:
             validity = False
-        elif isinstance(result, dict) is True:
-            if result[oid_to_get] is None:
-                validity = False
+        else:
+            validity = True
 
         # Return
         return validity
@@ -159,28 +161,19 @@ your command AND make sure you set ---active=True. Error: {}\
         # If we get no result, then override validity
         if bool(results) is False:
             validity = False
-        elif isinstance(results, dict) is True:
-            for _, value in results.items():
-                if value is None:
-                    validity = False
-                    break
+        else:
+            validity = True
 
         # Return
         return validity
 
     def walk(
-            self, oid_to_get, normalized=False,
-            check_reachability=False, check_existence=False, context_name=''):
+            self, oid_to_get, check_reachability=False,
+            check_existence=False, context_name=''):
         """Do an SNMPwalk.
 
         Args:
             oid_to_get: OID to walk
-            normalized: If True, then return results as a dict keyed by
-                only the last node of an OID, otherwise return results
-                keyed by the entire OID string. Normalization is useful
-                when trying to create multidimensional dicts where the
-                primary key is a universal value such as IF-MIB::ifIndex
-                or BRIDGE-MIB::dot1dBasePort
             check_reachability:
                 Set if testing for connectivity. Some session
                 errors are ignored so that a null result is returned
@@ -198,12 +191,12 @@ your command AND make sure you set ---active=True. Error: {}\
             oid_to_get, get=False,
             check_reachability=check_reachability,
             check_existence=check_existence,
-            normalized=normalized, context_name=context_name)
+            context_name=context_name)
         return result
 
     def get(
-            self, oid_to_get, check_reachability=False, check_existence=False,
-            normalized=False, context_name=''):
+            self, oid_to_get, check_reachability=False,
+            check_existence=False, context_name=''):
         """Do an SNMPget.
 
         Args:
@@ -213,12 +206,6 @@ your command AND make sure you set ---active=True. Error: {}\
                 errors are ignored so that a null result is returned
             check_existence:
                 Set if checking for the existence of the OID
-            normalized: If True, then return results as a dict keyed by
-                only the last node of an OID, otherwise return results
-                keyed by the entire OID string. Normalization is useful
-                when trying to create multidimensional dicts where the
-                primary key is a universal value such as IF-MIB::ifIndex
-                or BRIDGE-MIB::dot1dBasePort
             context_name: Set the contextName used for SNMPv3 messages.
                 The default contextName is the empty string "".  Overrides the
                 defContext token in the snmp.conf file.
@@ -231,17 +218,16 @@ your command AND make sure you set ---active=True. Error: {}\
             oid_to_get, get=True,
             check_reachability=check_reachability,
             check_existence=check_existence,
-            normalized=normalized,
             context_name=context_name)
         if bool(_result) is True:
-            result = _result[oid_to_get]
+            result = _result
         else:
             result = None
         return result
 
     def query(
             self, oid_to_get, get=False, check_reachability=False,
-            check_existence=False, normalized=False, context_name=''):
+            check_existence=False, context_name=''):
         """Do an SNMP query.
 
         Args:
@@ -252,12 +238,6 @@ your command AND make sure you set ---active=True. Error: {}\
                 errors are ignored so that a null result is returned
             check_existence:
                 Set if checking for the existence of the OID
-            normalized: If True, then return results as a dict keyed by
-                only the last node of an OID, otherwise return results
-                keyed by the entire OID string. Normalization is useful
-                when trying to create multidimensional dicts where the
-                primary key is a universal value such as IF-MIB::ifIndex
-                or BRIDGE-MIB::dot1dBasePort
             context_name: Set the contextName used for SNMPv3 messages.
                 The default contextName is the empty string "".  Overrides the
                 defContext token in the snmp.conf file.
@@ -350,7 +330,7 @@ your command AND make sure you set ---active=True. Error: {}\
             log.log2die(1029, log_message)
 
         # Format results
-        values = _format_results(results, normalized=normalized)
+        values = _convert_results(results)
 
         # Return
         return (_contactable, exists, values)
@@ -560,95 +540,89 @@ def _process_error(
     return None
 
 
-def _format_results(results, normalized=False):
-    """Normalize the results of an walk.
+def _convert_results(inbound):
+    """Convert results from easysnmp.variables.SNMPVariable to DataVariable.
 
     Args:
-        results: List of lists of results
-        normalized: If True, then return results as a dict keyed by
-            only the last node of an OID, otherwise return results
-            keyed by the entire OID string. Normalization is useful
-            when trying to create multidimensional dicts where the
-            primary key is a universal value such as IF-MIB::ifIndex
-            or BRIDGE-MIB::dot1dBasePort
+        inbound: SNMP query result as list of easysnmp.variables.SNMPVariable
 
     Returns:
-        return_results: Dict of results
+        outbound: DataVariable formatted equivalent
 
     """
     # Initialize key variables
-    return_results = {}
+    outbound = []
 
-    for result in results:
-        if normalized is True:
-            return_results[result.oid_index] = _convert(result)
+    # Format the results to DataVariable format
+    for item in inbound:
+        # Initialize loop variables
+        converted = None
+        snmp_type = item.snmp_type
+        data_type = DATA_INT
+
+        # Convert string type values to bytes
+        if snmp_type.upper() == 'OCTETSTR':
+            converted = item.value
+            data_type = DATA_STRING
+        elif snmp_type.upper() == 'OPAQUE':
+            converted = item.value
+            data_type = DATA_STRING
+        elif snmp_type.upper() == 'BITS':
+            converted = item.value
+            data_type = DATA_STRING
+        elif snmp_type.upper() == 'IPADDR':
+            converted = item.value
+            data_type = DATA_STRING
+        elif snmp_type.upper() == 'NETADDR':
+            converted = item.value
+            data_type = DATA_STRING
+        elif snmp_type.upper() == 'OBJECTID':
+            # DO NOT CHANGE !!!
+            # converted = bytes(str(value), 'utf-8')
+            converted = item.value
+            data_type = DATA_STRING
+        elif snmp_type.upper() == 'NOSUCHOBJECT':
+            # Nothing if OID not found
+            converted = None
+            data_type = DATA_NONE
+        elif snmp_type.upper() == 'NOSUCHINSTANCE':
+            # Nothing if OID not found
+            converted = None
+            data_type = DATA_NONE
+        elif snmp_type.upper() == 'ENDOFMIBVIEW':
+            # Nothing
+            converted = None
+            data_type = DATA_NONE
+        elif snmp_type.upper() == 'NULL':
+            # Nothing
+            converted = None
+            data_type = DATA_NONE
+        elif snmp_type.upper() == 'COUNTER':
+            # Numeric values
+            converted = int(item.value)
+            data_type = DATA_COUNT
+        elif snmp_type.upper() == 'COUNTER64':
+            # Numeric values
+            converted = int(item.value)
+            data_type = DATA_COUNT64
         else:
-            return_results[
-                '{}.{}'.format(
-                    result.oid, result.oid_index)] = _convert(result)
+            # Convert everything else into integer values
+            # rfc1902.Integer
+            # rfc1902.Integer32
+            # rfc1902.Gauge32
+            # rfc1902.Unsigned32
+            # rfc1902.TimeTicks
+            converted = int(item.value)
+
+        # Convert result to DataVariable
+        datavariable = DataVariable(
+            value=converted,
+            data_label=item.oid,
+            data_index=item.oid_index,
+            data_type=data_type
+        )
+        # Append to outbound result
+        outbound.append(datavariable)
 
     # Return
-    return return_results
-
-
-def _convert(result):
-    """Convert value from pysnmp object to standard python types.
-
-    Args:
-        result: Named tuple result
-
-    Returns:
-        _converted: converted value. Only returns BYTES and INTEGERS
-
-    """
-    # Initialieze key values
-    converted = None
-    value = result.value
-    snmp_type = result.snmp_type
-
-    # Convert string type values to bytes
-    if snmp_type.upper() == 'OCTETSTR':
-        converted = bytes(value, 'utf-8')
-    elif snmp_type.upper() == 'OPAQUE':
-        converted = bytes(value, 'utf-8')
-    elif snmp_type.upper() == 'BITS':
-        converted = bytes(value, 'utf-8')
-    elif snmp_type.upper() == 'IPADDR':
-        converted = bytes(value, 'utf-8')
-    elif snmp_type.upper() == 'NETADDR':
-        converted = bytes(value, 'utf-8')
-    elif snmp_type.upper() == 'OBJECTID':
-        # DO NOT CHANGE !!!
-        # converted = bytes(str(value), 'utf-8')
-        converted = bytes(value, 'utf-8')
-    elif snmp_type.upper() == 'NOSUCHOBJECT':
-        # Nothing if OID not found
-        converted = None
-    elif snmp_type.upper() == 'NOSUCHINSTANCE':
-        # Nothing if OID not found
-        converted = None
-    elif snmp_type.upper() == 'ENDOFMIBVIEW':
-        # Nothing
-        converted = None
-    elif snmp_type.upper() == 'NULL':
-        # Nothing
-        converted = None
-    else:
-        # Convert everything else into integer values
-        # rfc1902.Integer
-        # rfc1902.Integer32
-        # rfc1902.Counter32
-        # rfc1902.Gauge32
-        # rfc1902.Unsigned32
-        # rfc1902.TimeTicks
-        # rfc1902.Counter64
-        converted = int(value)
-
-    # Convert bytes to string here
-    if isinstance(converted, bytes) is True:
-        _converted = converted.decode()
-    else:
-        _converted = converted
-
-    # Return
-    return _converted
+    return outbound

@@ -19,13 +19,10 @@ import psutil
 
 # Pattoo libraries
 from pattoo.agents.os import configuration
-from pattoo import log
-from pattoo import daemon
-from pattoo import agent
 from pattoo import data
-from pattoo.variables import (
-    DataVariable, DataVariableList, DATA_INT, DATA_COUNT64,
-    DATA_COUNT, DATA_STRING, DATA_FLOAT)
+from pattoo.variables import DataVariable, DataVariableList
+from pattoo.constants import (
+    DATA_INT, DATA_COUNT64, DATA_STRING, DATA_FLOAT)
 
 
 def poll(agent_program):
