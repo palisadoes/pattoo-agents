@@ -14,10 +14,10 @@ import hashlib
 
 
 # Pattoo libraries
-from pattoo.agents.os import language
 from pattoo import times
 from pattoo import agent as agent_lib
-from pattoo.variables import DataVariable, DATA_INT, DATA_STRING
+from pattoo.variables import DataVariable
+from pattoo.constants import DATA_INT, DATA_STRING
 
 
 class Data(object):

@@ -47,23 +47,24 @@ class ConfigSNMP(Config):
             key, sub_key, self._configuration, die=True)
 
         # Create snmp objects
-        items = _validate_snmp(sub_config)
-        for item in items:
+        groups = _validate_snmp(sub_config)
+        for group in groups:
             # Save the authentication parameters
             snmpauth = SNMPAuth(
-                version=item['snmp_version'],
-                community=item['snmp_community'],
-                port=item['snmp_port'],
-                secname=item['snmp_secname'],
-                authprotocol=item['snmp_authprotocol'],
-                authpassword=item['snmp_authpassword'],
-                privprotocol=item['snmp_privprotocol'],
-                privpassword=item['snmp_privpassword']
+                version=group['snmp_version'],
+                community=group['snmp_community'],
+                port=group['snmp_port'],
+                secname=group['snmp_secname'],
+                authprotocol=group['snmp_authprotocol'],
+                authpassword=group['snmp_authpassword'],
+                privprotocol=group['snmp_privprotocol'],
+                privpassword=group['snmp_privpassword']
             )
 
             # Create the SNMPVariableList
-            snmpvariable = SNMPVariableList(snmpauth, item['ip_devices'])
-            result.append(snmpvariable)
+            snmpvariablelist = SNMPVariableList(snmpauth, group['ip_devices'])
+            snmpvariables = snmpvariablelist.snmpvariables
+            result.extend(snmpvariables)
 
         # Return
         return result
@@ -88,11 +89,11 @@ class ConfigSNMP(Config):
             key, sub_key, self._configuration, die=True)
 
         # Create snmp objects
-        items = _validate_oids(sub_config)
-        for item in items:
+        groups = _validate_oids(sub_config)
+        for group in groups:
             oidvariable = OIDVariable(
-                oids=item['oids'],
-                ip_devices=item['ip_devices']
+                oids=group['oids'],
+                ip_devices=group['ip_devices']
             )
             result.append(oidvariable)
         return result
@@ -109,7 +110,6 @@ def _validate_snmp(config_dict):
 
     """
     # Initialize key variables
-    nothing = []
     seed_dict = {}
     seed_dict['snmp_version'] = 2
     seed_dict['snmp_secname'] = None

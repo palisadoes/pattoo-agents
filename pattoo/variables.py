@@ -1,11 +1,7 @@
 """Module for classes that format variables."""
 
-# Set Constants
-DATA_FLOAT = 1
-DATA_INT = 0
-DATA_COUNT64 = 64
-DATA_COUNT = 32
-DATA_STRING = None
+# pattoo imports
+from pattoo.constants import DATA_INT
 
 
 class DataVariable(object):
