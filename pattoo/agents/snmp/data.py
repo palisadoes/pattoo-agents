@@ -35,15 +35,9 @@ def poll():
     """
     # Initialize key variables
     agent_program = PATTOO_SNMPD
-    device = socket.getfqdn()
     config = configuration.ConfigSNMP()
-    translations = {}
     ip_devices = {}
     oids4devices = {}
-    datavariables = []
-
-    # Intialize data gathering
-    _data = DataVariableList(device, translations)
 
     # Get SNMP OIDs to be polled (Along with authorizations and ip_devices)
     snmpvariables = config.snmpvariables()
@@ -62,15 +56,10 @@ def poll():
                 oids4devices[next_device] = oidvariable.oids
 
     # Poll oids for all devices and update the DataVariableList
-    dv_list_per_device = _snmpwalks(ip_devices, oids4devices)
-    for datavariable in dv_list_per_device:
-        datavariables.extend(datavariable)
-    #print('\n\n\n{}\n\n\n\n'.format(datavariables[0]))
-    #print('\n\n\n{}\n\n\n\n'.format(datavariables[1]))
-    _data.extend(datavariables)
+    dv_lists = _snmpwalks(ip_devices, oids4devices)
 
     # Return data
-    process = data.Data(agent_program, _data)
+    process = data.Data(agent_program, dv_lists)
     result = process.data()
     return result
 
@@ -85,7 +74,7 @@ def _snmpwalks(ip_devices, oids4devices):
         oids4devices: Dict of OID lists keyed by ip_device
 
     Returns:
-        datavariables: List of type DataVariable
+        dv_list: List of type DataVariableList
 
     """
     # Initialize key variables
@@ -102,13 +91,13 @@ def _snmpwalks(ip_devices, oids4devices):
     with multiprocessing.Pool(processes=sub_processes_in_pool) as pool:
 
         # Create sub processes from the pool
-        datavariables = pool.starmap(_walker, arguments)
+        dv_lists = pool.starmap(_walker, arguments)
 
     # Wait for all the processes to end and get results
     pool.join()
 
     # Return
-    return datavariables
+    return dv_lists
 
 
 def _walker(snmpvariable, oids):
@@ -119,13 +108,20 @@ def _walker(snmpvariable, oids):
         oids: OIDs to poll
 
     Returns:
-        datavariables: list of type DataVariable
+        dv_list: DataVariableList for the SNMPVariable device
 
     """
-    # Get data and return
-    result = []
+    # Intialize data gathering
+    translations = {}
+    dv_list = DataVariableList(snmpvariable.ip_device, translations)
+
+    # Get list of type DataVariable
+    datavariables = []
     for oid in oids:
         query = snmp.SNMP(snmpvariable)
         query_datavariables = query.walk(oid)
-        result.extend(query_datavariables)
-    return result
+        datavariables.extend(query_datavariables)
+    dv_list.extend(datavariables)
+
+    # Return
+    return dv_list
