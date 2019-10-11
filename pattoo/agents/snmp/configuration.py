@@ -10,7 +10,7 @@ from copy import deepcopy
 from pattoo import log
 from pattoo import files
 from pattoo.configuration import Config
-from pattoo.variables import SNMPVariable, OIDVariable
+from pattoo.variables import SNMPAuth, SNMPVariableList, OIDVariable
 
 
 class ConfigSNMP(Config):
@@ -78,7 +78,8 @@ class ConfigSNMP(Config):
 
         # Create snmp objects
         for item in items:
-            snmpvariable = SNMPVariable(
+            # Save the authentication parameters
+            snmpauth = SNMPAuth(
                 version=item['snmp_version'],
                 community=item['snmp_community'],
                 port=item['snmp_port'],
@@ -86,10 +87,14 @@ class ConfigSNMP(Config):
                 authprotocol=item['snmp_authprotocol'],
                 authpassword=item['snmp_authpassword'],
                 privprotocol=item['snmp_privprotocol'],
-                privpassword=item['snmp_privpassword'],
-                ip_devices=item['ip_devices']
+                privpassword=item['snmp_privpassword']
             )
+
+            # Create the SNMPVariableList
+            snmpvariable = SNMPVariableList(snmpauth, item['ip_devices'])
             result.append(snmpvariable)
+
+        # Return
         return result
 
     def oidvariables(self):
