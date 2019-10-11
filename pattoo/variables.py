@@ -96,7 +96,7 @@ class DataVariableList(object):
             None
 
         """
-        # Initialize key variables
+        # Only append approved data types
         if isinstance(item, DataVariable) is True:
             self.data.append(item)
 
