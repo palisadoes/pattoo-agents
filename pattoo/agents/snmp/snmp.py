@@ -1,4 +1,4 @@
-"""Module used in creating mrtg configuration files for a particular device."""
+"""Module used polling SNMP enabled devices."""
 
 import sys
 
@@ -8,40 +8,7 @@ from easysnmp import exceptions
 
 # Import Pattoo libraries
 from pattoo import log
-from pattoo.snmp import oid as class_oid
-
-
-
-class SNMPData(object):
-    """Store a SNMP parameters used to interact with an SNMP enabled device."""
-
-    def __init__(self, snmp_params):
-        """Initialize the class.
-
-        Args:
-            snmp_params: snmp_params dict
-
-        Returns:
-            None
-
-        """
-        # Initialize key variables
-        self.snmp_params = snmp_params
-        self.name = snmp_params['name']
-        self.device_id = snmp_params['device_id']
-
-        self.datacenter_id = snmp_params['datacenter_id']
-        self.device_type = snmp_params['device_type']
-        self.ipv4 = snmp_params['ipv4']
-        self.ipv6 = snmp_params['ipv6']
-        self.snmp_authpassword = snmp_params['snmp_authpassword']
-        self.snmp_community = snmp_params['snmp_community']
-        self.snmp_port = snmp_params['snmp_port']
-        self.snmp_privpassword = snmp_params['snmp_privpassword']
-        self.snmp_retries = snmp_params['snmp_retries']
-        self.snmp_secname = snmp_params['snmp_secname']
-        self.snmp_timeout = snmp_params['snmp_timeout']
-        self.snmp_version = snmp_params['snmp_version']
+from pattoo.agents.snmp import oid as class_oid
 
 
 class SNMP(object):
@@ -51,28 +18,14 @@ class SNMP(object):
         """Initialize the class.
 
         Args:
-            snmpdata: SNMPData object
+            snmpdata: SNMPVariable object
 
         Returns:
             None
 
         """
         # Initialize key variables
-        self.snmpdata = snmpdata
-
-    def device_id(self):
-        """Check if device is contactable.
-
-        Args:
-            None
-
-        Returns:
-            result: Device ID used to instantiate the class
-
-        """
-        # Return
-        result = self.snmpdata.device_id
-        return result
+        self._snmpvariable = snmpdata
 
     def contactable(self):
         """Check if device is contactable.
@@ -89,7 +42,7 @@ class SNMP(object):
         result = None
 
         # Get device data
-        device_name = self.snmpdata.name
+        device_name = self._snmpvariable.ip_device
 
         # Try to reach device
         try:
@@ -327,21 +280,17 @@ your command AND make sure you set ---active=True. Error: {}\
             log_message = ('OID {} has an invalid format'.format(oid_to_get))
             log.log2die(1449, log_message)
 
-        # Get the SNMP parameters to use for device
-        snmp_params = self.snmpdata.snmp_params
-
         # Create SNMP session
-        session = _Session(snmp_params, context_name=context_name).session
+        session = _Session(
+            self._snmpvariable, context_name=context_name).session
 
         # Create failure log message
         try_log_message = (
-            'Error occurred during SNMPget {}, SNMPwalk {} query on {} host '
-            'OID {} from {} for context "{}"'
+            'Error occurred during SNMPget {}, SNMPwalk {} query against '
+            'device {} OID {} for context "{}"'
             ''.format(
-                get, not get,
-                snmp_params['name'],
-                oid_to_get, snmp_params['ipv4'],
-                context_name))
+                get, not get, self._snmpvariable.ip_device,
+                oid_to_get, context_name))
 
         # Fill the results object by getting OID data
         try:
@@ -350,7 +299,7 @@ your command AND make sure you set ---active=True. Error: {}\
                 results = [session.get(oid_to_get)]
 
             else:
-                if snmp_params['snmp_version'] != 1:
+                if self._snmpvariable.version != 1:
                     # Bulkwalk for SNMPv2 and SNMPv3
                     results = session.bulkwalk(
                         oid_to_get, non_repeaters=0, max_repetitions=25)
@@ -397,7 +346,7 @@ your command AND make sure you set ---active=True. Error: {}\
                     sys.exc_info()[0],
                     sys.exc_info()[1],
                     sys.exc_info()[2],
-                    snmp_params['ipv4']))
+                    self._snmpvariable.ip_device))
             log.log2die(1029, log_message)
 
         # Format results
@@ -410,11 +359,11 @@ your command AND make sure you set ---active=True. Error: {}\
 class _Session(object):
     """Class to create an SNMP session with a device."""
 
-    def __init__(self, snmp_parameters, context_name=''):
+    def __init__(self, snmpvariable, context_name=''):
         """Initialize the class.
 
         Args:
-            snmp_parameters: Dict of SNMP paramerters
+            snmpvariable: SNMPVariable object
             context_name: Name of context
 
         Returns:
@@ -423,17 +372,17 @@ class _Session(object):
         """
         # Initialize key variables
         self._context_name = context_name
-        self._snmp_params = snmp_parameters
+        self._snmpvariable = snmpvariable
 
-        # Fail if snmp_parameters dictionary is empty
-        if snmp_parameters['snmp_version'] is None:
+        # Fail if snmpvariable dictionary is empty
+        if self._snmpvariable.version is None:
             log_message = (
                 'SNMP version is "None". Non existent host? - {}'
-                ''.format(snmp_parameters['ipv4']))
+                ''.format(self._snmpvariable.ip_device))
             log.log2die(1223, log_message)
 
-        # Fail if snmp_parameters dictionary is empty
-        if bool(snmp_parameters) is False:
+        # Fail if snmpvariable dictionary is empty
+        if bool(self._snmpvariable) is False:
             log_message = ('SNMP parameters provided are blank. '
                            'Non existent host?')
             log.log2die(1215, log_message)
@@ -452,28 +401,28 @@ class _Session(object):
 
         """
         # Create session
-        if self._snmp_params['snmp_version'] != 3:
+        if self._snmpvariable.version != 3:
             session = easysnmp.Session(
-                community=self._snmp_params['snmp_community'],
-                hostname=self._snmp_params['ipv4'],
-                version=self._snmp_params['snmp_version'],
-                remote_port=self._snmp_params['snmp_port'],
+                community=self._snmpvariable.community,
+                hostname=self._snmpvariable.ip_device,
+                version=self._snmpvariable.version,
+                remote_port=self._snmpvariable.port,
                 use_numeric=True,
                 context=self._context_name
             )
         else:
             session = easysnmp.Session(
-                hostname=self._snmp_params['ipv4'],
-                version=self._snmp_params['snmp_version'],
-                remote_port=self._snmp_params['snmp_port'],
+                hostname=self._snmpvariable.ip_device,
+                version=self._snmpvariable.version,
+                remote_port=self._snmpvariable.port,
                 use_numeric=True,
                 context=self._context_name,
                 security_level=self._security_level(),
-                security_username=self._snmp_params['snmp_secname'],
+                security_username=self._snmpvariable.secname,
                 privacy_protocol=self._priv_protocol(),
-                privacy_password=self._snmp_params['snmp_privpassword'],
+                privacy_password=self._snmpvariable.privpassword,
                 auth_protocol=self._auth_protocol(),
-                auth_password=self._snmp_params['snmp_authpassword']
+                auth_password=self._snmpvariable.authpassword
             )
 
         # Return
@@ -489,12 +438,9 @@ class _Session(object):
             result: security level
 
         """
-        # Initialize key variables
-        snmp_params = self._snmp_params
-
         # Determine the security level
-        if bool(snmp_params['snmp_authprotocol']) is True:
-            if bool(snmp_params['snmp_privprotocol']) is True:
+        if bool(self._snmpvariable.authprotocol) is True:
+            if bool(self._snmpvariable.privprotocol) is True:
                 result = 'authPriv'
             else:
                 result = 'authNoPriv'
@@ -515,8 +461,7 @@ class _Session(object):
 
         """
         # Initialize key variables
-        snmp_params = self._snmp_params
-        protocol = snmp_params['snmp_authprotocol']
+        protocol = self._snmpvariable.authprotocol
 
         # Setup AuthProtocol (Default SHA)
         if bool(protocol) is False:
@@ -541,8 +486,7 @@ class _Session(object):
 
         """
         # Initialize key variables
-        snmp_params = self._snmp_params
-        protocol = snmp_params['snmp_privprotocol']
+        protocol = self._snmpvariable.privprotocol
 
         # Setup privProtocol (Default AES256)
         if bool(protocol) is False:

@@ -21,7 +21,7 @@ $ sudo pip3 install -r pip_requirements.txt
 
 1. `pattoo-os-autonomousd.py` which will post `linux` system data in `json` format to a remote `pattoo` server
 1. `pattoo-os-spoked.py` which will make the same `linux` system data in `json` format available for viewing on the local server. This allows the server to be polled for data from remote servers running  `pattoo-os-hubd` software agents.
-1. `pattoo-os-hubd.py` which polls `pattoo-os-spoked` enables devices for data to be posted to the `patoo` server.
+1. `pattoo-os-hubd.py` which polls `pattoo-os-spoked` enables devices for data to be posted to the `pattoo` server.
 
 Both daemons will require configuration files in one or more subdirectories of the `etc/`directory. See the configuration section for details.
 

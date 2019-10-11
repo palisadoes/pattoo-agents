@@ -23,7 +23,7 @@ else:
     sys.exit(2)
 
 # Pattoo libraries
-from pattoo.agents.os.pattoo import PATTOO_OS_HUBD, PATTOO_OS_SPOKED_API_PREFIX
+from pattoo.constants import PATTOO_OS_HUBD, PATTOO_OS_SPOKED_API_PREFIX
 from pattoo import agent
 from pattoo.agents.os import relay
 from pattoo.agents.os import configuration

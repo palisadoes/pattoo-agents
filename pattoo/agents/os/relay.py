@@ -2,7 +2,7 @@
 """Pattoo get library."""
 
 # Pattoo libraries
-from pattoo.agents.os.pattoo import PATTOO_OS_SPOKED_API_PREFIX
+from pattoo.constants import PATTOO_OS_SPOKED_API_PREFIX
 from pattoo import post
 from pattoo import get
 

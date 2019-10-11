@@ -22,7 +22,7 @@ else:
     sys.exit(2)
 
 # Pattoo libraries
-from pattoo.agents.os.pattoo import PATTOO_OS_AUTONOMOUSD
+from pattoo.constants import PATTOO_OS_AUTONOMOUSD
 from pattoo.agents.os import data
 from pattoo import agent
 from pattoo import log
