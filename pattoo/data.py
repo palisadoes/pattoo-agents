@@ -106,6 +106,12 @@ class Data(object):
                         result[device][key][_dvar.data_label][
                             'description'] = polled_device.translations[
                                 _dvar.data_label]
+                    else:
+                        result[device][key][_dvar.data_label][
+                            'description'] = None
+                        result[device][key][_dvar.data_label][
+                            'units'] = None
+
         # Return
         return result
 

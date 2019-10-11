@@ -8,7 +8,6 @@ Description:
 
 """
 # Standard libraries
-import socket
 from pprint import pprint
 import multiprocessing
 

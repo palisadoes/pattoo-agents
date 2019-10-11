@@ -60,16 +60,8 @@ def read_yaml_files(config_directory):
             yaml_found = True
 
             # Read file and add to string
-            file_path = '{}/{}'.format(config_directory, filename)
-            try:
-                with open(file_path, 'r') as file_handle:
-                    yaml_from_file = file_handle.read()
-            except:
-                log_message = (
-                    'Error reading file {}. Check permissions, '
-                    'existence and file syntax.'
-                    ''.format(file_path))
-                log.log2die(1065, log_message)
+            filepath = '{}{}{}'.format(config_directory, os.sep, filename)
+            yaml_from_file = read_yaml_file(filepath, as_string=True, die=True)
 
             # Append yaml from file to all yaml previously read
             all_yaml_read = '{}\n{}'.format(all_yaml_read, yaml_from_file)
@@ -87,6 +79,73 @@ def read_yaml_files(config_directory):
     # Return
     config_dict = yaml.safe_load(all_yaml_read)
     return config_dict
+
+
+def read_yaml_file(filepath, as_string=False, die=True):
+    """Read the contents of a YAML file.
+
+    Args:
+        filepath: Path to file to be read
+        as_string: Return a string if True
+        die: Die if there is an error
+
+    Returns:
+        result: Dict of yaml read
+
+    """
+    # Initialize key variables
+    if as_string is False:
+        result = {}
+    else:
+        result = ''
+
+    # Read file
+    if filepath.endswith('.yaml'):
+        try:
+            with open(filepath, 'r') as file_handle:
+                yaml_from_file = file_handle.read()
+        except:
+            log_message = (
+                'Error reading file {}. Check permissions, '
+                'existence and file syntax.'
+                ''.format(filepath))
+            if bool(die) is True:
+                log.log2die_safe(1024, log_message)
+            else:
+                log.log2debug(1024, log_message)
+                return {}
+
+        # Get result
+        if as_string is False:
+            try:
+                result = yaml.safe_load(yaml_from_file)
+            except:
+                log_message = (
+                    'Error reading file {}. Check permissions, '
+                    'existence and file syntax.'
+                    ''.format(filepath))
+                if bool(die) is True:
+                    log.log2die_safe(1001, log_message)
+                else:
+                    log.log2debug(1002, log_message)
+                    return {}
+        else:
+            result = yaml_from_file
+
+    else:
+        # Die if not a YAML file
+        log_message = '{} is not a YAML file.'.format(filepath)
+        if bool(die) is True:
+            log.log2die_safe(1065, log_message)
+        else:
+            log.log2debug(1071, log_message)
+            if bool(as_string) is False:
+                return {}
+            else:
+                return ''
+
+    # Return
+    return result
 
 
 def mkdir(directory):
