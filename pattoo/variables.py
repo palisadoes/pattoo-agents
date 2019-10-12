@@ -1,7 +1,7 @@
 """Module for classes that format variables."""
 
 # pattoo imports
-from pattoo.constants import DATA_INT
+from pattoo.constants import DATA_INT, DATA_FLOAT
 from pattoo import language
 
 
@@ -291,7 +291,7 @@ class SNMPVariableList(object):
             None
 
         Returns:
-            result: String representation.
+            result: String representation
 
         """
         # Return repr
@@ -358,7 +358,7 @@ def _strip_non_printable(value):
     """Strip non printable characters.
 
     Removes any non-printable characters and adds an indicator to the string
-    when binary characters are fonud.
+    when binary characters are found.
 
     Args:
         value: the value that you wish to strip
