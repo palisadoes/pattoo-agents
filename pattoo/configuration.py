@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Pattoo classes that manage various configurations."""
 
-import os.path
 import os
 
 # Import project libraries
@@ -30,8 +29,10 @@ class Config(object):
 
         """
         # Update the configuration directory
-
-        config_directory = '{}/etc'.format(files.root_directory())
+        if 'PATTOO_CONFIGDIR' in os.environ:
+            config_directory = os.environ['PATTOO_CONFIGDIR']
+        else:
+            config_directory = '{}/etc'.format(files.root_directory())
 
         # Return data
         self._configuration = files.read_yaml_files(config_directory)
