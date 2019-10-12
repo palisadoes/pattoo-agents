@@ -358,7 +358,7 @@ def _strip_non_printable(value):
     """Strip non printable characters.
 
     Removes any non-printable characters and adds an indicator to the string
-    when binary characters are fonud.
+    when binary characters are found.
 
     Args:
         value: the value that you wish to strip
