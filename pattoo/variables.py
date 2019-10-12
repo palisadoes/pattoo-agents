@@ -385,35 +385,3 @@ def _strip_non_printable(value):
 
     # Return
     return printable_value
-
-
-def multiply_dv(datavariable, multiplier):
-    """Multiply the datavariable.value by multiplier.
-
-    Args:
-        datavariable: DataVariable object
-        multiplier: Value to multiply datavariable by
-
-    Returns:
-        result: DataVariable object
-
-    """
-    # Initialize key variables
-    data_label = datavariable.data_label
-    data_index = datavariable.data_index
-    data_type = datavariable.data_type
-    value = datavariable.value
-    new_value = value
-    new_type = data_type
-
-    # Determine whether multiplication is valid
-    if isinstance(multiplier, (float, int)):
-        if isinstance(value, (float, int)):
-            new_value = value * multiplier
-            new_type = DATA_FLOAT
-
-    # Multiply and return
-    result = DataVariable(
-        value=new_value, data_label=data_label,
-        data_index=data_index, data_type=new_type)
-    return result
