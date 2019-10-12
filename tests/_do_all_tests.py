@@ -19,16 +19,16 @@ import subprocess
 # Try to create a working PYTHONPATH
 TEST_DIRECTORY = os.path.dirname(os.path.realpath(__file__))
 ROOT_DIRECTORY = os.path.abspath(os.path.join(TEST_DIRECTORY, os.pardir))
-if TEST_DIRECTORY.endswith('/pattoo-agents/test') is True:
+if TEST_DIRECTORY.endswith('/pattoo-agents/tests') is True:
     sys.path.append(ROOT_DIRECTORY)
 else:
     print(
-        'This script is not installed in the "pattoo-agents/bin" directory. '
+        'This script is not installed in the "pattoo-agents/tests" directory. '
         'Please fix.')
     sys.exit(2)
 
 # pattoo-agents libraries
-from test import unittest_setup
+from tests import unittest_setup
 from pattoo import files
 
 
@@ -44,7 +44,7 @@ def main():
     """
     # Determine unittest directory
     root_dir = files.root_directory()
-    test_dir = '{}/test'.format(root_dir)
+    test_dir = '{}/tests'.format(root_dir)
 
     # Get list of test files
     test_files = os.listdir(test_dir)

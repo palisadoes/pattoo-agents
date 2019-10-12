@@ -15,7 +15,7 @@ If you are a developer, you can search to see whether the logging error codes yo
 
 ```bash
 $ ./error_code_report.py
-Slurpy Error Code Summary Report
+Pattoo Error Code Summary Report
 --------------------------------
 Starting Code              : 1001
 Ending Code                : 1569

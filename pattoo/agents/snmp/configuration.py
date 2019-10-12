@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""switchmap.classes that manage various configurations."""
+"""Classe to manage SNMP agent configurations."""
 
 # Standard imports
 from copy import deepcopy

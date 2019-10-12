@@ -8,7 +8,7 @@ import os
 # Try to create a working PYTHONPATH
 TEST_DIRECTORY = os.path.dirname(os.path.realpath(__file__))
 ROOT_DIRECTORY = os.path.abspath(os.path.join(TEST_DIRECTORY, os.pardir))
-if TEST_DIRECTORY.endswith('/pattoo-agents/test') is True:
+if TEST_DIRECTORY.endswith('/pattoo-agents/tests') is True:
     sys.path.append(ROOT_DIRECTORY)
 else:
     print(
