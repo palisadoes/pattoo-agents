@@ -3,11 +3,11 @@
 
 import os.path
 import os
-import sys
 
 # Import project libraries
 from pattoo import files
 from pattoo import log
+from pattoo import language
 
 
 class Config(object):
@@ -323,6 +323,20 @@ class Config(object):
         # Return
         return result
 
+    def translations(self, agent_program):
+        """Get translations.
+
+        Args:
+            agent_program: Agent program
+
+        Returns:
+            result: DataLabelXlate object
+
+        """
+        # Intialize key variables
+        _language = self.language()
+        result = language.DataLabelXlate(agent_program, _language)
+        return result
 
 
 def search(key, sub_key, config_dict, die=True):

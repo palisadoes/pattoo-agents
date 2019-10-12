@@ -23,12 +23,12 @@ from pattoo.constants import DATA_INT, DATA_STRING
 class Data(object):
     """Pattoo agent that gathers data."""
 
-    def __init__(self, agent_program, polled_objects):
+    def __init__(self, agent_program, list_of_dv_list):
         """Initialize the class.
 
         Args:
             agent_program: Name of agent program
-            polled_objects: One or more DataVariableList objects
+            list_of_dv_list: One or more DataVariableList objects
 
         Returns:
             None
@@ -39,10 +39,10 @@ class Data(object):
         agent_id = agent_lib.get_agent_id(agent_program)
 
         # Convert the polled objects for processing
-        if isinstance(polled_objects, list) is True:
-            self._polled_objects = polled_objects
+        if isinstance(list_of_dv_list, list) is True:
+            self._list_of_dv_list = list_of_dv_list
         else:
-            self._polled_objects = [polled_objects]
+            self._list_of_dv_list = [list_of_dv_list]
 
         # Get devicename
         self._devicename = socket.getfqdn()
@@ -69,17 +69,17 @@ class Data(object):
         result = {}
 
         # Get information from data
-        for polled_device in self._polled_objects:
+        for dv_list in self._list_of_dv_list:
             # Initialize variable for code simplicity
-            device = polled_device.device
+            device = dv_list.device
 
             # Pre-populate the result with empty dicts
             result[device] = {}
             result[device]['timefixed'] = {}
             result[device]['timestamp'] = {}
 
-            # Analyze each DataVariable for the polled_device
-            for _dvar in polled_device.data:
+            # Analyze each DataVariable for the dv_list
+            for _dvar in dv_list.data:
                 # Determine the type of data
                 if _dvar.data_type == DATA_STRING:
                     key = 'timefixed'
@@ -93,24 +93,18 @@ class Data(object):
                 # Assign data values to result
                 data_tuple = (_dvar.data_index, _dvar.value)
                 if 'data' in result[device][key][_dvar.data_label]:
-                    result[device][
-                        key][_dvar.data_label]['data'].append(data_tuple)
+                    result[device][key][_dvar.data_label][
+                        'data'].append(data_tuple)
                 else:
-                    result[device][
-                        key][_dvar.data_label]['data_type'] = _dvar.data_type
-                    result[device][
-                        key][_dvar.data_label]['data'] = [data_tuple]
-
-                    # Get a description to use for label value
-                    if _dvar.data_label in polled_device.translations:
-                        result[device][key][_dvar.data_label][
-                            'description'] = polled_device.translations[
-                                _dvar.data_label]
-                    else:
-                        result[device][key][_dvar.data_label][
-                            'description'] = None
-                        result[device][key][_dvar.data_label][
-                            'units'] = None
+                    result[device][key][_dvar.data_label][
+                        'data_type'] = _dvar.data_type
+                    result[device][key][_dvar.data_label][
+                        'data'] = [data_tuple]
+                    result[device][key][_dvar.data_label][
+                        'units'] = dv_list.translations.units(_dvar.data_label)
+                    result[device][key][_dvar.data_label][
+                        'description'] = dv_list.translations.description(
+                            _dvar.data_label)
 
         # Return
         return result
