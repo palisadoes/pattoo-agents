@@ -291,7 +291,7 @@ class SNMPVariableList(object):
             None
 
         Returns:
-            result: String representation.
+            result: String representation
 
         """
         # Return repr
