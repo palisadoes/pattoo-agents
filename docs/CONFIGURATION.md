@@ -1,10 +1,20 @@
 # Configuration
 
-After installing your agents, you will need to edit a configuration file in the `etc/`directory. Pattoo will read any `.json` files found in this directory for configuration parameters.
+After installing your agents, you will need to edit a configuration file in the `etc/`directory. Pattoo will read any `.yaml` files found in this directory for configuration parameters.
 
 For the sake of simplicity we will assume there is one file called `etc/config.yaml`. 
 
 Make sure you have configured the `main` and `remote_api` sections of `etc/config.yaml` file before adding any sections for `pattoo-os` related daemons.
+
+## Custom Directory Location
+You can selectively set the location of the configuration directory by using the `PATTOO_CONFIGDIR` environmental variable. 
+
+This can be useful for:
+
+1. Automated deployments
+1. Software developer code testing
+
+By default the `etc/` directory of the repository is used for all configuration file searches.
 
 ## Mandatory Configuration Sections
 ```yaml
