@@ -39,11 +39,9 @@ def poll(agent_program):
     """
     # Initialize key variables
     device = socket.getfqdn()
-    config = configuration.ConfigSpoked()
-    translations = config.translations(agent_program)
 
     # Intialize data gathering
-    _data = DataVariableList(device, translations)
+    _data = DataVariableList(device)
 
     # Update agent with system data
     _stats_system(_data)

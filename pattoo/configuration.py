@@ -257,27 +257,6 @@ class Config(object):
             result = '{}'.format(intermediate).lower()
         return result
 
-    def language(self):
-        """Get language.
-
-        Args:
-            None
-
-        Returns:
-            result: result
-
-        """
-        # Get result
-        sub_key = 'language'
-        result = None
-        key = 'main'
-
-        # Get new result
-        result = search(key, sub_key, self._configuration)
-
-        # Return
-        return result
-
     def cache_directory(self):
         """Determine the cache_directory.
 
@@ -321,21 +300,6 @@ class Config(object):
         files.mkdir(result)
 
         # Return
-        return result
-
-    def translations(self, agent_program):
-        """Get translations.
-
-        Args:
-            agent_program: Agent program
-
-        Returns:
-            result: DataLabelXlate object
-
-        """
-        # Intialize key variables
-        _language = self.language()
-        result = language.DataLabelXlate(agent_program, _language)
         return result
 
 
