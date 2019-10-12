@@ -78,9 +78,9 @@ $
 
 ## Configuration
 
-You will need to edit configuration files in both the `etc/` and `etc/pattoo-os.d` directories.
+You will need to edit configuration files in both the `etc/`directory.
 
-### Directory etc/
+### Shared Section
 
 This directory contains configuration `.yaml` files used by all polling agents. The files in this directory contain shared or common configuration parameters.
 
@@ -114,25 +114,22 @@ This table outlines the purpose of each configuration parameter
 || `cache_directory` | Directory of unsuccessful data posts to `pattoodb`|
 || `language` | Language  to be used in reporting statistics in JSON output. Language files can be found in the `metadata/language/agents/` directory.|
 || `polling_interval`              | Interval of data collection and posting in seconds   |
-| `remote_api` |||
+| `remote_api` || **Note** The `remote_api` section is not required for `patoo-os-spoked` configurations|
 || `api_ip_address`       | IP address of remote `pattoodb` server      |
 || `api_ip_bind_port`       | Port of remote `pattoodb` server     |
 || `api_uses_https`      | Use `https` when sending data  to remote `pattoodb` server|
 || `api_uri`        | Remote `pattoodb` route prefix       |
 
+### pattoo-os-autonomousd Section
 
-### Directory etc/pattoo-os.d/
+There is no `pattoo-os-autonomousd` section. The parameters in the shared section of configuration is sufficient.
 
-Place a configuration file here if you intend to use the `pattoo-os-spoked` daemon.
+### pattoo-os-hubd Section
 
-Edit the `etc/pattoo-os.d/config.yaml` file to change configuration options. An explanation follows.
+Add the following statements to the `config.yaml` file to configure the  `pattoo-os-hubd` daemon. An explanation follows.
 
 
 ```yaml
-pattoo-os-spoked:
-    listen_address: 0.0.0.0
-    ip_bind_port: 5000
-
 pattoo-os-hubd:
     ip_devices:
       - ip_address: 127.0.0.1
@@ -147,11 +144,31 @@ This table outlines the purpose of each configuration parameter
 
 |Section | Config Options          | Description                    |
 |--|--|--|
+| `pattoo-os-hubd` | | **Note:** Only required for devices running `pattoo-os-hubd` |
+|| `ip_devices` | List of IP addresses or hostnames running `pattoo-os-spoked` that need to be polled for data. You must specify an `ip_address` and TCP `ip_bind_port`for these devices.
+|| `ip_bind_port`              | TCP port on which the remote devices are listening|
+
+### pattoo-os-spoked Section
+
+Add the following statements to the `config.yaml` file to configure the  `pattoo-os-spoked` daemon. An explanation follows.
+
+
+```yaml
+pattoo-os-spoked:
+    listen_address: 0.0.0.0
+    ip_bind_port: 5000
+```
+
+#### Configuration Explanation
+
+This table outlines the purpose of each configuration parameter
+
+|Section | Config Options          | Description                    |
+|--|--|--|
 | `pattoo-os-spoked` | | **Note:** Only required for devices running `pattoo-os-spoked` |
 || `listen_address` | IP address on which the API server will listen. Setting this to `0.0.0.0` will make it listen on all IPv4 addresses. Setting to `"0::"` will make it listen on all IPv6 configured interfaces. It will not listen on IPv4 and IPv6 addresses simultaneously. You must **quote** all IPv6 addresses.|
 || `ip_bind_port`              | TCP port on which the API will listen|
-| `pattoo-os-hubd` | | **Note:** Only required for devices running `pattoo-os-hubd` |
-|| `ip_devices` | List of IP addresses or hostnames running `pattoo-os-spoked` that need to be polled for data. You must specify an `ip_address` and TCP `ip_bind_port`for these devices.
+
 
 ## JSON Data Format
 
