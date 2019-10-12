@@ -5,9 +5,9 @@
 from flask import Flask, jsonify
 
 # Pattoo imports
-from pattoo.agents.os import data
+from pattoo.agents.os import collector
 from pattoo.constants import PATTOO_OS_SPOKED_API_PREFIX, PATTOO_OS_SPOKED
-from pattoo.agents.os import configuration
+from pattoo import data
 
 # Define flask parameters
 API = Flask(__name__)
@@ -24,6 +24,11 @@ def home():
         None
 
     """
-    # Return
-    data_dict = data.poll(PATTOO_OS_SPOKED)
+    # Initialize key variables
+    agent_program = PATTOO_OS_SPOKED
+
+    # Process and present
+    dv_list = collector.poll()
+    process = data.Data(agent_program, dv_list)
+    data_dict = process.data()
     return jsonify(data_dict)

@@ -2,7 +2,6 @@
 
 # pattoo imports
 from pattoo.constants import DATA_INT, DATA_FLOAT
-from pattoo import language
 
 
 class DataVariable(object):

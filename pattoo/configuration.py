@@ -7,7 +7,6 @@ import os
 # Import project libraries
 from pattoo import files
 from pattoo import log
-from pattoo import language
 
 
 class Config(object):

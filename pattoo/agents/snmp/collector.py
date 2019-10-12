@@ -1,12 +1,6 @@
 #!/usr/bin/env python3
-"""Pattoo helper for the Linux _data.
+"""Pattoo library for collecting SNMP data."""
 
-Description:
-
-    Uses Python2 to be compatible with most Linux systems
-
-
-"""
 # Standard libraries
 import multiprocessing
 
@@ -14,9 +8,7 @@ import multiprocessing
 # Pattoo libraries
 from pattoo.agents.snmp import configuration
 from pattoo.agents.snmp import snmp
-from pattoo import data
 from pattoo.variables import DataVariableList
-from pattoo.constants import PATTOO_SNMPD
 
 
 def poll():
@@ -28,11 +20,10 @@ def poll():
         None
 
     Returns:
-        None
+        dv_lists: A list of type DataVariableList
 
     """
     # Initialize key variables.
-    agent_program = PATTOO_SNMPD
     config = configuration.ConfigSNMP()
     ip_devices = {}
     oids4devices = {}
@@ -57,9 +48,7 @@ def poll():
     dv_lists = _snmpwalks(ip_devices, oids4devices)
 
     # Return data
-    process = data.Data(agent_program, dv_lists)
-    result = process.data()
-    return result
+    return dv_lists
 
 
 def _snmpwalks(ip_devices, oids4devices):
