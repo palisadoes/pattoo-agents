@@ -23,14 +23,62 @@ from pattoo import agent as lib_agent
 from pattoo import configuration
 
 
-class Data(object):
-    """Pattoo agent that gathers data."""
+class Post(object):
+    """Class to prepare data for posting."""
+
+    def __init__(self, agent_program, dv_list):
+        """Initialize the class.
+
+        Args:
+            agent_program: Name of agent program
+            dv_list: DataVariableList object
+
+        Returns:
+            None
+
+        """
+        # Initialize key variables
+        process = lib_data.Data(agent_program, dv_list)
+        data_dict = process.data()
+        self._obj = PostDict(data_dict)
+
+    def post(self, save=True, data=None):
+        """Post data to central server.
+
+        Args:
+            save: When True, save data to cache directory if postinf fails
+            data: Data to post. If None, then uses self._post_data (
+                Used for testing and cache purging)
+
+        Returns:
+            success: True: if successful
+
+        """
+        # Process
+        return self._obj.post(save=save, data=data)
+
+    def purge(self):
+        """Purge data from cache by posting to central server.
+
+        Args:
+            None
+
+        Returns:
+            success: "True: if successful
+
+        """
+        # Process
+        return self._obj.purge()
+
+
+class PostDict(object):
+    """Class to prepare data for posting."""
 
     def __init__(self, _data):
         """Initialize the class.
 
         Args:
-            _data: Data to post
+            _data: Data to post as type dict
 
         Returns:
             None
@@ -175,4 +223,4 @@ class Data(object):
                     'Purging cache file {} after successfully '
                     'contacting server {}'
                     ''.format(filepath, self._url))
-                log.log2info(1029, log_message)
+                log.log2info(1007, log_message)

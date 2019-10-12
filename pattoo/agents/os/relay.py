@@ -46,7 +46,7 @@ def relay(ip_device, ip_bind_port):
     # Post data
     if bool(data_dict) is True:
         # Post to remote server
-        server = post.Data(data_dict)
+        server = post.PostDict(data_dict)
 
         # Post data
         success = server.post()

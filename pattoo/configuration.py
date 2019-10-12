@@ -1,13 +1,11 @@
 #!/usr/bin/env python3
 """Pattoo classes that manage various configurations."""
 
-import os.path
 import os
 
 # Import project libraries
 from pattoo import files
 from pattoo import log
-from pattoo import language
 
 
 class Config(object):
@@ -31,8 +29,10 @@ class Config(object):
 
         """
         # Update the configuration directory
-
-        config_directory = '{}/etc'.format(files.root_directory())
+        if 'PATTOO_CONFIGDIR' in os.environ:
+            config_directory = os.environ['PATTOO_CONFIGDIR']
+        else:
+            config_directory = '{}/etc'.format(files.root_directory())
 
         # Return data
         self._configuration = files.read_yaml_files(config_directory)
@@ -200,7 +200,7 @@ class Config(object):
             log_message = (
                 'log_directory: "{}" '
                 'in configuration doesn\'t exist!'.format(result))
-            log.log2die_safe(1022, log_message)
+            log.log2die_safe(1003, log_message)
 
         # Return
         return result
@@ -257,27 +257,6 @@ class Config(object):
             result = '{}'.format(intermediate).lower()
         return result
 
-    def language(self):
-        """Get language.
-
-        Args:
-            None
-
-        Returns:
-            result: result
-
-        """
-        # Get result
-        sub_key = 'language'
-        result = None
-        key = 'main'
-
-        # Get new result
-        result = search(key, sub_key, self._configuration)
-
-        # Return
-        return result
-
     def cache_directory(self):
         """Determine the cache_directory.
 
@@ -323,21 +302,6 @@ class Config(object):
         # Return
         return result
 
-    def translations(self, agent_program):
-        """Get translations.
-
-        Args:
-            agent_program: Agent program
-
-        Returns:
-            result: DataLabelXlate object
-
-        """
-        # Intialize key variables
-        _language = self.language()
-        result = language.DataLabelXlate(agent_program, _language)
-        return result
-
 
 def search(key, sub_key, config_dict, die=True):
     """Get config parameter from YAML.
@@ -366,7 +330,7 @@ def search(key, sub_key, config_dict, die=True):
         if config_dict[key] is None:
             log_message = (
                 '{}: value in configuration is blank. Please fix'.format(key))
-            log.log2die_safe(1022, log_message)
+            log.log2die_safe(1004, log_message)
 
         # Get value we need
         if sub_key in config_dict[key]:

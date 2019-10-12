@@ -2,7 +2,6 @@
 
 # pattoo imports
 from pattoo.constants import DATA_INT, DATA_FLOAT
-from pattoo import language
 
 
 class DataVariable(object):
@@ -68,12 +67,11 @@ class DataVariable(object):
 class DataVariableList(object):
     """Object defining a list of DataVariable objects."""
 
-    def __init__(self, device, translations):
+    def __init__(self, device):
         """Initialize the class.
 
         Args:
             device: Device polled
-            translations: Dict of translations
 
         Returns:
             None
@@ -82,12 +80,6 @@ class DataVariableList(object):
         # Initialize key variables
         self.data = []
         self.device = device
-
-        # Prevent catastrophic failure due to a lack of translation files
-        if isinstance(translations, language.DataLabelXlate) is False:
-            self.translations = language.DataLabelXlate(None, None)
-        else:
-            self.translations = translations
 
     def append(self, item):
         """Append DataVariable to the list.

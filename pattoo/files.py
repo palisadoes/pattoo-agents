@@ -110,7 +110,7 @@ def read_yaml_file(filepath, as_string=False, die=True):
                 'existence and file syntax.'
                 ''.format(filepath))
             if bool(die) is True:
-                log.log2die_safe(1024, log_message)
+                log.log2die_safe(1006, log_message)
             else:
                 log.log2debug(1024, log_message)
                 return {}
@@ -138,7 +138,7 @@ def read_yaml_file(filepath, as_string=False, die=True):
         if bool(die) is True:
             log.log2die_safe(1065, log_message)
         else:
-            log.log2debug(1071, log_message)
+            log.log2debug(1005, log_message)
             if bool(as_string) is False:
                 return {}
             else:

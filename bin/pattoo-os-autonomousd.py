@@ -23,9 +23,8 @@ else:
 
 # Pattoo libraries
 from pattoo.constants import PATTOO_OS_AUTONOMOUSD
-from pattoo.agents.os import data
+from pattoo.agents.os import collector
 from pattoo import agent
-from pattoo import log
 from pattoo import post
 from pattoo import configuration
 
@@ -45,23 +44,7 @@ class PollingAgent(agent.Agent):
         """
         # Initialize key variables
         agent.Agent.__init__(self, parent)
-
-        # Initialize key variables
-        self._agent_program_pattoo_os = PATTOO_OS_AUTONOMOUSD
-
-    def name(self):
-        """Return agent name.
-
-        Args:
-            None
-
-        Returns:
-            value: Name of agent
-
-        """
-        # Return
-        value = self._agent_program_pattoo_os
-        return value
+        self._parent = parent
 
     def query(self):
         """Query all remote devices for data.
@@ -76,36 +59,26 @@ class PollingAgent(agent.Agent):
         # Initialize key variables
         config = configuration.Config()
         interval = config.polling_interval()
+        agent_program = self._parent
 
         # Post data to the remote server
         while True:
-            self.upload()
+
+            # Get system data
+            dv_list = collector.poll()
+
+            # Post to remote server
+            server = post.Post(agent_program, dv_list)
+
+            # Post data
+            success = server.post()
+
+            # Purge cache if success is True
+            if success is True:
+                server.purge()
 
             # Sleep
             sleep(interval)
-
-    def upload(self):
-        """Post system data to the central server.
-
-        Args:
-            None
-
-        Returns:
-            None
-
-        """
-        # Get system data
-        data_dict = data.poll(self._agent_program_pattoo_os)
-
-        # Post to remote server
-        server = post.Data(data_dict)
-
-        # Post data
-        success = server.post()
-
-        # Purge cache if success is True
-        if success is True:
-            server.purge()
 
 
 def main():

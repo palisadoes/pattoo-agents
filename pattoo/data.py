@@ -100,11 +100,6 @@ class Data(object):
                         'data_type'] = _dvar.data_type
                     result[device][key][_dvar.data_label][
                         'data'] = [data_tuple]
-                    result[device][key][_dvar.data_label][
-                        'units'] = dv_list.translations.units(_dvar.data_label)
-                    result[device][key][_dvar.data_label][
-                        'description'] = dv_list.translations.description(
-                            _dvar.data_label)
 
         # Return
         return result
