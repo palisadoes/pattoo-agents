@@ -8,7 +8,6 @@ Description:
 
 """
 # Standard libraries
-import socket
 from pprint import pprint
 import multiprocessing
 
@@ -112,7 +111,9 @@ def _walker(snmpvariable, oids):
 
     """
     # Intialize data gathering
-    translations = {}
+    agent_program = PATTOO_SNMPD
+    config = configuration.ConfigSNMP()
+    translations = config.translations(agent_program)
     dv_list = DataVariableList(snmpvariable.ip_device, translations)
 
     # Get list of type DataVariable

@@ -2,6 +2,7 @@
 
 # pattoo imports
 from pattoo.constants import DATA_INT
+from pattoo import language
 
 
 class DataVariable(object):
@@ -81,8 +82,10 @@ class DataVariableList(object):
         # Initialize key variables
         self.data = []
         self.device = device
-        if isinstance(translations, dict) is False:
-            self.translations = {}
+
+        # Prevent catastrophic failure due to a lack of translation files
+        if isinstance(translations, language.DataLabelXlate) is False:
+            self.translations = language.DataLabelXlate(None, None)
         else:
             self.translations = translations
 
