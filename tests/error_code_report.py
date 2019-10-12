@@ -7,7 +7,6 @@ import re
 import sys
 import collections
 
-from pprint import pprint
 
 # Try to create a working PYTHONPATH
 TEST_DIRECTORY = os.path.dirname(os.path.realpath(__file__))
