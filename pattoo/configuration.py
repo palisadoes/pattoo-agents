@@ -199,7 +199,7 @@ class Config(object):
             log_message = (
                 'log_directory: "{}" '
                 'in configuration doesn\'t exist!'.format(result))
-            log.log2die_safe(1022, log_message)
+            log.log2die_safe(1003, log_message)
 
         # Return
         return result
@@ -329,7 +329,7 @@ def search(key, sub_key, config_dict, die=True):
         if config_dict[key] is None:
             log_message = (
                 '{}: value in configuration is blank. Please fix'.format(key))
-            log.log2die_safe(1022, log_message)
+            log.log2die_safe(1004, log_message)
 
         # Get value we need
         if sub_key in config_dict[key]:

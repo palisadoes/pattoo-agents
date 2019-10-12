@@ -223,4 +223,4 @@ class PostDict(object):
                     'Purging cache file {} after successfully '
                     'contacting server {}'
                     ''.format(filepath, self._url))
-                log.log2info(1029, log_message)
+                log.log2info(1007, log_message)

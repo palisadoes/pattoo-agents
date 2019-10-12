@@ -38,7 +38,7 @@ def get_url_json(url):
                 log_message = (
                     'Error reading JSON from URL {}: ({} {})'
                     ''.format(url, error[0], error[1]))
-                log.log2info(1186, log_message)
+                log.log2info(1008, log_message)
     except:
         # Most likely no connectivity or the TCP port is unavailable
         error = sys.exc_info()[:2]
