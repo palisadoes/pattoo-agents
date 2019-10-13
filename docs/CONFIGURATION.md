@@ -51,6 +51,9 @@ This table outlines the purpose of each configuration parameter
 || `api_uses_https`      | Use `https` when sending data  to remote `pattoodb` server|
 || `api_uri`        | Remote `pattoodb` API URI|
 
+## Agent Configuration
+See the [README.md](README.md) file for details on how to configure each type of agent.
+
 ## Notes
 Here are some addtional tips.
 
