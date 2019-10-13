@@ -5,15 +5,12 @@
 The `json` data is formatted for easy ingestion by [pattooDB](https://github.com/PalisadoesFoundation/pattoo-ng)
 
 ## Installation
-The steps are simple.
+Follow these steps.
 
-* Install the required packages using the `pip_requirements` document in the root directory
-```
-$ sudo pip3 install -r pip_requirements.txt
-```
-* Populate the configuration files.
-* Start the daemon.
-* Add the daemons to `systemd` so they start on reboot. (TBD / Pending)
+1. Follow the installation steps in the [INSTALLATION.md](INSTALLATION.md) file. 
+1. Configure the main section of the configuration file following the steps in [CONFIGURATION.md](CONFIGURATION.md) file. 
+1. Populate the configuration with the agent specific details listed below
+1. Start the desired daemons using the commands below. You may want to make these `systemd` daemons, if so follow the steps in the [INSTALLATION.md](INSTALLATION.md) file. 
 
 ## Usage
 
