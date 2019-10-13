@@ -2,6 +2,7 @@
 """Class used to set test configuration used by unittests."""
 
 # Standard imports
+from __future__ import print_function
 import sys
 import os
 

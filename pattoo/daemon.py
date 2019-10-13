@@ -1,5 +1,6 @@
 """Generic linux daemon base class for python 3.x."""
 
+from __future__ import print_function
 import atexit
 import signal
 import sys
@@ -21,7 +22,7 @@ class Daemon(object):
     """
 
     def __init__(self, agent):
-        """Method for intializing the class.
+        """Initialize the class.
 
         Args:
             agent: Agent object

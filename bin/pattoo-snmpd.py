@@ -6,6 +6,7 @@ Posts system data to remote host over HTTP.
 """
 
 # Standard libraries
+from __future__ import print_function
 from time import sleep
 import sys
 import os
