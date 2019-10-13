@@ -1,4 +1,7 @@
+# Run on ubuntu
+dist: xenial
 
+# Don't use
 sudo: false
 
 # Define the language and versions that infoset is written in
@@ -17,6 +20,7 @@ env:
 
 # Install PIP packages and create a temporary config file before installing
 before_install:
+    - sudo apt-get -y install libsnmp-dev snmp-mibs-downloader python-dev python3-dev
     - pip install -r pip_requirements.txt
     - tests/_travis_ci_setup.py
 
