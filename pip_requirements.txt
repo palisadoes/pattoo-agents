@@ -1,8 +1,8 @@
 # These additional PIP3 packages are required
 psutil
-flask
+Flask
 gunicorn
 requests
-yaml
+PyYAML
 ipaddress
 easysnmp

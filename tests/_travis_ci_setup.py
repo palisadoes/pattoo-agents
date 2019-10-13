@@ -2,6 +2,7 @@
 """Class used to set test configuration used by unittests."""
 
 # Standard imports
+from __future__ import print_function
 import sys
 import os
 
@@ -18,7 +19,7 @@ else:
 
 
 # pattoo libraries
-from test import unittest_setup
+from tests import unittest_setup
 
 
 def main():

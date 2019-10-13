@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Test all the pattoo modules."""
 
+from __future__ import print_function
 import os
 import inspect
 import re

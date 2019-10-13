@@ -6,6 +6,7 @@ Serves as a Gunicorn WSGI entry point for pattoo-os
 """
 
 # Standard libraries
+from __future__ import print_function
 import sys
 import os
 

@@ -11,7 +11,7 @@ You can run all the unittests in this directory by executing the `_do_all_tests.
 
 The codes should be unique to make it easier to find the source of an issue.
 
-If you are a developer, you can search to see whether the logging error codes you have selected for your work have duplicates by running the `error_code_report.py` script in this directory. It will give you an output like this.
+Developers can use the output of the `error_code_report.py` script to determine whether the logging error codes selected have duplicates. It will give an output like this.
 
 ```bash
 $ ./error_code_report.py
@@ -23,4 +23,5 @@ Duplicate Codes to Resolve : [1029, 1186]
 Available Codes            : [1007, 1008, 1010, 1011, 1012]
 $
 ```
+
 Use `grep` or some other similar utility to determine the duplication location and then correct it.

@@ -4,7 +4,7 @@
 NOTE!! This script CANNOT import any pattoo-agents libraries. Doing so risks
 libraries trying to access a configuration or configuration directory that
 doesn't yet exist. This is especially important when running cloud based
-automated tests such as 'Travis CI'
+automated tests such as 'Travis CI'.
 
 """
 

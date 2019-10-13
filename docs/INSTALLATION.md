@@ -5,6 +5,7 @@ This section covers some key installation and setup steps
 ## Installation
 Follow these steps
 
+1. Install the prerequisite packages for the `easysnmp` python pip package. [Instructions can be found here.](https://easysnmp.readthedocs.io/en/latest/)
 1. Install the required packages using the `pip_requirements` document in the root directory
 ```
 $ sudo pip3 install -r pip_requirements.txt
