@@ -1,5 +1,7 @@
 # pattoo-agents
 
+![pattoo](https://user-images.githubusercontent.com/16875803/66711530-9bdbab80-ed42-11e9-913f-7a21ede86d8f.png)
+
 Pattoo IoT data collection agents.
 
 ## Introduction
