@@ -1,6 +1,6 @@
-# pattoo-agents
+![pattoo](https://user-images.githubusercontent.com/16875803/66711530-9bdbab80-ed42-11e9-913f-7a21ede86d8f.png)
 
-Pattoo IoT data collection agents.
+`pattoo` agents collect IoT data for a centralized `pattoo` server.
 
 ## Introduction
 `pattoo` agents can be configured to report on the status of various types of IoT devices running popular protocols such as:
@@ -21,3 +21,6 @@ See the [`docs/` directory](docs/README.md) for more details on:
 
 1. Available agents
 1. Data formatting
+
+##About Pattoo
+`pattoo` is based on the original `infoset` code created by the [Palisadoes Foundation](http://www.palisadoes.org) as part of its annual Calico Challenge program. Calico provides paid summer internships for  Jamaican university students to work on selected open source projects. They are mentored by software professionals and receive stipends based on the completion of predefined milestones. Calico was started in 2015.
