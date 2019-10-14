@@ -22,7 +22,7 @@ env:
 before_install:
     - sudo apt-get -y install libsnmp-dev snmp-mibs-downloader python-dev python3-dev
     - pip install -r pip_requirements.txt
-    - tests/_travis_ci_setup.py
+    - tests/dev/_travis_ci_setup.py
 
 # Install pattoo-agents
 #install: python3 maintenance/setup.py

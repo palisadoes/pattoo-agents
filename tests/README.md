@@ -11,10 +11,10 @@ You can run all the unittests in this directory by executing the `_do_all_tests.
 
 The codes should be unique to make it easier to find the source of an issue.
 
-Developers can use the output of the `error_code_report.py` script to determine whether the logging error codes selected have duplicates. It will give an output like this.
+Developers can use the output of the `dev/error_code_report.py` script to determine whether the logging error codes selected have duplicates. It will give an output like this.
 
 ```bash
-$ ./error_code_report.py
+$ dev/error_code_report.py
 Pattoo Error Code Summary Report
 --------------------------------
 Starting Code              : 1001
