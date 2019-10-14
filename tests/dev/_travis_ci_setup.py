@@ -20,7 +20,7 @@ else:
 
 
 # pattoo libraries
-from tests import unittest_setup
+from tests.dev import unittest_setup
 
 
 def main():
