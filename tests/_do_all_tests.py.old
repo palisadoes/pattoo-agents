@@ -47,9 +47,14 @@ def main():
     root_dir = files.root_directory()
     test_dir = '{}/tests'.format(root_dir)
 
-    # Run the test
-    command = 'python3 -m unittest discover --start {}'.format(test_dir)
-    run_script(command)
+    # Get list of test files
+    test_files = os.listdir(test_dir)
+    for filename in sorted(test_files):
+        full_path = '{}/{}'.format(test_dir, filename)
+
+        # Run the test
+        if filename.startswith('test_'):
+            run_script(full_path)
 
     # Print
     message = ('\nHooray - All Done OK!\n')
