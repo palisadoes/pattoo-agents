@@ -140,7 +140,7 @@ class TestBasicFunctions(unittest.TestCase):
             files.mkdir(tmpfile)
         os.remove(tmpfile)
 
-        # Create a sub directory of a temp directory
+        # Create a sub directory of a temp directory.
         directory = '/tmp/pattoo-unittest/{}.fake'.format(
             randint(1, 10000) * pi)
         files.mkdir(directory)
