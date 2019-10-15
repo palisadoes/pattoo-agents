@@ -1,13 +1,10 @@
 #!/usr/bin/env python3
 """Pattoo classes that manage various configurations."""
 
-import os
-import yaml
-
 # Import project libraries
-from pattooagents import configuration
-from pattooagents.configuration import Config
-from pattooagents.constants import PATTOO_OS_SPOKED, PATTOO_OS_HUBD
+from pattoo_agents import configuration
+from pattoo_agents.configuration import Config
+from pattoo_shared.constants import PATTOO_OS_SPOKED, PATTOO_OS_HUBD
 
 
 class ConfigSpoked(Config):

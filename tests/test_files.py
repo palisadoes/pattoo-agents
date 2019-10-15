@@ -25,8 +25,8 @@ else:
     sys.exit(2)
 
 # Pattoo imports
-from pattooagents import files
-import pattooagents
+from pattoo_agents import files
+import pattoo_agents
 
 
 class TestBasicFunctions(unittest.TestCase):
@@ -39,7 +39,7 @@ class TestBasicFunctions(unittest.TestCase):
     def test_root_directory(self):
         """Testing function root_directory."""
         # Determine root directory for pattoo
-        pattoo_dir = pattooagents.__path__[0]
+        pattoo_dir = pattoo_agents.__path__[0]
         components = pattoo_dir.split(os.sep)
 
         # Determine root directory 2 levels above

@@ -4,8 +4,8 @@
 import os
 
 # Import project libraries
-from pattooagents import files
-from pattooagents import log
+from pattoo_agents import files
+from pattoo_agents import log
 
 
 class Config(object):

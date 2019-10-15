@@ -25,9 +25,9 @@ from gunicorn.app.base import BaseApplication
 from gunicorn.six import iteritems
 
 # Pattoo libraries
-from pattooagents import daemon
-from pattooagents import log
-from pattooagents import data
+from pattoo_agents import daemon
+from pattoo_agents import log
+from pattoo_agents import data
 
 
 class Agent(object):
@@ -70,7 +70,7 @@ class Agent(object):
         return value
 
     def query(self):
-        """Placeholder method."""
+        """Create placeholder method. Do not delete."""
         # Do nothing
         pass
 

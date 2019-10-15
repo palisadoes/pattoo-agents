@@ -3,12 +3,12 @@
 
 import os
 import sys
-import yaml
 import json
+import yaml
 
 # Pattoo libraries
-from pattooagents import log
-import pattooagents
+from pattoo_agents import log
+import pattoo_agents
 
 
 def root_directory():
@@ -22,7 +22,7 @@ def root_directory():
 
     """
     # Get the directory of the pattoo library
-    pattoo_dir = pattooagents.__path__[0]
+    pattoo_dir = pattoo_agents.__path__[0]
     components = pattoo_dir.split(os.sep)
 
     # Determine the directory two levels above

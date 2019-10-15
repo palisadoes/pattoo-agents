@@ -7,12 +7,12 @@ import socket
 
 
 # Pattoo libraries
-from pattooagents.agents.snmp import configuration
-from pattooagents.agents.snmp import snmp
-from pattooagents import times
-from pattooagents import agent
-from pattooagents.constants import PATTOO_SNMPD
-from pattooagents.variables import DataVariablesHost, AgentPolledData
+from pattoo_agents.agents.snmp import configuration
+from pattoo_agents.agents.snmp import snmp
+from pattoo_agents import times
+from pattoo_agents import agent
+from pattoo_shared.constants import PATTOO_SNMPD
+from pattoo_shared.variables import DataVariablesHost, AgentPolledData
 
 
 def poll():

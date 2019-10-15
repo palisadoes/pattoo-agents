@@ -2,10 +2,10 @@
 """Pattoo get library."""
 
 # Pattoo libraries
-from pattooagents.constants import PATTOO_OS_SPOKED_API_PREFIX
-from pattooagents import post
-from pattooagents import get
-from pattooagents import data
+from pattoo_agents import post
+from pattoo_agents import get
+from pattoo_shared import converter
+from pattoo_shared.constants import PATTOO_OS_SPOKED_API_PREFIX
 
 
 def spoked_url(ip_device, ip_bind_port):
@@ -47,7 +47,7 @@ def relay(ip_device, ip_bind_port):
     # Post data
     if bool(data_dict) is True:
         # Post to remote server
-        agentdata = data.converter(data=data_dict)
+        agentdata = converter.convert(data_dict)
         server = post.Post(agentdata)
         success = server.post()
 

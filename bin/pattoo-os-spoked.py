@@ -22,10 +22,10 @@ else:
     sys.exit(2)
 
 # Pattoo libraries
-from pattooagents.agent import Agent, AgentAPI, AgentCLI
-from pattooagents.constants import PATTOO_OS_SPOKED, PATTOO_OS_SPOKED_PROXY
-from pattooagents.agents.os import configuration
-from pattooagents.agents.os.api import API
+from pattoo_agents.agent import Agent, AgentAPI, AgentCLI
+from pattoo_shared.constants import PATTOO_OS_SPOKED, PATTOO_OS_SPOKED_PROXY
+from pattoo_agents.agents.os import configuration
+from pattoo_agents.agents.os.api import API
 
 
 def main():

@@ -1,9 +1,8 @@
 """Module used to manipulate OID strings and validate OIDs."""
 
 # Import pattoo libraries
-from pattooagents import log
-from pattooagents import data
-
+from pattoo_agents import log
+from pattoo_agents import data
 
 
 class OIDstring(object):
@@ -97,11 +96,11 @@ class OIDstring(object):
         nodes = oid.split('.')
         return int(nodes[-3])
 
-    def valid_format(self, is_branch=False):
+    def valid_format(self):
         """Determine whether the format of the oid is correct.
 
         Args:
-            is_branch: Ture if OID is a branch
+            None
 
         Returns:
             invalid: False if OK

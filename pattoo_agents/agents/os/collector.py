@@ -11,11 +11,11 @@ import socket
 import psutil
 
 # Pattoo libraries
-from pattooagents.variables import (
+from pattoo_agents import agent
+from pattoo_agents import times
+from pattoo_shared.variables import (
     DataVariable, DataVariablesHost, AgentPolledData)
-from pattooagents import agent
-from pattooagents import times
-from pattooagents.constants import (
+from pattoo_shared.constants import (
     DATA_INT, DATA_COUNT64, DATA_STRING, DATA_FLOAT)
 
 

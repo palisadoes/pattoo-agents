@@ -7,10 +7,10 @@ import easysnmp
 from easysnmp import exceptions
 
 # Import Pattoo libraries
-from pattooagents import log
-from pattooagents.agents.snmp import oid as class_oid
-from pattooagents.variables import DataVariable
-from pattooagents.constants import (
+from pattoo_agents import log
+from pattoo_agents.agents.snmp import oid as class_oid
+from pattoo_shared.variables import DataVariable
+from pattoo_shared.constants import (
     DATA_INT, DATA_COUNT64, DATA_COUNT, DATA_STRING, DATA_NONE)
 
 

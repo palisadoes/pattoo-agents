@@ -10,7 +10,7 @@ import logging
 
 
 # Pattoo libraries
-from pattooagents import configuration
+from pattoo_agents import configuration
 
 # Define global variable
 LOGGER = {}

@@ -23,11 +23,11 @@ else:
     sys.exit(2)
 
 # Pattoo libraries
-from pattooagents.constants import PATTOO_SNMPD
-from pattooagents.agents.snmp import collector
-from pattooagents import agent
-from pattooagents import post
-from pattooagents import configuration
+from pattoo_shared.constants import PATTOO_SNMPD
+from pattoo_agents.agents.snmp import collector
+from pattoo_agents import agent
+from pattoo_agents import post
+from pattoo_agents import configuration
 
 
 class PollingAgent(agent.Agent):

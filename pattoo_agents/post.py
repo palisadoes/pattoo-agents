@@ -17,9 +17,10 @@ import json
 import requests
 
 # Pattoo libraries
-from pattooagents import log
-from pattooagents import data as lib_data
-from pattooagents import configuration
+from pattoo_agents import log
+from pattoo_agents import data as lib_data
+from pattoo_agents import configuration
+from pattoo_shared.converter import ConvertAgentPolledData
 
 
 class Post(object):
@@ -71,7 +72,7 @@ class Post(object):
         # Create data to post
         if data is None:
             if self._agentdata.active is True:
-                process = lib_data.Data(self._agentdata)
+                process = ConvertAgentPolledData(self._agentdata)
                 data2post = process.data()
             else:
                 # Invalid data. Return False

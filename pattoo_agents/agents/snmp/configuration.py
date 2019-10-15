@@ -5,10 +5,10 @@
 from copy import deepcopy
 
 # Import project libraries
-from pattooagents.configuration import Config
-from pattooagents import configuration
-from pattooagents.variables import SNMPAuth, SNMPVariableList, OIDVariable
-from pattooagents.constants import PATTOO_SNMPD
+from pattoo_agents.configuration import Config
+from pattoo_agents import configuration
+from pattoo_agents.variables import SNMPAuth, SNMPVariableList, OIDVariable
+from pattoo_shared.constants import PATTOO_SNMPD
 
 
 class ConfigSNMP(Config):
@@ -159,7 +159,6 @@ def _validate_oids(config_dict):
 
     """
     # Initialize key variables
-    nothing = []
     seed_dict = {}
     seed_dict['ip_devices'] = []
     seed_dict['oids'] = []

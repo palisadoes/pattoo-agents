@@ -24,10 +24,10 @@ else:
     sys.exit(2)
 
 # Pattoo libraries
-from pattooagents.constants import PATTOO_OS_HUBD
-from pattooagents import agent
-from pattooagents.agents.os import relay
-from pattooagents.agents.os import configuration
+from pattoo_shared.constants import PATTOO_OS_HUBD
+from pattoo_agents import agent
+from pattoo_agents.agents.os import relay
+from pattoo_agents.agents.os import configuration
 
 
 class PollingAgent(agent.Agent):
