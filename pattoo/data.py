@@ -9,16 +9,13 @@ Description:
 """
 # Standard libraries
 from collections import defaultdict
-import socket
 import hashlib
 from copy import deepcopy
 
 
 # Pattoo libraries
-from pattoo import times
 from pattoo import files
-from pattoo import agent as agent_lib
-from pattoo.variables import DataVariable, DataVariableList, AgentData
+from pattoo.variables import DataVariable, DataVariablesHost, AgentPolledData
 from pattoo.constants import (
     DATA_FLOAT, DATA_INT, DATA_COUNT64, DATA_COUNT, DATA_STRING)
 
@@ -26,12 +23,11 @@ from pattoo.constants import (
 class Data(object):
     """Pattoo agent that gathers data."""
 
-    def __init__(self, agent_program, list_of_dv_list):
+    def __init__(self, agentdata):
         """Initialize the class.
 
         Args:
-            agent_program: Name of agent program
-            list_of_dv_list: One or more DataVariableList objects
+            agentdata: AgentPolledData object of data polled by agent
 
         Returns:
             None
@@ -39,22 +35,11 @@ class Data(object):
         """
         # Initialize key variables
         self._data = defaultdict(lambda: defaultdict(dict))
-        agent_id = agent_lib.get_agent_id(agent_program)
-
-        # Convert the polled objects for processing
-        if isinstance(list_of_dv_list, list) is True:
-            self._list_of_dv_list = list_of_dv_list
-        else:
-            self._list_of_dv_list = [list_of_dv_list]
-
-        # Get devicename
-        self._devicename = socket.getfqdn()
-
-        # Add timestamp
-        self._data['timestamp'] = times.normalized_timestamp()
-        self._data['agent_id'] = agent_id
-        self._data['agent_program'] = agent_program
-        self._data['agent_hostname'] = self._devicename
+        self._list_of_dv_host = agentdata.data
+        self._data['timestamp'] = agentdata.timestamp
+        self._data['agent_id'] = agentdata.agent_id
+        self._data['agent_program'] = agentdata.agent_program
+        self._data['agent_hostname'] = agentdata.agent_hostname
         self._data['devices'] = self._process()
 
     def _process(self):
@@ -72,15 +57,15 @@ class Data(object):
         result = {}
 
         # Get information from data
-        for dv_list in self._list_of_dv_list:
+        for dv_host in self._list_of_dv_host:
             # Initialize variable for code simplicity
-            device = dv_list.device
+            device = dv_host.device
 
             # Pre-populate the result with empty dicts
             result[device] = {}
 
-            # Analyze each DataVariable for the dv_list
-            for _dvar in dv_list.data:
+            # Analyze each DataVariable for the dv_host
+            for _dvar in dv_host.data:
                 # Add keys if not already there
                 if _dvar.data_label not in result[device]:
                     result[device][_dvar.data_label] = {}
@@ -257,14 +242,14 @@ def named_tuple_to_dv(
 
 
 def converter(data=None, filepath=None):
-    """Convert agent cache data to AgentData object.
+    """Convert agent cache data to AgentPolledData object.
 
     Args:
         data: Agent data dict
         filename: Name of file with Agent data dict
 
     Returns:
-        agentdata: AgentData object
+        agentdata: AgentPolledData object
 
     """
     # Initialize key variables
@@ -274,26 +259,27 @@ def converter(data=None, filepath=None):
     timestamp = None
 
     # Get data
-    if bool(filepath) is not None:
-        _data = files.read_yaml_file(filepath, as_string=False, die=False)
+    if bool(filepath) is True:
+        _data = files.read_json_file(filepath, die=True)
     else:
         _data = data
 
-    # Get values to instantiate an AgentData object
+    # Get values to instantiate an AgentPolledData object
     (agent_id, agent_program, agent_hostname,
      timestamp, polled_data, agent_valid) = _valid_agent(_data)
     if agent_valid is False:
         return None
-    agentdata = AgentData(agent_id, agent_program, agent_hostname, timestamp)
+    agentdata = AgentPolledData(
+        agent_id, agent_program, agent_hostname, timestamp)
 
     # Iterate through devices polled by the agent
     for device, devicedata in sorted(polled_data.items()):
-        # Create DataVariableList
-        dv_list = _datavariablelist(device, devicedata)
+        # Create DataVariablesHost
+        dv_host = _datavariablelist(device, devicedata)
 
-        # Append the DataVariableList to the AgentData object
-        if dv_list.active is True:
-            agentdata.extend(dv_list)
+        # Append the DataVariablesHost to the AgentPolledData object
+        if dv_host.active is True:
+            agentdata.append(dv_host)
 
     # Return
     if agentdata.active is False:
@@ -351,18 +337,18 @@ def _valid_agent(_data):
 
 
 def _datavariablelist(device, devicedata):
-    """Create a DataVariableList object from Agent data.
+    """Create a DataVariablesHost object from Agent data.
 
     Args:
         device: Device polled by agent
         devicedata: Data polled from device by agent
 
     Returns:
-        datavariablelist: DataVariableList object
+        datavariablelist: DataVariablesHost object
 
     """
     # Initialize key variables
-    dv_list = DataVariableList(device)
+    dv_host = DataVariablesHost(device)
 
     # Ignore invalid data
     if isinstance(devicedata, dict) is True:
@@ -382,12 +368,12 @@ def _datavariablelist(device, devicedata):
                 if isinstance(data4label['data'], list) is False:
                     continue
 
-                # Add to the DataVariableList
+                # Add to the DataVariablesHost
                 datavariables = _datavariables(data_label, data4label)
-                dv_list.extend(datavariables)
+                dv_host.extend(datavariables)
 
     # Return
-    return dv_list
+    return dv_host
 
 
 def _datavariables(data_label, data4label):
@@ -405,7 +391,7 @@ def _datavariables(data_label, data4label):
     datavariables = []
     data_type = data4label['data_type']
 
-    # Add the data to the DataVariableList
+    # Add the data to the DataVariablesHost
     for item in data4label['data']:
         if isinstance(item, list) is True:
             if len(item) == 2:

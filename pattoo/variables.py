@@ -1,7 +1,7 @@
 """Module for classes that format variables."""
 
 # pattoo imports
-from pattoo.constants import DATA_INT, DATA_FLOAT
+from pattoo.constants import DATA_INT
 
 
 class DataVariable(object):
@@ -64,14 +64,14 @@ class DataVariable(object):
         self.__dict__[name] = value
 
 
-class DataVariableList(object):
+class DataVariablesHost(object):
     """Object defining a list of DataVariable objects."""
 
     def __init__(self, device):
         """Initialize the class.
 
         Args:
-            device: Device polled
+            device: Device polled to get the DataVariable objects
 
         Returns:
             None
@@ -118,7 +118,7 @@ class DataVariableList(object):
             self.append(item)
 
 
-class AgentData(object):
+class AgentPolledData(object):
     """Object defining data received from / sent by Agent."""
 
     def __init__(self, agent_id, agent_program, agent_hostname, timestamp):
@@ -126,7 +126,7 @@ class AgentData(object):
 
         Args:
             agent_id: Agent ID
-            agent_program: Name of agent program
+            agent_program: Name of agent program collecting the data
             agent_hostname: Hostname on which the agent ran
             timestamp: Timestamp of data
 
@@ -146,38 +146,37 @@ class AgentData(object):
         """Append DataVariable to the list.
 
         Args:
-            item: A DataVariableList object
+            item: A DataVariablesHost object
 
         Returns:
             None
 
         """
         # Only append approved data types
-        if isinstance(item, DataVariableList) is True:
+        if isinstance(item, DataVariablesHost) is True:
             self.data.append(item)
 
             # Set object as being active
             self.active = False not in [
                 bool(self.agent_id), bool(self.agent_program),
-                bool(self.agent_hostname), bool(self.timestamp)]
+                bool(self.agent_hostname), bool(self.timestamp),
+                bool(self.data)]
 
     def extend(self, items):
         """Extend the DataVariable list.
 
         Args:
-            items: A DataVariableList object list
+            items: A DataVariablesHost object list
 
         Returns:
             None
 
         """
         # Do nothing if not a list
-        if isinstance(items, list) is False:
-            return
-
-        # Extend the list
-        for item in items:
-            self.append(item)
+        if isinstance(items, list) is True:
+            # Extend the list
+            for item in items:
+                self.append(item)
 
 
 class SNMPAuth(object):

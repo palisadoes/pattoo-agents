@@ -60,16 +60,15 @@ class PollingAgent(agent.Agent):
         # Initialize key variables
         config = configuration.Config()
         interval = config.polling_interval()
-        agent_program = self._parent
 
         # Post data to the remote server
         while True:
 
             # Get system data
-            dv_list = collector.poll()
+            agentdata = collector.poll(self._parent)
 
             # Post to remote server
-            server = post.Post(agent_program, dv_list)
+            server = post.Post(agentdata)
 
             # Post data
             success = server.post()

@@ -85,9 +85,9 @@ class Daemon(object):
         # Temporarily comment out these three lines when troubleshooting daemon
         # operation. Errors will become immediately apparent.
         #######################################################################
-        os.dup2(f_handle_si.fileno(), sys.stdin.fileno())
-        os.dup2(f_handle_so.fileno(), sys.stdout.fileno())
-        os.dup2(f_handle_se.fileno(), sys.stderr.fileno())
+        #os.dup2(f_handle_si.fileno(), sys.stdin.fileno())
+        #os.dup2(f_handle_so.fileno(), sys.stdout.fileno())
+        #os.dup2(f_handle_se.fileno(), sys.stderr.fileno())
 
         # write pidfile
         atexit.register(self.delpid)
@@ -181,6 +181,7 @@ class Daemon(object):
             None
 
         Returns:
+            None
 
         """
         # Get the pid from the pidfile
@@ -241,6 +242,7 @@ class Daemon(object):
             None
 
         Returns:
+            None
 
         """
         # Restart
@@ -254,6 +256,7 @@ class Daemon(object):
             None
 
         Returns:
+            None
 
         """
         # Get status

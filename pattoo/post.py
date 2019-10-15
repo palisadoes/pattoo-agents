@@ -19,95 +19,41 @@ import requests
 # Pattoo libraries
 from pattoo import log
 from pattoo import data as lib_data
-from pattoo import agent as lib_agent
 from pattoo import configuration
 
 
 class Post(object):
     """Class to prepare data for posting."""
 
-    def __init__(self, agent_program, dv_list):
+    def __init__(self, agentdata):
         """Initialize the class.
 
         Args:
-            agent_program: Name of agent program
-            dv_list: DataVariableList object
+            agentdata: AgentPolledData object of data polled by agent
 
         Returns:
             None
 
         """
         # Initialize key variables
-        process = lib_data.Data(agent_program, dv_list)
-        data_dict = process.data()
-        self._obj = PostDict(data_dict)
-
-    def post(self, save=True, data=None):
-        """Post data to central server.
-
-        Args:
-            save: When True, save data to cache directory if postinf fails
-            data: Data to post. If None, then uses self._post_data (
-                Used for testing and cache purging)
-
-        Returns:
-            success: True: if successful
-
-        """
-        # Process
-        return self._obj.post(save=save, data=data)
-
-    def purge(self):
-        """Purge data from cache by posting to central server.
-
-        Args:
-            None
-
-        Returns:
-            success: "True: if successful
-
-        """
-        # Process
-        return self._obj.purge()
-
-
-class PostDict(object):
-    """Class to prepare data for posting."""
-
-    def __init__(self, _data):
-        """Initialize the class.
-
-        Args:
-            _data: Data to post as type dict
-
-        Returns:
-            None
-
-        """
-        # Initialize key variables
-        self._post_data = _data
-
-        # Get the agent_name
-        if 'agent_program' in self._post_data:
-            self._agent_program_post = self._post_data['agent_program']
-        else:
-            self._agent_program_post = ''
-
-        # Get the agent ID
         config = configuration.Config()
-        agent_id = lib_agent.get_agent_id(self._agent_program_post)
+        process = lib_data.Data(agentdata)
+        self._post_data = process.data()
+
+        # Get the agent information
+        self._agent_program_post = agentdata.agent_program
 
         # Get posting URL
-        self._url = config.api_server_url(agent_id)
+        self._url = config.api_server_url(agentdata.agent_id)
 
         # Get the agent cache directory
         self._cache_dir = config.agent_cache_directory(
             self._agent_program_post)
 
         # All cache files created by this agent will end with this suffix.
-        devicehash = lib_data.hashstring(
-            self._post_data['agent_hostname'], sha=1)
-        self._cache_filename_suffix = '{}_{}.json'.format(agent_id, devicehash)
+        devicehash = lib_data.hashstring(agentdata.agent_hostname, sha=1)
+        self._cache_filename_suffix = '{}_{}.json'.format(
+            agentdata.agent_id, devicehash)
 
     def post(self, save=True, data=None):
         """Post data to central server.

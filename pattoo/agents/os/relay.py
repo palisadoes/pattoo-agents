@@ -5,6 +5,7 @@
 from pattoo.constants import PATTOO_OS_SPOKED_API_PREFIX
 from pattoo import post
 from pattoo import get
+from pattoo import data
 
 
 def spoked_url(ip_device, ip_bind_port):
@@ -46,9 +47,8 @@ def relay(ip_device, ip_bind_port):
     # Post data
     if bool(data_dict) is True:
         # Post to remote server
-        server = post.PostDict(data_dict)
-
-        # Post data
+        agentdata = data.converter(data=data_dict)
+        server = post.Post(agentdata)
         success = server.post()
 
         # Purge cache if success is True

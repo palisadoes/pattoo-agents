@@ -245,10 +245,6 @@ class AgentAPI(Agent):
     Returns:
         None
 
-    Functions:
-        __init__:
-        populate:
-        post:
     """
 
     def __init__(self, parent, child, config_api, app):

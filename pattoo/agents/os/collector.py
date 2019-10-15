@@ -12,49 +12,56 @@ import psutil
 
 # Pattoo libraries
 from pattoo import data
-from pattoo.variables import DataVariable, DataVariableList
+from pattoo.variables import DataVariable, DataVariablesHost, AgentPolledData
+from pattoo import agent
+from pattoo import times
 from pattoo.constants import (
     DATA_INT, DATA_COUNT64, DATA_STRING, DATA_FLOAT)
 
 
-def poll():
+def poll(agent_program):
     """Get all agent data.
 
     Performance data on linux server on which this application is installed.
 
     Args:
-        agent_program: Agent program name
+        agentdata: AgentPolledData object for all data gathered by the agent
 
     Returns:
         None
 
     """
-    # Initialize key variables
-    device = socket.getfqdn()
+    # Initialize AgentPolledData
+    agent_id = agent.get_agent_id(agent_program)
+    agent_hostname = socket.getfqdn()
+    timestamp = times.normalized_timestamp()
+    agentdata = AgentPolledData(
+        agent_id, agent_program, agent_hostname, timestamp)
 
     # Intialize data gathering
-    dv_list = DataVariableList(device)
+    dv_host = DataVariablesHost(agent_hostname)
 
     # Update agent with system data
-    _stats_system(dv_list)
+    _stats_system(dv_host)
 
     # Update agent with disk data
-    _stats_disk_swap(dv_list)
-    _stats_disk_partitions(dv_list)
-    _stats_disk_io(dv_list)
+    _stats_disk_swap(dv_host)
+    _stats_disk_partitions(dv_host)
+    _stats_disk_io(dv_host)
 
     # Update agent with network data
-    _stats_network(dv_list)
+    _stats_network(dv_host)
 
-    # Return data
-    return dv_list
+    # Add results to the AgentPolledData object for posting
+    agentdata.append(dv_host)
+    return agentdata
 
 
-def _stats_system(dv_list):
+def _stats_system(dv_host):
     """Update agent with system data.
 
     Args:
-        dv_list: DataVariableList object
+        dv_host: DataVariablesHost object
 
     Returns:
         None
@@ -64,41 +71,41 @@ def _stats_system(dv_list):
     # Set non timeseries values
     #########################################################################
 
-    dv_list.append(DataVariable(value=platform.release(),
+    dv_host.append(DataVariable(value=platform.release(),
                                 data_label='release',
                                 data_type=DATA_STRING))
 
-    dv_list.append(DataVariable(value=platform.system(),
+    dv_host.append(DataVariable(value=platform.system(),
                                 data_label='system',
                                 data_type=DATA_STRING))
 
-    dv_list.append(DataVariable(value=platform.version(),
+    dv_host.append(DataVariable(value=platform.version(),
                                 data_label='version',
                                 data_type=DATA_STRING))
 
-    dv_list.append(DataVariable(value=psutil.cpu_count(),
+    dv_host.append(DataVariable(value=psutil.cpu_count(),
                                 data_label='cpu_count',
                                 data_type=DATA_INT))
 
     #########################################################################
     # Set timeseries values (Integers)
     #########################################################################
-    dv_list.append(DataVariable(value=len(psutil.pids()),
+    dv_host.append(DataVariable(value=len(psutil.pids()),
                                 data_label='process_count',
                                 data_type=DATA_INT))
 
     # Load averages
     (la_01, la_05, la_15) = os.getloadavg()
 
-    dv_list.append(DataVariable(value=la_01,
+    dv_host.append(DataVariable(value=la_01,
                                 data_label='load_average_01min',
                                 data_type=DATA_INT))
 
-    dv_list.append(DataVariable(value=la_05,
+    dv_host.append(DataVariable(value=la_05,
                                 data_label='load_average_05min',
                                 data_type=DATA_INT))
 
-    dv_list.append(DataVariable(value=la_15,
+    dv_host.append(DataVariable(value=la_15,
                                 data_label='load_average_15min',
                                 data_type=DATA_INT))
 
@@ -107,31 +114,31 @@ def _stats_system(dv_list):
     #########################################################################
 
     # Percentage CPU utilization
-    dv_list.extend(data.named_tuple_to_dv(
+    dv_host.extend(data.named_tuple_to_dv(
         psutil.cpu_times_percent(),
         data_label='cpu_times_percent', data_type=DATA_FLOAT))
 
     # Get CPU runtimes
-    dv_list.extend(data.named_tuple_to_dv(
+    dv_host.extend(data.named_tuple_to_dv(
         psutil.cpu_times(),
         data_label='cpu_times', data_type=DATA_COUNT64))
 
     # Get CPU stats
-    dv_list.extend(data.named_tuple_to_dv(
+    dv_host.extend(data.named_tuple_to_dv(
         psutil.cpu_stats(),
         data_label='cpu_stats', data_type=DATA_COUNT64))
 
     # Get memory utilization
-    dv_list.extend(data.named_tuple_to_dv(
+    dv_host.extend(data.named_tuple_to_dv(
         psutil.virtual_memory(),
         data_label='memory', data_type=DATA_INT))
 
 
-def _stats_disk_swap(dv_list):
+def _stats_disk_swap(dv_host):
     """Update agent with disk swap data.
 
     Args:
-        dv_list: DataVariableList object
+        dv_host: DataVariablesHost object
 
     Returns:
         None
@@ -159,14 +166,14 @@ def _stats_disk_swap(dv_list):
         result.append(_dv)
 
     # Add the result to data
-    dv_list.extend(result)
+    dv_host.extend(result)
 
 
-def _stats_disk_partitions(dv_list):
+def _stats_disk_partitions(dv_host):
     """Update agent with disk partition data.
 
     Args:
-        dv_list: DataVariableList object
+        dv_host: DataVariablesHost object
 
     Returns:
         None
@@ -177,9 +184,9 @@ def _stats_disk_partitions(dv_list):
     result = []
 
     # Get filesystem partition utilization
-    diskdv_list = psutil.disk_partitions()
-    # "diskdv_list" is named tuple describing partitions
-    for item in diskdv_list:
+    diskdv_host = psutil.disk_partitions()
+    # "diskdv_host" is named tuple describing partitions
+    for item in diskdv_host:
         # "source" is the partition mount point
         mountpoint = item.mountpoint
         if "docker" in str(mountpoint):
@@ -194,14 +201,14 @@ def _stats_disk_partitions(dv_list):
                 result.append(_dv)
 
     # Add the result to data
-    dv_list.extend(result)
+    dv_host.extend(result)
 
 
-def _stats_disk_io(dv_list):
+def _stats_disk_io(dv_host):
     """Update agent with disk io data.
 
     Args:
-        dv_list: DataVariableList object
+        dv_host: DataVariablesHost object
 
     Returns:
         None
@@ -213,10 +220,10 @@ def _stats_disk_io(dv_list):
     result = []
 
     # Get disk I/O usage
-    iodv_list = psutil.disk_io_counters(perdisk=True)
+    iodv_host = psutil.disk_io_counters(perdisk=True)
 
     # "source" is disk name
-    for disk, disk_named_tuple in iodv_list.items():
+    for disk, disk_named_tuple in iodv_host.items():
         # No RAM pseudo disks. RAM disks OK.
         if bool(regex.match(disk)) is True:
             continue
@@ -234,14 +241,14 @@ def _stats_disk_io(dv_list):
             result.append(_dv)
 
     # Add the result to data
-    dv_list.extend(result)
+    dv_host.extend(result)
 
 
-def _stats_network(dv_list):
+def _stats_network(dv_host):
     """Update agent with network data.
 
     Args:
-        dv_list: DataVariableList object
+        dv_host: DataVariablesHost object
 
     Returns:
         None
@@ -252,8 +259,8 @@ def _stats_network(dv_list):
     prefix = 'network'
 
     # Get network utilization
-    nicdv_list = psutil.net_io_counters(pernic=True)
-    for nic, nic_named_tuple in nicdv_list.items():
+    nicdv_host = psutil.net_io_counters(pernic=True)
+    for nic, nic_named_tuple in nicdv_host.items():
         nic_dict = nic_named_tuple._asdict()
         for suffix, value in nic_dict.items():
             data_label = '{}_{}'.format(prefix, suffix)
@@ -263,4 +270,4 @@ def _stats_network(dv_list):
             result.append(_dv)
 
     # Add the result to data
-    dv_list.extend(result)
+    dv_host.extend(result)

@@ -76,15 +76,14 @@ class PollingAgent(agent.Agent):
         # Initialize key variables
         config = configuration.Config()
         interval = config.polling_interval()
-        agent_program = PATTOO_SNMPD
 
         # Post data to the remote server
         while True:
             # Get system data
-            dv_list = collector.poll()
+            agentdata = collector.poll()
 
             # Post to remote server
-            server = post.Post(agent_program, dv_list)
+            server = post.Post(agentdata)
 
             # Post data
             success = server.post()

@@ -37,7 +37,7 @@ def main():
 
     """
     # Define where pattoo lives
-    root = ROOT_DIRECTORY
+    root = ROOT_DIR
     ignore_paths = ['/.git/', '/__pycache__/', '/_archive/', '/_deprecated/']
     error_functions = (
         'log2die_safe(', 'log2warning(',

@@ -4,6 +4,7 @@
 import os
 import sys
 import yaml
+import json
 
 # Pattoo libraries
 from pattoo import log
@@ -143,6 +144,46 @@ def read_yaml_file(filepath, as_string=False, die=True):
                 return {}
             else:
                 return ''
+
+    # Return
+    return result
+
+
+def read_json_file(filepath, die=True):
+    """Read the contents of a YAML file.
+
+    Args:
+        filepath: Path to file to be read
+        die: Die if there is an error
+
+    Returns:
+        result: Dict of yaml read
+
+    """
+    # Read file
+    if filepath.endswith('.json'):
+        try:
+            with open(filepath, 'r') as file_handle:
+                result = json.load(file_handle)
+        except:
+            log_message = (
+                'Error reading file {}. Check permissions, '
+                'existence and file syntax.'
+                ''.format(filepath))
+            if bool(die) is True:
+                log.log2die_safe(1012, log_message)
+            else:
+                log.log2debug(1013, log_message)
+                return {}
+
+    else:
+        # Die if not a JSON file
+        log_message = '{} is not a JSON file.'.format(filepath)
+        if bool(die) is True:
+            log.log2die_safe(1010, log_message)
+        else:
+            log.log2debug(1011, log_message)
+            return {}
 
     # Return
     return result

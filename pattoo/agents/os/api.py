@@ -24,11 +24,8 @@ def home():
         None
 
     """
-    # Initialize key variables
-    agent_program = PATTOO_OS_SPOKED
-
     # Process and present
-    dv_list = collector.poll()
-    process = data.Data(agent_program, dv_list)
+    agentdata = collector.poll(PATTOO_OS_SPOKED)
+    process = data.Data(agentdata)
     data_dict = process.data()
     return jsonify(data_dict)
