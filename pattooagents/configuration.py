@@ -29,8 +29,8 @@ class Config(object):
 
         """
         # Update the configuration directory
-        if 'PATTOO_CONFIGDIR' in os.environ:
-            config_directory = os.environ['PATTOO_CONFIGDIR']
+        if 'PATTOO_AGENTS_CONFIGDIR' in os.environ:
+            config_directory = os.environ['PATTOO_AGENTS_CONFIGDIR']
         else:
             config_directory = '{}/etc'.format(files.root_directory())
 

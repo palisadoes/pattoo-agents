@@ -7,7 +7,7 @@ For the sake of simplicity we will assume there is one file called `etc/config.y
 Make sure you have configured the `main` and `remote_api` sections of `etc/config.yaml` file before adding any sections for `pattoo-os` related daemons.
 
 ## Custom Directory Location
-You can selectively set the location of the configuration directory by using the `PATTOO_CONFIGDIR` environmental variable. 
+You can selectively set the location of the configuration directory by using the `PATTOO_AGENTS_CONFIGDIR` environmental variable. 
 
 This can be useful for:
 

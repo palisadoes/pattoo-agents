@@ -168,7 +168,7 @@ def _update_environment_strings(filepaths, config_dir):
     """
     # Initialize key variables
     global BINDIR
-    env_path = '^Environment="PATTOO_CONFIGDIR=(.*?)"$'
+    env_path = '^Environment="PATTOO_AGENTS_CONFIGDIR=(.*?)"$'
     env_bin = '^Environment="BIN_DIR=(.*?)"$'
 
     # Do the needful
@@ -186,9 +186,9 @@ def _update_environment_strings(filepaths, config_dir):
                 if bool(re.search(env_bin, _line)) is True:
                     _line = 'Environment="BIN_DIR={}"'.format(BIN_DIR)
 
-                # Test PATTOO_CONFIGDIR
+                # Test PATTOO_AGENTS_CONFIGDIR
                 if bool(re.search(env_path, line)) is True:
-                    _line = 'Environment="PATTOO_CONFIGDIR={}"'.format(
+                    _line = 'Environment="PATTOO_AGENTS_CONFIGDIR={}"'.format(
                         config_dir)
 
                 lines.append(_line)
