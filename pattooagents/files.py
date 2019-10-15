@@ -7,7 +7,7 @@ import yaml
 import json
 
 # Pattoo libraries
-from pattoo import log
+from pattooagents import log
 import pattoo
 
 

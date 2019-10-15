@@ -1,7 +1,7 @@
 """Module for classes that format variables."""
 
 # pattoo imports
-from pattoo.constants import DATA_INT
+from pattooagents.constants import DATA_INT
 
 
 class DataVariable(object):

@@ -25,9 +25,9 @@ from gunicorn.app.base import BaseApplication
 from gunicorn.six import iteritems
 
 # Pattoo libraries
-from pattoo import daemon
-from pattoo import log
-from pattoo import data
+from pattooagents import daemon
+from pattooagents import log
+from pattooagents import data
 
 
 class Agent(object):

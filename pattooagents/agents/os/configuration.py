@@ -5,9 +5,9 @@ import os
 import yaml
 
 # Import project libraries
-from pattoo import configuration
-from pattoo.configuration import Config
-from pattoo.constants import PATTOO_OS_SPOKED, PATTOO_OS_HUBD
+from pattooagents import configuration
+from pattooagents.configuration import Config
+from pattooagents.constants import PATTOO_OS_SPOKED, PATTOO_OS_HUBD
 
 
 class ConfigSpoked(Config):

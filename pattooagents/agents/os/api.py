@@ -5,9 +5,9 @@
 from flask import Flask, jsonify
 
 # Pattoo imports
-from pattoo.agents.os import collector
-from pattoo.constants import PATTOO_OS_SPOKED_API_PREFIX, PATTOO_OS_SPOKED
-from pattoo import data
+from pattooagents.agents.os import collector
+from pattooagents.constants import PATTOO_OS_SPOKED_API_PREFIX, PATTOO_OS_SPOKED
+from pattooagents import data
 
 # Define flask parameters
 API = Flask(__name__)

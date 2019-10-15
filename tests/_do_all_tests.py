@@ -30,7 +30,7 @@ else:
 
 # pattoo-agents libraries
 from tests.dev import unittest_setup
-from pattoo import files
+from pattooagents import files
 
 
 def main():

@@ -2,10 +2,10 @@
 """Pattoo get library."""
 
 # Pattoo libraries
-from pattoo.constants import PATTOO_OS_SPOKED_API_PREFIX
-from pattoo import post
-from pattoo import get
-from pattoo import data
+from pattooagents.constants import PATTOO_OS_SPOKED_API_PREFIX
+from pattooagents import post
+from pattooagents import get
+from pattooagents import data
 
 
 def spoked_url(ip_device, ip_bind_port):

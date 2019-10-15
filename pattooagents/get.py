@@ -1,18 +1,12 @@
 #!/usr/bin/env python3
 """Pattoo get library."""
 
-import os
 import sys
-import time
-import hashlib
-import yaml
-import json
 import urllib
+import json
 
 # Pattoo libraries
-from pattoo import configuration
-from pattoo import log
-import pattoo
+from pattooagents import log
 
 
 def get_url_json(url):

@@ -25,8 +25,8 @@ else:
     sys.exit(2)
 
 # Pattoo imports
-from pattoo import files
-import pattoo
+from pattooagents import files
+import pattooagents
 
 
 class TestBasicFunctions(unittest.TestCase):

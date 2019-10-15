@@ -17,9 +17,9 @@ import json
 import requests
 
 # Pattoo libraries
-from pattoo import log
-from pattoo import data as lib_data
-from pattoo import configuration
+from pattooagents import log
+from pattooagents import data as lib_data
+from pattooagents import configuration
 
 
 class Post(object):

@@ -5,10 +5,10 @@
 from copy import deepcopy
 
 # Import project libraries
-from pattoo.configuration import Config
-from pattoo import configuration
-from pattoo.variables import SNMPAuth, SNMPVariableList, OIDVariable
-from pattoo.constants import PATTOO_SNMPD
+from pattooagents.configuration import Config
+from pattooagents import configuration
+from pattooagents.variables import SNMPAuth, SNMPVariableList, OIDVariable
+from pattooagents.constants import PATTOO_SNMPD
 
 
 class ConfigSNMP(Config):

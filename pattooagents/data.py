@@ -14,9 +14,9 @@ from copy import deepcopy
 
 
 # Pattoo libraries
-from pattoo import files
-from pattoo.variables import DataVariable, DataVariablesHost, AgentPolledData
-from pattoo.constants import (
+from pattooagents import files
+from pattooagents.variables import DataVariable, DataVariablesHost, AgentPolledData
+from pattooagents.constants import (
     DATA_FLOAT, DATA_INT, DATA_COUNT64, DATA_COUNT, DATA_STRING)
 
 
