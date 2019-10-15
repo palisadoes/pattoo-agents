@@ -8,7 +8,7 @@ import json
 
 # Pattoo libraries
 from pattooagents import log
-import pattoo
+import pattooagents
 
 
 def root_directory():
@@ -22,7 +22,7 @@ def root_directory():
 
     """
     # Get the directory of the pattoo library
-    pattoo_dir = pattoo.__path__[0]
+    pattoo_dir = pattooagents.__path__[0]
     components = pattoo_dir.split(os.sep)
 
     # Determine the directory two levels above

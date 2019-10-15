@@ -39,7 +39,7 @@ class TestBasicFunctions(unittest.TestCase):
     def test_root_directory(self):
         """Testing function root_directory."""
         # Determine root directory for pattoo
-        pattoo_dir = pattoo.__path__[0]
+        pattoo_dir = pattooagents.__path__[0]
         components = pattoo_dir.split(os.sep)
 
         # Determine root directory 2 levels above
