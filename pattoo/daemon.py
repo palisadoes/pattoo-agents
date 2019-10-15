@@ -131,6 +131,7 @@ class Daemon(object):
             None
 
         Returns:
+            None
 
         """
         # Check for a pidfile to see if the daemon already runs
@@ -166,6 +167,7 @@ class Daemon(object):
             None
 
         Returns:
+            None
 
         """
         # Delete lock file and stop

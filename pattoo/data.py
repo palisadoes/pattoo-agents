@@ -11,13 +11,16 @@ Description:
 from collections import defaultdict
 import socket
 import hashlib
+from copy import deepcopy
 
 
 # Pattoo libraries
 from pattoo import times
+from pattoo import files
 from pattoo import agent as agent_lib
-from pattoo.variables import DataVariable
-from pattoo.constants import DATA_INT, DATA_STRING
+from pattoo.variables import DataVariable, DataVariableList, AgentData
+from pattoo.constants import (
+    DATA_FLOAT, DATA_INT, DATA_COUNT64, DATA_COUNT, DATA_STRING)
 
 
 class Data(object):
@@ -75,30 +78,22 @@ class Data(object):
 
             # Pre-populate the result with empty dicts
             result[device] = {}
-            result[device]['timefixed'] = {}
-            result[device]['timestamp'] = {}
 
             # Analyze each DataVariable for the dv_list
             for _dvar in dv_list.data:
-                # Determine the type of data
-                if _dvar.data_type == DATA_STRING:
-                    key = 'timefixed'
-                else:
-                    key = 'timestamp'
-
                 # Add keys if not already there
-                if _dvar.data_label not in result[device][key]:
-                    result[device][key][_dvar.data_label] = {}
+                if _dvar.data_label not in result[device]:
+                    result[device][_dvar.data_label] = {}
 
                 # Assign data values to result
                 data_tuple = (_dvar.data_index, _dvar.value)
-                if 'data' in result[device][key][_dvar.data_label]:
-                    result[device][key][_dvar.data_label][
+                if 'data' in result[device][_dvar.data_label]:
+                    result[device][_dvar.data_label][
                         'data'].append(data_tuple)
                 else:
-                    result[device][key][_dvar.data_label][
+                    result[device][_dvar.data_label][
                         'data_type'] = _dvar.data_type
-                    result[device][key][_dvar.data_label][
+                    result[device][_dvar.data_label][
                         'data'] = [data_tuple]
 
         # Return
@@ -259,3 +254,178 @@ def named_tuple_to_dv(
 
     # Return
     return result
+
+
+def converter(data=None, filepath=None):
+    """Convert agent cache data to AgentData object.
+
+    Args:
+        data: Agent data dict
+        filename: Name of file with Agent data dict
+
+    Returns:
+        agentdata: AgentData object
+
+    """
+    # Initialize key variables
+    agent_id = None
+    agent_program = None
+    agent_hostname = None
+    timestamp = None
+
+    # Get data
+    if bool(filepath) is not None:
+        _data = files.read_yaml_file(filepath, as_string=False, die=False)
+    else:
+        _data = data
+
+    # Get values to instantiate an AgentData object
+    (agent_id, agent_program, agent_hostname,
+     timestamp, polled_data, agent_valid) = _valid_agent(_data)
+    if agent_valid is False:
+        return None
+    agentdata = AgentData(agent_id, agent_program, agent_hostname, timestamp)
+
+    # Iterate through devices polled by the agent
+    for device, devicedata in sorted(polled_data.items()):
+        # Create DataVariableList
+        dv_list = _datavariablelist(device, devicedata)
+
+        # Append the DataVariableList to the AgentData object
+        if dv_list.active is True:
+            agentdata.extend(dv_list)
+
+    # Return
+    if agentdata.active is False:
+        return None
+    else:
+        return agentdata
+
+
+def _valid_agent(_data):
+    """Determine the validity of the Agent's data.
+
+    Args:
+        _data: Agent data dict
+
+    Returns:
+        result: Tuple of (
+            agent_id, agent_program, agent_hostname,
+            timestamp, polled_data, agent_valid)
+
+    """
+    # Initialize key variables
+    agent_id = None
+    agent_program = None
+    agent_hostname = None
+    timestamp = None
+    polled_data = None
+    agent_valid = False
+
+    # Verify values
+    if isinstance(_data, dict) is True:
+        if 'agent_id' in _data:
+            agent_id = _data['agent_id']
+        if 'agent_program' in _data:
+            agent_program = _data['agent_program']
+        if 'agent_program' in _data:
+            agent_hostname = _data['agent_hostname']
+        if 'timestamp' in _data:
+            if isinstance(_data['timestamp'], int) is True:
+                timestamp = _data['timestamp']
+        if 'devices' in _data:
+            if isinstance(_data['devices'], dict) is True:
+                polled_data = deepcopy(_data['devices'])
+
+    # Determine validity
+    agent_valid = False not in [
+        bool(agent_id), bool(agent_program),
+        bool(agent_hostname), bool(timestamp),
+        bool(polled_data)]
+
+    # Return
+    result = (
+        agent_id, agent_program, agent_hostname,
+        timestamp, polled_data, agent_valid)
+    return result
+
+
+def _datavariablelist(device, devicedata):
+    """Create a DataVariableList object from Agent data.
+
+    Args:
+        device: Device polled by agent
+        devicedata: Data polled from device by agent
+
+    Returns:
+        datavariablelist: DataVariableList object
+
+    """
+    # Initialize key variables
+    dv_list = DataVariableList(device)
+
+    # Ignore invalid data
+    if isinstance(devicedata, dict) is True:
+        # Iterate through the data_labels in the dict
+        for data_label, data4label in sorted(devicedata.items()):
+            # Ignore invalid data
+            if isinstance(data4label, dict) is False:
+                continue
+
+            # Validate the presence of required keys, then process
+            if 'data' and 'data_type' in data4label:
+                # Skip invalid types
+                if data4label['data_type'] not in [
+                        DATA_FLOAT, DATA_INT, DATA_COUNT64, DATA_COUNT,
+                        DATA_STRING]:
+                    continue
+                if isinstance(data4label['data'], list) is False:
+                    continue
+
+                # Add to the DataVariableList
+                datavariables = _datavariables(data_label, data4label)
+                dv_list.extend(datavariables)
+
+    # Return
+    return dv_list
+
+
+def _datavariables(data_label, data4label):
+    """Create a valid list of DataVariables for a specific label.
+
+    Args:
+        data_label: Label for data
+        data4label: Dict of data represented by the data_label
+
+    Returns:
+        datavariables: List of DataVariable objects
+
+    """
+    # Initialize key variables
+    datavariables = []
+    data_type = data4label['data_type']
+
+    # Add the data to the DataVariableList
+    for item in data4label['data']:
+        if isinstance(item, list) is True:
+            if len(item) == 2:
+                data_index = item[0]
+                value = item[1]
+
+                # Skip invalid numerical data
+                if data_type is not DATA_STRING:
+                    try:
+                        float(value)
+                    except:
+                        continue
+
+                # Update DataVariable with valid data
+                datavariable = DataVariable(
+                    value=value,
+                    data_label=data_label,
+                    data_index=data_index,
+                    data_type=data4label['data_type'])
+                datavariables.append(datavariable)
+
+    # Return
+    return datavariables

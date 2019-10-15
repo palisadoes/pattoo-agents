@@ -80,6 +80,7 @@ class DataVariableList(object):
         # Initialize key variables
         self.data = []
         self.device = device
+        self.active = False
 
     def append(self, item):
         """Append DataVariable to the list.
@@ -95,11 +96,76 @@ class DataVariableList(object):
         if isinstance(item, DataVariable) is True:
             self.data.append(item)
 
+            # Set object as being active
+            self.active = False not in [bool(self.data), bool(self.device)]
+
     def extend(self, items):
         """Extend the DataVariable list.
 
         Args:
-            items: A DataVariable list
+            items: A DataVariable object list
+
+        Returns:
+            None
+
+        """
+        # Do nothing if not a list
+        if isinstance(items, list) is False:
+            return
+
+        # Extend the list
+        for item in items:
+            self.append(item)
+
+
+class AgentData(object):
+    """Object defining data received from / sent by Agent."""
+
+    def __init__(self, agent_id, agent_program, agent_hostname, timestamp):
+        """Initialize the class.
+
+        Args:
+            agent_id: Agent ID
+            agent_program: Name of agent program
+            agent_hostname: Hostname on which the agent ran
+            timestamp: Timestamp of data
+
+        Returns:
+            None
+
+        """
+        # Initialize key variables
+        self.agent_id = agent_id
+        self.agent_program = agent_program
+        self.agent_hostname = agent_hostname
+        self.timestamp = timestamp
+        self.data = []
+        self.active = False
+
+    def append(self, item):
+        """Append DataVariable to the list.
+
+        Args:
+            item: A DataVariableList object
+
+        Returns:
+            None
+
+        """
+        # Only append approved data types
+        if isinstance(item, DataVariableList) is True:
+            self.data.append(item)
+
+            # Set object as being active
+            self.active = False not in [
+                bool(self.agent_id), bool(self.agent_program),
+                bool(self.agent_hostname), bool(self.timestamp)]
+
+    def extend(self, items):
+        """Extend the DataVariable list.
+
+        Args:
+            items: A DataVariableList object list
 
         Returns:
             None
