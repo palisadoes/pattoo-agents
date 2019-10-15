@@ -37,18 +37,14 @@ class Post(object):
         """
         # Initialize key variables
         config = configuration.Config()
-        process = lib_data.Data(agentdata)
-        self._post_data = process.data()
-
-        # Get the agent information
-        self._agent_program_post = agentdata.agent_program
+        self._agentdata = agentdata
 
         # Get posting URL
         self._url = config.api_server_url(agentdata.agent_id)
 
         # Get the agent cache directory
         self._cache_dir = config.agent_cache_directory(
-            self._agent_program_post)
+            self._agentdata.agent_program)
 
         # All cache files created by this agent will end with this suffix.
         devicehash = lib_data.hashstring(agentdata.agent_hostname, sha=1)
@@ -70,11 +66,21 @@ class Post(object):
         # Initialize key variables
         success = False
         response = False
-        timestamp = self._post_data['timestamp']
+        timestamp = self._agentdata.timestamp
 
         # Create data to post
         if data is None:
-            data2post = self._post_data
+            if self._agentdata.active is True:
+                process = lib_data.Data(self._agentdata)
+                data2post = process.data()
+            else:
+                # Invalid data. Return False
+                log_message = (
+                    'Agent data invalid agent_id "{}". Will not post.'
+                    ''.format(self._agentdata.agent_id))
+                log.log2info(1028, log_message)
+                success = False
+                return success
         else:
             data2post = data
 
@@ -105,12 +111,12 @@ class Post(object):
         if success is True:
             log_message = (
                 'Agent "{}" successfully contacted server {}'
-                ''.format(self._agent_program_post, self._url))
+                ''.format(self._agentdata.agent_program, self._url))
             log.log2info(1027, log_message)
         else:
             log_message = (
                 'Agent "{}" failed to contact server {}'
-                ''.format(self._agent_program_post, self._url))
+                ''.format(self._agentdata.agent_program, self._url))
             log.log2warning(1028, log_message)
 
         # Return
@@ -127,7 +133,7 @@ class Post(object):
 
         """
         # Initialize key variables
-        agent_id = self._post_data['agent_id']
+        agent_id = self._agentdata.agent_id
 
         # Add files in cache directory to list only if they match the
         # cache suffix
@@ -154,7 +160,7 @@ class Post(object):
                     log_message = (
                         'Error reading previously cached agent data file {} '
                         'for agent {}. May be corrupted.'
-                        ''.format(filepath, self._agent_program_post))
+                        ''.format(filepath, self._agentdata.agent_program))
                     log.log2die(1064, log_message)
 
             # Post file
