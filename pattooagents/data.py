@@ -15,7 +15,8 @@ from copy import deepcopy
 
 # Pattoo libraries
 from pattooagents import files
-from pattooagents.variables import DataVariable, DataVariablesHost, AgentPolledData
+from pattooagents.variables import (
+    DataVariable, DataVariablesHost, AgentPolledData)
 from pattooagents.constants import (
     DATA_FLOAT, DATA_INT, DATA_COUNT64, DATA_COUNT, DATA_STRING)
 
@@ -209,36 +210,6 @@ def is_numeric(val):
         return False
     except:
         return False
-
-
-def named_tuple_to_dv(
-        values, data_label=None, data_type=DATA_INT):
-    """Convert a named tuple to a list of DataVariable objects.
-
-    Args:
-        values: Named tuple
-        data_label: data_label
-        data_type: Data type
-
-    Returns:
-        result: List of DataVariable
-
-    """
-    # Get data
-    data_dict = values._asdict()
-    result = []
-
-    # Cycle through results
-    for data_index, value in data_dict.items():
-        _dv = DataVariable(
-            value=value,
-            data_label=data_label,
-            data_index=data_index,
-            data_type=data_type)
-        result.append(_dv)
-
-    # Return
-    return result
 
 
 def converter(data=None, filepath=None):

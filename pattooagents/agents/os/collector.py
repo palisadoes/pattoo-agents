@@ -11,8 +11,8 @@ import socket
 import psutil
 
 # Pattoo libraries
-from pattooagents import data
-from pattooagents.variables import DataVariable, DataVariablesHost, AgentPolledData
+from pattooagents.variables import (
+    DataVariable, DataVariablesHost, AgentPolledData)
 from pattooagents import agent
 from pattooagents import times
 from pattooagents.constants import (
@@ -114,22 +114,22 @@ def _stats_system(dv_host):
     #########################################################################
 
     # Percentage CPU utilization
-    dv_host.extend(data.named_tuple_to_dv(
+    dv_host.extend(_named_tuple_to_dv(
         psutil.cpu_times_percent(),
         data_label='cpu_times_percent', data_type=DATA_FLOAT))
 
     # Get CPU runtimes
-    dv_host.extend(data.named_tuple_to_dv(
+    dv_host.extend(_named_tuple_to_dv(
         psutil.cpu_times(),
         data_label='cpu_times', data_type=DATA_COUNT64))
 
     # Get CPU stats
-    dv_host.extend(data.named_tuple_to_dv(
+    dv_host.extend(_named_tuple_to_dv(
         psutil.cpu_stats(),
         data_label='cpu_stats', data_type=DATA_COUNT64))
 
     # Get memory utilization
-    dv_host.extend(data.named_tuple_to_dv(
+    dv_host.extend(_named_tuple_to_dv(
         psutil.virtual_memory(),
         data_label='memory', data_type=DATA_INT))
 
@@ -271,3 +271,33 @@ def _stats_network(dv_host):
 
     # Add the result to data
     dv_host.extend(result)
+
+
+def _named_tuple_to_dv(
+        values, data_label=None, data_type=DATA_INT):
+    """Convert a named tuple to a list of DataVariable objects.
+
+    Args:
+        values: Named tuple
+        data_label: data_label
+        data_type: Data type
+
+    Returns:
+        result: List of DataVariable
+
+    """
+    # Get data
+    data_dict = values._asdict()
+    result = []
+
+    # Cycle through results
+    for data_index, value in data_dict.items():
+        _dv = DataVariable(
+            value=value,
+            data_label=data_label,
+            data_index=data_index,
+            data_type=data_type)
+        result.append(_dv)
+
+    # Return
+    return result
