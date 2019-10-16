@@ -275,7 +275,7 @@ class Daemon(object):
         pass
 
 
-class _Directory:
+class _Directory(object):
     """A class for creating the names of hidden directories."""
 
     def __init__(self):
@@ -334,7 +334,7 @@ class _Directory:
         return value
 
 
-class _File:
+class _File(object):
     """A class for creating the names of hidden files."""
 
     def __init__(self):
