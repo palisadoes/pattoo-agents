@@ -10,6 +10,7 @@ from flask import Blueprint, request, abort
 # Infoset-ng imports
 from pattoo import files
 from pattoo import configuration
+from pattoo.constants import PATTOO_API_AGENT_EXECUTABLE
 
 
 # Define the POST global variable
@@ -33,7 +34,7 @@ def receive(agent_id):
 
     # Read configuration
     config = configuration.Config()
-    cache_dir = CONFIG.cache_directory()
+    cache_dir = CONFIG.agent_cache_directory(PATTOO_API_AGENT_EXECUTABLE)
 
     # Get JSON from incoming agent POST
     try:

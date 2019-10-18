@@ -244,7 +244,7 @@ class Config(object):
             result = '{}'.format(intermediate).lower()
         return result
 
-    def cache_directory(self):
+    def _cache_directory(self):
         """Determine the cache_directory.
 
         Args:
@@ -281,7 +281,7 @@ class Config(object):
 
         """
         # Get result
-        result = '{}/{}'.format(self.cache_directory(), agent_program)
+        result = '{}/{}'.format(self._cache_directory(), agent_program)
 
         # Create directory if it doesn't exist
         files.mkdir(result)
