@@ -10,14 +10,13 @@ from flask import Blueprint, request, abort
 # Infoset-ng imports
 from pattoo import files
 from pattoo import configuration
-from pattoo_shared import PATTOO_API_AGENT_PREFIX
 
 
 # Define the POST global variable
 POST = Blueprint('POST', __name__)
 
 
-@POST.route('{}/receive/<agent_id>'.format(PATTOO_API_AGENT_PREFIX),
+@POST.route('/receive/<agent_id>'),
              methods=['POST'])
 def receive(agent_id):
     """Function for handling the agent posting route.

@@ -2,12 +2,12 @@
 
 After installing your agents, you will need to edit a configuration file in the `etc/`directory. Pattoo will read any `.yaml` files found in this directory for configuration parameters.
 
-For the sake of simplicity we will assume there is one file called `etc/config.yaml`. 
+For the sake of simplicity we will assume there is one file called `etc/config.yaml`.
 
 Make sure you have configured the `main` and `remote_api` sections of `etc/config.yaml` file before adding any sections for `pattoo-os` related daemons.
 
 ## Custom Directory Location
-You can selectively set the location of the configuration directory by using the `PATTOO_AGENTS_CONFIGDIR` environmental variable. 
+You can selectively set the location of the configuration directory by using the `PATTOO_AGENTS_CONFIGDIR` environmental variable.
 
 This can be useful for:
 
@@ -29,7 +29,6 @@ remote_api:
     api_ip_address: 192.168.1.100
     api_ip_bind_port: 6000
     api_uses_https: False
-    api_uri: /pattoo/post
 
 ```
 
@@ -49,7 +48,6 @@ This table outlines the purpose of each configuration parameter
 || `api_ip_address`       | IP address of remote `pattoodb` server      |
 || `api_ip_bind_port`       | Port of remote `pattoodb` server     |
 || `api_uses_https`      | Use `https` when sending data  to remote `pattoodb` server|
-|| `api_uri`        | Remote `pattoodb` API URI|
 
 ## Agent Configuration
 See the [README.md](README.md) file for details on how to configure each type of agent.
@@ -58,4 +56,3 @@ See the [README.md](README.md) file for details on how to configure each type of
 Here are some addtional tips.
 
 1. You can create a separate configuration file for each section. If you are doing this, make sure there is only one file per agent section. Keep the mandtatory configurations sections in a separate file for simplicity. Practice on a test system before doing this. *Start with a single file first to gain confidence.*
-

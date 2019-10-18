@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 """Pattoo classes that manage various configurations."""
 
+# Standard imports
 import os
 
 # Import project libraries
 from pattoo_agents import files
 from pattoo_agents import log
+from pattoo_shared.constants import PATTOO_API_AGENT_PREFIX
 
 
 class Config(object):
@@ -131,23 +133,8 @@ class Config(object):
             result: result
 
         """
-        # Initialize key variables
-        key = 'remote_api'
-        sub_key = 'api_uri'
-
-        # Get result
-        received = search(key, sub_key, self._configuration, die=False)
-        if received is None:
-            received = 'pattoo/api/v1.0'
-
-        # Trim leading slash if exists
-        if received.startswith('/') is True:
-            received = received[1:]
-        if received.endswith('/') is True:
-            received = received[:-1]
-
         # Return
-        result = received
+        result = '{}/receive'.format(PATTOO_API_AGENT_PREFIX)
         return result
 
     def api_server_url(self, agent_id):
