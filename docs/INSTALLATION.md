@@ -29,10 +29,10 @@ $ sudo setup/systemd/bin/install_systemd.py --config_dir ~/GitHub/pattoo-agents/
 
 SUCCESS! You are now able to start/stop and enable/disable the following systemd services:
 
-pattoo-os-spoked.service
+pattoo-agent-os-spoked.service
 pattoo-snmpd.service
-pattoo-os-autonomousd.service
-pattoo-os-hubd.service
+pattoo-agent-os-autonomousd.service
+pattoo-agent-os-hubd.service
 
 $
 ```

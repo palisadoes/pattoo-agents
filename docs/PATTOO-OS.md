@@ -17,16 +17,16 @@ Follow these steps.
 
 `pattoo-os` contains multiple daemons.
 
-1. `pattoo-os-autonomousd.py` which will post `linux` system data in `json` format to a remote `pattoo` server
-1. `pattoo-os-spoked.py` which will make the same `linux` system data in `json` format available for viewing on the local server. This allows the server to be polled for data from remote servers running  `pattoo-os-hubd` software agents.
-1. `pattoo-os-hubd.py` which polls `pattoo-os-spoked` enables devices for data to be posted to the `pattoo` server.
+1. `pattoo-agent-os-autonomousd.py` which will post `linux` system data in `json` format to a remote `pattoo` server
+1. `pattoo-agent-os-spoked.py` which will make the same `linux` system data in `json` format available for viewing on the local server. This allows the server to be polled for data from remote servers running  `pattoo-agent-os-hubd` software agents.
+1. `pattoo-agent-os-hubd.py` which polls `pattoo-agent-os-spoked` enables devices for data to be posted to the `pattoo` server.
 
 The daemons will require a configuration file in the `etc/`directory. See the configuration section for details.
 
 ###
 ```bash
-$ bin/pattoo-os-autonomousd.py --help
-usage: pattoo-os-autonomousd.py [-h] [--start] [--stop] [--status] [--restart]
+$ bin/pattoo-agent-os-autonomousd.py --help
+usage: pattoo-agent-os-autonomousd.py [-h] [--start] [--stop] [--status] [--restart]
                             [--force]
 
 optional arguments:
@@ -42,8 +42,8 @@ $
 
 
 ```bash
-$ bin/pattoo-os-spoked.py --help
-usage: pattoo-os-spoked.py [-h] [--start] [--stop] [--status] [--restart]
+$ bin/pattoo-agent-os-spoked.py --help
+usage: pattoo-agent-os-spoked.py [-h] [--start] [--stop] [--status] [--restart]
                              [--force]
 
 optional arguments:
@@ -58,8 +58,8 @@ $
 ```
 
 ```bash
-$ bin/pattoo-os-hubd.py --help
-usage: pattoo-os-hubd.py [-h] [--start] [--stop] [--status] [--restart]
+$ bin/pattoo-agent-os-hubd.py --help
+usage: pattoo-agent-os-hubd.py [-h] [--start] [--stop] [--status] [--restart]
                          [--force]
 
 optional arguments:
@@ -83,13 +83,13 @@ For the sake of simplicity we will assume there is one file called `etc/config.y
 1. Make sure you have configured the `main` and `remote_api` sections of `etc/config.yaml` file before adding any sections for `pattoo-os` related daemons. The [CONFIGURATION.md](CONFIGURATION.md) file explains this in detail.
 1. After doing this, edit the `etc/config.yaml` file to change configuration options specific to the daemons . An explanation follows.
 
-### pattoo-os-hubd Section
+### pattoo-agent-os-hubd Section
 
-Add the following statements to the `config.yaml` file to configure the  `pattoo-os-hubd` daemon. An explanation follows.
+Add the following statements to the `config.yaml` file to configure the  `pattoo-agent-os-hubd` daemon. An explanation follows.
 
 
 ```yaml
-pattoo-os-hubd:
+pattoo-agent-os-hubd:
     ip_devices:
       - ip_address: 127.0.0.1
         ip_bind_port: 5000    
@@ -103,18 +103,18 @@ This table outlines the purpose of each configuration parameter
 
 |Section | Sub-Section|Config Options          | Description                    |
 |--|--|--|--|
-| `pattoo-os-hubd`||| **Note:** Only required for devices running `pattoo-os-hubd` |
-|| `ip_devices` | |Sub-Section providing a list of IP addresses or hostnames running `pattoo-os-spoked` that need to be polled for data. You must specify an `ip_address` and TCP `ip_bind_port`for each of these devices.|
+| `pattoo-agent-os-hubd`||| **Note:** Only required for devices running `pattoo-agent-os-hubd` |
+|| `ip_devices` | |Sub-Section providing a list of IP addresses or hostnames running `pattoo-agent-os-spoked` that need to be polled for data. You must specify an `ip_address` and TCP `ip_bind_port`for each of these devices.|
 ||| `ip_address` | The IP adrress of the remote `ip_device`.|
 ||| `bind_port` | The TCP port on which the remote `ip_device` is listening.|
 
-### pattoo-os-spoked Section
+### pattoo-agent-os-spoked Section
 
-Add the following statements to the `config.yaml` file to configure the  `pattoo-os-spoked` daemon. An explanation follows.
+Add the following statements to the `config.yaml` file to configure the  `pattoo-agent-os-spoked` daemon. An explanation follows.
 
 
 ```yaml
-pattoo-os-spoked:
+pattoo-agent-os-spoked:
     listen_address: 0.0.0.0
     ip_bind_port: 5000
 ```
@@ -125,16 +125,16 @@ This table outlines the purpose of each configuration parameter
 
 |Section | Config Options          | Description                    |
 |--|--|--|
-| `pattoo-os-spoked` | | **Note:** Only required for devices running `pattoo-os-spoked` |
+| `pattoo-agent-os-spoked` | | **Note:** Only required for devices running `pattoo-agent-os-spoked` |
 || `listen_address` | IP address on which the API server will listen. Setting this to `0.0.0.0` will make it listen on all IPv4 addresses. Setting to `"0::"` will make it listen on all IPv6 configured interfaces. It will not listen on IPv4 and IPv6 addresses simultaneously. You must **quote** all IPv6 addresses.|
 || `ip_bind_port`              | TCP port on which the API will listen|
 
-### pattoo-os-autonomousd Section
+### pattoo-agent-os-autonomousd Section
 
-There is no `pattoo-os-autonomousd` section. The parameters in the `main` and `remote_api` sections is sufficient.
+There is no `pattoo-agent-os-autonomousd` section. The parameters in the `main` and `remote_api` sections is sufficient.
 
 ## Testing
-If you are running `pattoo-os-spoked` on your local system, then you can test it by pointing your browser to `http://localhost:5000/pattoo-os` to view the system data.
+If you are running `pattoo-agent-os-spoked` on your local system, then you can test it by pointing your browser to `http://localhost:5000/pattoo-os` to view the system data.
 
 ## Troubleshooting
 Check the log files in the `log_directory` specified in your configuration.

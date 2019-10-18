@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Pattoo SNMP daemon.
+"""Pattoo reporter daemon.
 
 Posts system data to remote host over HTTP.
 
@@ -23,8 +23,8 @@ else:
     sys.exit(2)
 
 # Pattoo libraries
-from pattoo_shared.constants import PATTOO_SNMPD
-from pattoo_agents.agents.snmp import collector
+from pattoo_shared.constants import PATTOO_AGENT_OS_AUTONOMOUSD
+from pattoo_agents.agents.os import collector
 from pattoo_agents import agent
 from pattoo_agents import post
 from pattoo_agents import configuration
@@ -45,23 +45,7 @@ class PollingAgent(agent.Agent):
         """
         # Initialize key variables
         agent.Agent.__init__(self, parent)
-
-        # Initialize key variables
-        self._agent_program_pattoo_os = PATTOO_SNMPD
-
-    def name(self):
-        """Return agent name.
-
-        Args:
-            None
-
-        Returns:
-            value: Name of agent
-
-        """
-        # Return
-        value = self._agent_program_pattoo_os
-        return value
+        self._parent = parent
 
     def query(self):
         """Query all remote devices for data.
@@ -79,8 +63,9 @@ class PollingAgent(agent.Agent):
 
         # Post data to the remote server
         while True:
+
             # Get system data
-            agentdata = collector.poll()
+            agentdata = collector.poll(self._parent)
 
             # Post to remote server
             server = post.Post(agentdata)
@@ -107,7 +92,7 @@ def main():
 
     """
     # Get configuration
-    agent_poller = PollingAgent(PATTOO_SNMPD)
+    agent_poller = PollingAgent(PATTOO_AGENT_OS_AUTONOMOUSD)
 
     # Do control
     cli = agent.AgentCLI()

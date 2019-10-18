@@ -4,7 +4,7 @@
 # Import project libraries
 from pattoo_agents import configuration
 from pattoo_agents.configuration import Config
-from pattoo_shared.constants import PATTOO_OS_SPOKED, PATTOO_OS_HUBD
+from pattoo_shared.constants import PATTOO_AGENT_OS_SPOKED, PATTOO_AGENT_OS_HUBD
 
 
 class ConfigSpoked(Config):
@@ -12,7 +12,7 @@ class ConfigSpoked(Config):
 
     Only processes the following YAML keys in the configuration file:
 
-        The value of the PATTOO_OS_SPOKED constant
+        The value of the PATTOO_AGENT_OS_SPOKED constant
 
     """
 
@@ -40,7 +40,7 @@ class ConfigSpoked(Config):
 
         """
         # Get result
-        key = PATTOO_OS_SPOKED
+        key = PATTOO_AGENT_OS_SPOKED
         sub_key = 'listen_address'
         result = configuration.search(
             key, sub_key, self._configuration, die=False)
@@ -61,7 +61,7 @@ class ConfigSpoked(Config):
 
         """
         # Get result
-        key = PATTOO_OS_SPOKED
+        key = PATTOO_AGENT_OS_SPOKED
         sub_key = 'ip_bind_port'
         intermediate = configuration.search(
             key, sub_key, self._configuration, die=False)
@@ -75,11 +75,11 @@ class ConfigSpoked(Config):
 
 
 class ConfigHubd(Config):
-    """Class for PATTOO_OS_HUBD configuration information.
+    """Class for PATTOO_AGENT_OS_HUBD configuration information.
 
     Only processes the following YAML keys in the configuration file:
 
-        The value of the PATTOO_OS_HUBD constant
+        The value of the PATTOO_AGENT_OS_HUBD constant
 
     """
 
@@ -107,7 +107,7 @@ class ConfigHubd(Config):
 
         """
         # Get result
-        key = PATTOO_OS_HUBD
+        key = PATTOO_AGENT_OS_HUBD
         sub_key = 'ip_devices'
         result = configuration.search(
             key, sub_key, self._configuration, die=True)

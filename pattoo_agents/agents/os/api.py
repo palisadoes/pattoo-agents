@@ -7,7 +7,7 @@ from flask import Flask, jsonify
 # Pattoo imports
 from pattoo_agents.agents.os import collector
 from pattoo_shared.constants import (
-    PATTOO_OS_SPOKED_API_PREFIX, PATTOO_OS_SPOKED)
+    PATTOO_AGENT_OS_SPOKED_API_PREFIX, PATTOO_AGENT_OS_SPOKED)
 from pattoo_shared.converter import ConvertAgentPolledData
 
 
@@ -15,7 +15,7 @@ from pattoo_shared.converter import ConvertAgentPolledData
 API = Flask(__name__)
 
 
-@API.route(PATTOO_OS_SPOKED_API_PREFIX)
+@API.route(PATTOO_AGENT_OS_SPOKED_API_PREFIX)
 def home():
     """Display api data on home page.
 
@@ -27,7 +27,7 @@ def home():
 
     """
     # Process and present
-    agentdata = collector.poll(PATTOO_OS_SPOKED)
+    agentdata = collector.poll(PATTOO_AGENT_OS_SPOKED)
     process = ConvertAgentPolledData(agentdata)
     data_dict = process.data()
     return jsonify(data_dict)

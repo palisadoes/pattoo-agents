@@ -8,7 +8,7 @@ from copy import deepcopy
 from pattoo_agents.configuration import Config
 from pattoo_agents import configuration
 from pattoo_agents.variables import SNMPAuth, SNMPVariableList, OIDVariable
-from pattoo_shared.constants import PATTOO_SNMPD
+from pattoo_shared.constants import PATTOO_AGENT_SNMPD
 
 
 class ConfigSNMP(Config):
@@ -41,7 +41,7 @@ class ConfigSNMP(Config):
         result = []
 
         # Get configuration snippet
-        key = PATTOO_SNMPD
+        key = PATTOO_AGENT_SNMPD
         sub_key = 'snmp_groups'
         sub_config = configuration.search(
             key, sub_key, self._configuration, die=True)
@@ -83,7 +83,7 @@ class ConfigSNMP(Config):
         result = []
 
         # Get configuration snippet
-        key = PATTOO_SNMPD
+        key = PATTOO_AGENT_SNMPD
         sub_key = 'oid_groups'
         sub_config = configuration.search(
             key, sub_key, self._configuration, die=True)

@@ -5,7 +5,7 @@ This is a sample of the formatting of JSON data created by `pattoo-agents`. This
 
 ```json
 {
-   "agent_program" : "pattoo-os-spoked",
+   "agent_program" : "pattoo-agent-os-spoked",
    "agent_id" : "f95784520cdf96cdcc6125378d9d90f47db8caf6d31543f60d828a3182ccec0f",
    "timestamp" : 1570413300,
    "agent_hostname" : "swim",

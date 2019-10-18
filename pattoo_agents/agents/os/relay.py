@@ -5,7 +5,7 @@
 from pattoo_agents import post
 from pattoo_agents import get
 from pattoo_shared import converter
-from pattoo_shared.constants import PATTOO_OS_SPOKED_API_PREFIX
+from pattoo_shared.constants import PATTOO_AGENT_OS_SPOKED_API_PREFIX
 
 
 def spoked_url(ip_device, ip_bind_port):
@@ -26,7 +26,7 @@ def spoked_url(ip_device, ip_bind_port):
 
     # Return
     url = 'http://{}:{}{}'.format(
-        ip_device, ip_bind_port, PATTOO_OS_SPOKED_API_PREFIX)
+        ip_device, ip_bind_port, PATTOO_AGENT_OS_SPOKED_API_PREFIX)
     return url
 
 

@@ -17,15 +17,24 @@ DATA_STRING = 2
 DATA_NONE = None
 
 ###############################################################################
+# Constants for pattoo API
+###############################################################################
+
+PATTOO_API_SITE_PREFIX = '/pattoo'
+PATTOO_API_AGENT_PREFIX = '{}/agent'.format(PATTOO_API_SITE_PREFIX)
+PATTOO_API_EXECUTABLE = 'pattoo-api'
+PATTOO_API_GUNICORN_AGENT = 'pattoo-gunicorn'
+
+###############################################################################
 # Constants for standard agents
 ###############################################################################
 
-# pattoo-os constants
-PATTOO_OS_SPOKED_API_PREFIX = '/pattoo-os'
-PATTOO_OS_SPOKED = 'pattoo-os-spoked'
-PATTOO_OS_SPOKED_PROXY = '{}-gunicorn'.format(PATTOO_OS_SPOKED)
-PATTOO_OS_AUTONOMOUSD = 'pattoo-os-autonomousd'
-PATTOO_OS_HUBD = 'pattoo-os-hubd'
+# pattoo-agent-os constants
+PATTOO_AGENT_OS_SPOKED_API_PREFIX = '/pattoo-agent-os'
+PATTOO_AGENT_OS_SPOKED = 'pattoo-agent-os-spoked'
+PATTOO_AGENT_OS_SPOKED_PROXY = '{}-gunicorn'.format(PATTOO_AGENT_OS_SPOKED)
+PATTOO_AGENT_OS_AUTONOMOUSD = 'pattoo-agent-os-autonomousd'
+PATTOO_AGENT_OS_HUBD = 'pattoo-agent-os-hubd'
 
 # pattoo-snmp constants
-PATTOO_SNMPD = 'pattoo-snmpd'
+PATTOO_AGENT_SNMPD = 'pattoo-agent-snmpd'
