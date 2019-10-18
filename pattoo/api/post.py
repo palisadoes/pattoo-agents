@@ -7,7 +7,7 @@ import json
 # Flask imports
 from flask import Blueprint, request, abort
 
-# Infoset-ng imports
+# pattoo imports
 from pattoo import data
 from pattoo import configuration
 from pattoo_shared.constants import PATTOO_API_AGENT_EXECUTABLE
