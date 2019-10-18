@@ -1,6 +1,6 @@
-# pattoo-snmpd
+# pattoo-agent-snmpd
 
-`pattoo-snmpd` provides performance data on any SNMP enabled system it can poll. The data gathered is posted in `json` format using HTTP to a remote server.
+`pattoo-agent-snmpd` provides performance data on any SNMP enabled system it can poll. The data gathered is posted in `json` format using HTTP to a remote server.
 
 The `json` data is formatted for easy ingestion by [pattooDB](https://github.com/PalisadoesFoundation/pattoo-ng)
 
@@ -14,14 +14,14 @@ Follow these steps.
 
 ## Usage
 
-`pattoo-snmpd` has a simple command structure.
+`pattoo-agent-snmpd` has a simple command structure.
 
 The daemon will require a configuration file in the `etc/`directory. See the configuration section for details.
 
 ###
 ```bash
-$ bin/pattoo-snmpd.py --help
-usage: pattoo-snmpd.py [-h] [--start] [--stop] [--status] [--restart]
+$ bin/pattoo-agent-snmpd.py --help
+usage: pattoo-agent-snmpd.py [-h] [--start] [--stop] [--status] [--restart]
                          [--force]
 
 optional arguments:
@@ -44,13 +44,13 @@ For the sake of simplicity we will assume there is one file called `etc/config.y
 1. Make sure you have configured the `main` and `remote_api` sections of `etc/config.yaml` file before adding any sections for `pattoo-os` related daemons. The [CONFIGURATION.md](CONFIGURATION.md) file explains this in detail.
 1. After doing this, edit the `etc/config.yaml` file to change configuration options specific to the daemons . An explanation follows.
 
-### pattoo-snmpd Section
+### pattoo-agent-snmpd Section
 
-Add the following statements to the `config.yaml` file to configure the  `pattoo-snmpd` daemon. An explanation follows.
+Add the following statements to the `config.yaml` file to configure the  `pattoo-agent-snmpd` daemon. An explanation follows.
 
 
 ```yaml
-pattoo-snmpd:
+pattoo-agent-snmpd:
 
   oid_groups:
     - group_name: TEST
@@ -82,7 +82,7 @@ This table outlines the purpose of each configuration parameter
 
 |Section | Sub-Section |Config Options| Description|
 |--|--|--|--|
-|`pattoo-snmpd:`| | | **Note:** Only required for devices running `pattoo-snmpd` |
+|`pattoo-agent-snmpd:`| | | **Note:** Only required for devices running `pattoo-agent-snmpd` |
 ||`oid_groups:` || List of groupings of `ip_devices` that need data from a shared set of SNMP OIDs|
 |||`group_name:`|Unique name for a group of `ip_devices` that share the same SNMP parameters|
 |||`ip_devices:`| List of `ip_devices` to poll for OID data|
