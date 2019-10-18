@@ -6,6 +6,7 @@ import os
 # Import project libraries
 from pattoo import files
 from pattoo import log
+from pattoo_shared.constants import PATTOO_API_AGENT_EXECUTABLE
 
 
 class Config(object):

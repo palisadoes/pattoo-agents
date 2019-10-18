@@ -155,7 +155,7 @@ class Config(object):
 
         # Return
         result = (
-            '{}{}:{}/{}/receive/{}'.format(
+            '{}{}:{}{}/{}'.format(
                 prefix, self.api_ip_address(),
                 self.api_ip_bind_port(), self.api_uri(), agent_id))
         return result

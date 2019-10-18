@@ -8,17 +8,16 @@ import json
 from flask import Blueprint, request, abort
 
 # Infoset-ng imports
-from pattoo import files
+from pattoo import data
 from pattoo import configuration
-from pattoo.constants import PATTOO_API_AGENT_EXECUTABLE
+from pattoo_shared.constants import PATTOO_API_AGENT_EXECUTABLE
 
 
 # Define the POST global variable
 POST = Blueprint('POST', __name__)
 
 
-@POST.route('/receive/<agent_id>'),
-             methods=['POST'])
+@POST.route('/receive/<agent_id>', methods=['POST'])
 def receive(agent_id):
     """Function for handling the agent posting route.
 
@@ -34,44 +33,44 @@ def receive(agent_id):
 
     # Read configuration
     config = configuration.Config()
-    cache_dir = CONFIG.agent_cache_directory(PATTOO_API_AGENT_EXECUTABLE)
+    cache_dir = config.agent_cache_directory(PATTOO_API_AGENT_EXECUTABLE)
 
     # Get JSON from incoming agent POST
     try:
-        data = request.json
-    else:
+        posted_data = request.json
+    except:
         # Don't crash if we cannot convert JSON
         abort(404)
 
-    # Abort if data isn't a dict
-    if isinstance(data, dict) is False:
+    # Abort if posted_data isn't a dict
+    if isinstance(posted_data, dict) is False:
         abort(404)
 
     # Make sure all the important keys are available
     keys = ['timestamp', 'agent_id', 'agent_hostname']
     for key in keys:
-        if key in data:
+        if key in posted_data:
             found_count += 1
 
     # Do processing
     if found_count == 3:
         # Extract key values from posting
         try:
-            timestamp = int(data['timestamp'])
+            timestamp = int(posted_data['timestamp'])
         except:
             abort(404)
-        agent_id = data['agent_id']
-        agent_hostname = data['agent_hostname']
+        agent_id = posted_data['agent_id']
+        agent_hostname = posted_data['agent_hostname']
 
         # Create a hash of the agent_hostname
-        device_hash = files.hashstring(agent_hostname, sha=1)
+        device_hash = data.hashstring(agent_hostname, sha=1)
         json_path = (
             '{0}{4}{1}_{2}_{3}.json'.format(
                 cache_dir, timestamp, agent_id, device_hash, os.sep))
 
         # Create cache file
         with open(json_path, "w+") as temp_file:
-            json.dump(data, temp_file)
+            json.dump(posted_data, temp_file)
 
         # Return
         return 'OK'

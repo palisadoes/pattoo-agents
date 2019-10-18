@@ -25,9 +25,9 @@ from gunicorn.app.base import BaseApplication
 from gunicorn.six import iteritems
 
 # Pattoo libraries
-from pattoo_agents import daemon
-from pattoo_agents import log
-from pattoo_agents import data
+from pattoo import daemon
+from pattoo import log
+from pattoo import data
 
 
 class Agent(object):
@@ -322,8 +322,8 @@ class AgentAPI(Agent):
         log_message = (
             'Pattoo API running on {}:{} and logging to file {}.'
             ''.format(
-                config.listen_address(),
-                config.ip_bind_port(),
+                config.api_ip_address(),
+                config.api_ip_bind_port(),
                 config.log_file_api()))
         log.log2info(1022, log_message)
 
@@ -385,7 +385,7 @@ def _ip_binding(config):
     """
     # Initialize key variables
     ipv4 = False
-    ip_address = config.listen_address()
+    ip_address = config.api_ip_address()
 
     # Check IP address type
     try:
@@ -399,9 +399,9 @@ def _ip_binding(config):
     # Is this an IPv4 address?
     ipv4 = isinstance(ip_object, ipaddress.IPv4Address)
     if ipv4 is True:
-        result = '{}:{}'.format(ip_address, config.ip_bind_port())
+        result = '{}:{}'.format(ip_address, config.api_ip_bind_port())
     else:
-        result = '[{}]:{}'.format(ip_address, config.ip_bind_port())
+        result = '[{}]:{}'.format(ip_address, config.api_ip_bind_port())
 
     return result
 

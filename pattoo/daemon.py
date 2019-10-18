@@ -8,8 +8,8 @@ import os
 import time
 
 # Pattoo imports
-from pattoo_agents import log
-from pattoo_agents import files
+from pattoo import log
+from pattoo import files
 
 
 class Daemon(object):
