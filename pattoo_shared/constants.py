@@ -22,8 +22,8 @@ DATA_NONE = None
 
 PATTOO_API_SITE_PREFIX = '/pattoo'
 PATTOO_API_AGENT_PREFIX = '{}/agent'.format(PATTOO_API_SITE_PREFIX)
-PATTOO_API_EXECUTABLE = 'pattoo-api'
-PATTOO_API_GUNICORN_AGENT = 'pattoo-gunicorn'
+PATTOO_API_AGENT_EXECUTABLE = 'pattoo-api'
+PATTOO_API_AGENT_GUNICORN_AGENT = 'pattoo-api-gunicorn'
 
 ###############################################################################
 # Constants for standard agents
