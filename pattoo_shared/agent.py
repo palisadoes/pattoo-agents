@@ -17,7 +17,6 @@ import argparse
 import ipaddress
 import multiprocessing
 import os
-from pprint import pprint
 from random import random
 
 # PIP3 libraries
@@ -25,9 +24,10 @@ from gunicorn.app.base import BaseApplication
 from gunicorn.six import iteritems
 
 # Pattoo libraries
-from pattoo import daemon
-from pattoo import log
-from pattoo import data
+from pattoo_shared import daemon
+from pattoo_shared import log
+from pattoo_shared import data
+from pattoo_shared.configuration import Config
 
 
 class Agent(object):
@@ -247,13 +247,13 @@ class AgentAPI(Agent):
 
     """
 
-    def __init__(self, parent, child, config_api, app):
+    def __init__(self, parent, child, agent_api_variable, app):
         """Initialize the class.
 
         Args:
             parent: Name of parent daemon
             child: Name of child daemon
-            config_api: ConfigSpoked object
+            agent_api_variable: AgentAPIVariable object
             app: Flask App
 
         Returns:
@@ -262,8 +262,8 @@ class AgentAPI(Agent):
         """
         # Initialize key variables
         Agent.__init__(self, parent, child)
-        self._config_api = config_api
         self._app = app
+        self._agent_api_variable = agent_api_variable
 
     def query(self):
         """Query all remote devices for data.
@@ -276,24 +276,21 @@ class AgentAPI(Agent):
 
         """
         # Initialize key variables
-        config = self._config_api
+        config = Config()
 
         # Check for lock and pid files
         if os.path.exists(self.lockfile_parent) is True:
-            log_message = (
-                'Lock file {} exists. Multiple API daemons running '
-                'API may have died '
-                'catastrophically in the past, in which case the lockfile '
-                'should be deleted. '
-                ''.format(self.lockfile_parent))
+            log_message = ('''\
+Lock file {} exists. Multiple API daemons running API may have died \
+catastrophically in the past, in which case the lockfile should be deleted.\
+'''.format(self.lockfile_parent))
             log.log2see(1083, log_message)
 
         if os.path.exists(self.pidfile_parent) is True:
-            log_message = (
-                'PID file: {} already exists. Daemon already running? '
-                'If not, it may have died catastrophically in the past '
-                'in which case you should use --stop --force to fix.'
-                ''.format(self.pidfile_parent))
+            log_message = ('''\
+PID file: {} already exists. Daemon already running? If not, it may have died \
+catastrophically in the past in which case you should use --stop --force to \
+fix.'''.format(self.pidfile_parent))
             log.log2see(1084, log_message)
 
         ######################################################################
@@ -307,7 +304,7 @@ class AgentAPI(Agent):
         #
         ######################################################################
         options = {
-            'bind': _ip_binding(config),
+            'bind': _ip_binding(self._agent_api_variable),
             'accesslog': config.log_file_api(),
             'errorlog': config.log_file_api(),
             'capture_output': True,
@@ -322,8 +319,8 @@ class AgentAPI(Agent):
         log_message = (
             'Pattoo API running on {}:{} and logging to file {}.'
             ''.format(
-                config.api_ip_address(),
-                config.api_ip_bind_port(),
+                self._agent_api_variable.listen_address,
+                self._agent_api_variable.ip_bind_port,
                 config.log_file_api()))
         log.log2info(1022, log_message)
 
@@ -351,8 +348,6 @@ class StandaloneApplication(BaseApplication):
         self.application = app
         super(StandaloneApplication, self).__init__()
 
-        pprint(self.cfg.settings)
-
     def load_config(self):
         """Load the configuration."""
         # Initialize key variables
@@ -373,19 +368,20 @@ def _number_of_workers():
     return (multiprocessing.cpu_count() * 2) + 1
 
 
-def _ip_binding(config):
+def _ip_binding(aav):
     """Create IPv4 / IPv6 binding for Gunicorn.
 
     Args:
-        config: ConfigSpoked object
+        aav: AgentAPIVariable object
 
     Returns:
         result: bind
 
     """
     # Initialize key variables
+    ip_address = aav.listen_address
+    ip_bind_port = aav.ip_bind_port
     ipv4 = False
-    ip_address = config.api_ip_address()
 
     # Check IP address type
     try:
@@ -399,10 +395,9 @@ def _ip_binding(config):
     # Is this an IPv4 address?
     ipv4 = isinstance(ip_object, ipaddress.IPv4Address)
     if ipv4 is True:
-        result = '{}:{}'.format(ip_address, config.api_ip_bind_port())
+        result = '{}:{}'.format(ip_address, ip_bind_port)
     else:
-        result = '[{}]:{}'.format(ip_address, config.api_ip_bind_port())
-
+        result = '[{}]:{}'.format(ip_address, ip_bind_port)
     return result
 
 

@@ -9,8 +9,8 @@ import socket
 # Pattoo libraries
 from pattoo_agents.agents.snmp import configuration
 from pattoo_agents.agents.snmp import snmp
-from pattoo_agents import times
-from pattoo_agents import agent
+from pattoo_shared import times
+from pattoo_shared import agent
 from pattoo_shared.constants import PATTOO_AGENT_SNMPD
 from pattoo_shared.variables import DataVariablesHost, AgentPolledData
 

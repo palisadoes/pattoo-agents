@@ -22,9 +22,10 @@ else:
     sys.exit(2)
 
 # Pattoo libraries
-from pattoo_agents.agent import Agent, AgentAPI, AgentCLI
+from pattoo_shared.agent import Agent, AgentAPI, AgentCLI
 from pattoo_shared.constants import (
     PATTOO_AGENT_OS_SPOKED, PATTOO_AGENT_OS_SPOKED_PROXY)
+from pattoo_shared.variables import AgentAPIVariable
 from pattoo_agents.agents.os import configuration
 from pattoo_agents.agents.os.api import API
 
@@ -36,8 +37,11 @@ def main():
 
     # Create Flask object to daemonize
     config = configuration.ConfigSpoked()
+    aav = AgentAPIVariable(
+        ip_bind_port=config.ip_bind_port(),
+        listen_address=config.listen_address())
     agent_gunicorn = AgentAPI(
-        PATTOO_AGENT_OS_SPOKED, PATTOO_AGENT_OS_SPOKED_PROXY, config, API)
+        PATTOO_AGENT_OS_SPOKED, PATTOO_AGENT_OS_SPOKED_PROXY, aav, API)
 
     # Do control (Gunicorn first, Daemonized query second)
     cli = AgentCLI()

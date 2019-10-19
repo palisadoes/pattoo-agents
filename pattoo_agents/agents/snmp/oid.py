@@ -1,8 +1,8 @@
 """Module used to manipulate OID strings and validate OIDs."""
 
 # Import pattoo libraries
-from pattoo_agents import log
-from pattoo_agents import data
+from pattoo_shared import log
+from pattoo_shared import data
 
 
 class OIDstring(object):

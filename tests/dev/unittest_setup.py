@@ -68,7 +68,7 @@ class TestConfig(object):
         }
 
     def create(self):
-        """Create a good config and set the PATTOO_AGENTS_CONFIGDIR variable.
+        """Create a good config and set the PATTOO_CONFIGDIR variable.
 
         Args:
             None
@@ -134,27 +134,27 @@ def _environment():
     """
     # Initialize key variables
     global CONFIG_DIRECTORY
-    os.environ['PATTOO_AGENTS_CONFIGDIR'] = CONFIG_DIRECTORY
+    os.environ['PATTOO_CONFIGDIR'] = CONFIG_DIRECTORY
 
     # Create a message for the screen
     screen_message = ('''
-The PATTOO_AGENTS_CONFIGDIR is set to the wrong directory. Run this command to do \
+The PATTOO_CONFIGDIR is set to the wrong directory. Run this command to do \
 so:
 
-$ export PATTOO_AGENTS_CONFIGDIR={}
+$ export PATTOO_CONFIGDIR={}
 
 Then run this command again, followed by.
 
 $ ./_do_all_tests.py
 '''.format(CONFIG_DIRECTORY))
 
-    # Make sure the PATTOO_AGENTS_CONFIGDIR environment variable is set
-    if 'PATTOO_AGENTS_CONFIGDIR' not in os.environ:
+    # Make sure the PATTOO_CONFIGDIR environment variable is set
+    if 'PATTOO_CONFIGDIR' not in os.environ:
         print(screen_message)
         sys.exit(2)
 
-    # Make sure the PATTOO_AGENTS_CONFIGDIR environment variable is set correctly
-    if os.environ['PATTOO_AGENTS_CONFIGDIR'] != CONFIG_DIRECTORY:
+    # Make sure the PATTOO_CONFIGDIR environment variable is set correctly
+    if os.environ['PATTOO_CONFIGDIR'] != CONFIG_DIRECTORY:
         print(screen_message)
         sys.exit(2)
 

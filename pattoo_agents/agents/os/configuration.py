@@ -2,8 +2,8 @@
 """Pattoo classes that manage various configurations."""
 
 # Import project libraries
-from pattoo_agents import configuration
-from pattoo_agents.configuration import Config
+from pattoo_shared import configuration
+from pattoo_shared.configuration import Config
 from pattoo_shared.constants import PATTOO_AGENT_OS_SPOKED, PATTOO_AGENT_OS_HUBD
 
 

@@ -25,12 +25,12 @@ else:
 
 # Pattoo libraries
 from pattoo_shared.constants import PATTOO_AGENT_OS_HUBD
-from pattoo_agents import agent
+from pattoo_shared.agent import Agent, AgentCLI
 from pattoo_agents.agents.os import relay
 from pattoo_agents.agents.os import configuration
 
 
-class PollingAgent(agent.Agent):
+class PollingAgent(Agent):
     """Agent that gathers data."""
 
     def __init__(self, parent):
@@ -44,7 +44,7 @@ class PollingAgent(agent.Agent):
 
         """
         # Initialize key variables
-        agent.Agent.__init__(self, parent)
+        Agent.__init__(self, parent)
 
     def query(self):
         """Query all remote devices for data.
@@ -123,7 +123,7 @@ def main():
     agent_poller = PollingAgent(PATTOO_AGENT_OS_HUBD)
 
     # Do control
-    cli = agent.AgentCLI()
+    cli = AgentCLI()
     cli.control(agent_poller)
 
 

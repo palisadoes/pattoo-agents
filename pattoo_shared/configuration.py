@@ -5,9 +5,10 @@
 import os
 
 # Import project libraries
-from pattoo_agents import files
-from pattoo_agents import log
-from pattoo_shared.constants import PATTOO_API_AGENT_PREFIX
+from pattoo_shared import files
+from pattoo_shared import log
+from pattoo_shared.constants import (
+    PATTOO_API_AGENT_PREFIX, PATTOO_API_AGENT_EXECUTABLE)
 
 
 class Config(object):
@@ -30,14 +31,31 @@ class Config(object):
             None
 
         """
-        # Update the configuration directory
-        if 'PATTOO_AGENTS_CONFIGDIR' in os.environ:
-            config_directory = os.environ['PATTOO_AGENTS_CONFIGDIR']
-        else:
-            config_directory = '{}/etc'.format(files.root_directory())
-
-        # Return data
+        # Get the configuration directory
+        # Expand linux ~ notation for home directories if provided.
+        _config_directory = log.check_environment()
+        config_directory = os.path.expanduser(_config_directory)
         self._configuration = files.read_yaml_files(config_directory)
+
+    def api_listen_address(self):
+        """Get api_listen_address.
+
+        Args:
+            None
+
+        Returns:
+            result: result
+
+        """
+        # Get result
+        key = PATTOO_API_AGENT_EXECUTABLE
+        sub_key = 'api_listen_address'
+        result = search(key, sub_key, self._configuration, die=False)
+
+        # Default to 0.0.0.0
+        if result is None:
+            result = '0.0.0.0'
+        return result
 
     def polling_interval(self):
         """Get interval.
@@ -51,7 +69,7 @@ class Config(object):
         """
         # Get result
         key = 'main'
-        sub_key = 'interval'
+        sub_key = 'polling_interval'
         intermediate = search(key, sub_key, self._configuration, die=False)
 
         # Default to 300
@@ -72,7 +90,7 @@ class Config(object):
 
         """
         # Initialize key variables
-        key = 'remote_api'
+        key = PATTOO_API_AGENT_EXECUTABLE
         sub_key = 'api_ip_address'
 
         # Get result
@@ -92,7 +110,7 @@ class Config(object):
 
         """
         # Initialize key variables
-        key = 'remote_api'
+        key = PATTOO_API_AGENT_EXECUTABLE
         sub_key = 'api_ip_bind_port'
 
         # Get result
@@ -114,7 +132,7 @@ class Config(object):
 
         """
         # Initialize key variables
-        key = 'remote_api'
+        key = PATTOO_API_AGENT_EXECUTABLE
         sub_key = 'api_uses_https'
 
         # Get result
@@ -244,7 +262,7 @@ class Config(object):
             result = '{}'.format(intermediate).lower()
         return result
 
-    def _cache_directory(self):
+    def cache_directory(self):
         """Determine the cache_directory.
 
         Args:
@@ -281,7 +299,7 @@ class Config(object):
 
         """
         # Get result
-        result = '{}/{}'.format(self._cache_directory(), agent_program)
+        result = '{}/{}'.format(self.cache_directory(), agent_program)
 
         # Create directory if it doesn't exist
         files.mkdir(result)

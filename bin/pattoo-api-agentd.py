@@ -21,10 +21,11 @@ else:
     sys.exit(2)
 
 # Pattoo libraries
-from pattoo.agent import Agent, AgentCLI, AgentAPI
-from pattoo import configuration
 from pattoo_shared.constants import (
     PATTOO_API_AGENT_EXECUTABLE, PATTOO_API_AGENT_GUNICORN_AGENT)
+from pattoo_shared.variables import AgentAPIVariable
+from pattoo_shared.agent import Agent, AgentCLI, AgentAPI
+from pattoo_shared.configuration import Config
 from pattoo.api import PATTOO_API_AGENT
 
 
@@ -34,11 +35,14 @@ def main():
     agent_gunicorn = Agent(PATTOO_API_AGENT_GUNICORN_AGENT)
 
     # Get configuration
-    config = configuration.Config()
+    config = Config()
+    aav = AgentAPIVariable(
+        ip_bind_port=config.api_ip_bind_port(),
+        listen_address=config.api_listen_address())
     agent_api = AgentAPI(
         PATTOO_API_AGENT_EXECUTABLE,
         PATTOO_API_AGENT_GUNICORN_AGENT,
-        config,
+        aav,
         PATTOO_API_AGENT)
 
     # Do control (API first, Gunicorn second)

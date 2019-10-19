@@ -6,7 +6,7 @@ import urllib
 import json
 
 # Pattoo libraries
-from pattoo_agents import log
+from pattoo_shared import log
 
 
 def get_url_json(url):

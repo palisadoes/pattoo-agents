@@ -17,9 +17,9 @@ import json
 import requests
 
 # Pattoo libraries
-from pattoo_agents import log
-from pattoo_agents import data as lib_data
-from pattoo_agents import configuration
+from pattoo_shared import log
+from pattoo_shared import configuration
+from pattoo_shared import data as lib_data
 from pattoo_shared.converter import ConvertAgentPolledData
 
 

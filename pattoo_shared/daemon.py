@@ -8,8 +8,9 @@ import os
 import time
 
 # Pattoo imports
-from pattoo import log
-from pattoo import files
+from pattoo_shared import log
+from pattoo_shared import files
+from pattoo_shared import configuration
 
 
 class Daemon(object):
@@ -85,9 +86,9 @@ class Daemon(object):
         # Temporarily comment out these three lines when troubleshooting daemon
         # operation. Errors will become immediately apparent.
         #######################################################################
-        os.dup2(f_handle_si.fileno(), sys.stdin.fileno())
-        os.dup2(f_handle_so.fileno(), sys.stdout.fileno())
-        os.dup2(f_handle_se.fileno(), sys.stderr.fileno())
+        #os.dup2(f_handle_si.fileno(), sys.stdin.fileno())
+        #os.dup2(f_handle_so.fileno(), sys.stdout.fileno())
+        #os.dup2(f_handle_se.fileno(), sys.stderr.fileno())
 
         # write pidfile
         atexit.register(self.delpid)
@@ -289,7 +290,8 @@ class _Directory(object):
 
         """
         # Initialize key variables
-        self.root = '{}/.pattoo'.format(files.root_directory())
+        config = configuration.Config()
+        self.root = '{}/.pattoo'.format(config.cache_directory())
 
     def pid(self):
         """Define the hidden pid directory.

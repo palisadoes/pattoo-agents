@@ -11,8 +11,8 @@ import socket
 import psutil
 
 # Pattoo libraries
-from pattoo_agents import agent
-from pattoo_agents import times
+from pattoo_shared import agent
+from pattoo_shared import times
 from pattoo_shared.variables import (
     DataVariable, DataVariablesHost, AgentPolledData)
 from pattoo_shared.constants import (

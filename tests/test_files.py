@@ -25,8 +25,7 @@ else:
     sys.exit(2)
 
 # Pattoo imports
-from pattoo_agents import files
-import pattoo_agents
+from pattoo_shared import files
 
 
 class TestBasicFunctions(unittest.TestCase):
@@ -35,17 +34,6 @@ class TestBasicFunctions(unittest.TestCase):
     #########################################################################
     # General object setup
     #########################################################################
-
-    def test_root_directory(self):
-        """Testing function root_directory."""
-        # Determine root directory for pattoo
-        pattoo_dir = pattoo_agents.__path__[0]
-        components = pattoo_dir.split(os.sep)
-
-        # Determine root directory 2 levels above
-        root_dir = os.sep.join(components[0:-1])
-        result = files.root_directory()
-        self.assertEqual(result, root_dir)
 
     def test_read_yaml_files(self):
         """Testing method / function read_yaml_files."""

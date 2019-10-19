@@ -4,7 +4,7 @@ Wants=network.target
 After=network.target
 
 [Service]
-Environment="PATTOO_AGENTS_CONFIGDIR=x"
+Environment="PATTOO_CONFIGDIR=x"
 Environment="BIN_DIR=x"
 ExecStart=$BIN_DIR/pattoo-os-snmpd --start
 ExecStop=$BIN_DIR/pattoo-os-snmpd --stop

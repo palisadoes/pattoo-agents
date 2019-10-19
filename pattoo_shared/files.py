@@ -7,29 +7,7 @@ import json
 import yaml
 
 # Pattoo libraries
-from pattoo_agents import log
-import pattoo_agents
-
-
-def root_directory():
-    """Determine the root directory in which pattoo is installed.
-
-    Args:
-        None
-
-    Returns:
-        root_dir: Root directory
-
-    """
-    # Get the directory of the pattoo library
-    pattoo_dir = pattoo_agents.__path__[0]
-    components = pattoo_dir.split(os.sep)
-
-    # Determine the directory two levels above
-    root_dir = os.sep.join(components[0:-1])
-
-    # Return
-    return root_dir
+from pattoo_shared import log
 
 
 def read_yaml_files(config_directory):

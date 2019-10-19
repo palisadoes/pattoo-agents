@@ -179,6 +179,58 @@ class AgentPolledData(object):
                 self.append(item)
 
 
+class AgentAPIVariable(object):
+    """Variable representation for data required by the AgentAPI."""
+
+    def __init__(self, ip_bind_port=6000, listen_address='0.0.0.0'):
+        """Initialize the class.
+
+        Args:
+            ip_bind_port: ip_bind_port
+            listen_address: TCP/IP address on which the API is listening.
+
+        Returns:
+            None
+
+        """
+        # Initialize variables
+        self.ip_bind_port = ip_bind_port
+        self.listen_address = listen_address
+
+    def __repr__(self):
+        """Return a representation of the attributes of the class.
+
+        Args:
+            None
+
+        Returns:
+            result: String representation.
+
+        """
+        return (
+            '<{0} ip_bind_port={1}, listen_address={2}>'
+            ''.format(
+                self.__class__.__name__,
+                repr(self.ip_bind_port),
+                repr(self.listen_address)
+            )
+        )
+
+    def __setattr__(self, name, value):
+        """Set attibutes.
+
+        Args:
+            name:
+            value:
+
+        Returns:
+            None
+
+        """
+        # Set the attribute
+        self.__dict__[name] = value
+
+
 def _strip_non_printable(value):
     """Strip non printable characters.
 

@@ -3,6 +3,7 @@
 
 from __future__ import print_function
 import sys
+import os
 import datetime
 import time
 import getpass
@@ -10,13 +11,46 @@ import logging
 
 
 # Pattoo libraries
-from pattoo_agents import configuration
+from pattoo_shared import configuration
 
 # Define global variable
 LOGGER = {}
 
 
-class GetLog(object):
+
+def check_environment():
+    """Check environmental variables. Die if incorrect.
+
+    Args:
+        None
+
+    Returns:
+        path: Path to the configurtion directory
+
+    """
+    # Get environment
+    if 'PATTOO_CONFIGDIR' not in os.environ:
+        log_message = (
+            'Environment variable $PATTOO_CONFIGDIR needs '
+            'to be set to the slurpy configuration directory.')
+        log2die_safe(1159, log_message)
+
+    # Verify configuration directory
+    config_directory = os.environ['PATTOO_CONFIGDIR']
+    if (os.path.exists(config_directory) is False) or (
+            os.path.isdir(config_directory) is False):
+        log_message = (
+            'Environment variable $PATTOO_CONFIGDIR set to '
+            'directory {} that does not exist'
+            ''.format(config_directory))
+        log2die_safe(1179, log_message)
+
+    # Return
+    path = os.environ['PATTOO_CONFIGDIR']
+    return path
+
+
+class _GetLog(object):
     """Class to manage the logging without duplicates."""
 
     def __init__(self):
@@ -231,7 +265,7 @@ def _logit(error_num, error_string, error=False, verbose=False, level='info'):
 
     # Create logger if it doesn't already exist
     if bool(LOGGER) is False:
-        LOGGER = GetLog()
+        LOGGER = _GetLog()
     logger_file = LOGGER.logfile()
     logger_stdout = LOGGER.stdout()
 

@@ -7,10 +7,10 @@ The `json` data is formatted for easy ingestion by [pattooDB](https://github.com
 ## Installation
 Follow these steps.
 
-1. Follow the installation steps in the [INSTALLATION.md](INSTALLATION.md) file. 
-1. Configure the main section of the configuration file following the steps in [CONFIGURATION.md](CONFIGURATION.md) file. 
+1. Follow the installation steps in the [INSTALLATION.md](INSTALLATION.md) file.
+1. Configure the main section of the configuration file following the steps in [CONFIGURATION.md](CONFIGURATION.md) file.
 1. Populate the configuration with the agent specific details listed below
-1. Start the desired daemons using the commands below. You may want to make these `systemd` daemons, if so follow the steps in the [INSTALLATION.md](INSTALLATION.md) file. 
+1. Start the desired daemons using the commands below. You may want to make these `systemd` daemons, if so follow the steps in the [INSTALLATION.md](INSTALLATION.md) file.
 
 
 ## Usage
@@ -126,7 +126,7 @@ This table outlines the purpose of each configuration parameter
 |Section | Config Options          | Description                    |
 |--|--|--|
 | `pattoo-agent-os-spoked` | | **Note:** Only required for devices running `pattoo-agent-os-spoked` |
-|| `listen_address` | IP address on which the API server will listen. Setting this to `0.0.0.0` will make it listen on all IPv4 addresses. Setting to `"0::"` will make it listen on all IPv6 configured interfaces. It will not listen on IPv4 and IPv6 addresses simultaneously. You must **quote** all IPv6 addresses.|
+|| `listen_address` | IP address on which the API server will listen. Setting this to `0.0.0.0` will make it listen on all IPv4 addresses. Setting to `"0::"` will make it listen on all IPv6 configured interfaces. It will not listen on IPv4 and IPv6 addresses simultaneously. You must **quote** all IPv6 addresses. The default value is `0.0.0.0`|
 || `ip_bind_port`              | TCP port on which the API will listen|
 
 ### pattoo-agent-os-autonomousd Section
