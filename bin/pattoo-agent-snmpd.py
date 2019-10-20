@@ -23,11 +23,11 @@ else:
     sys.exit(2)
 
 # Pattoo libraries
+from pattoo_shared.configuration import Config
 from pattoo_shared.constants import PATTOO_AGENT_SNMPD
-from pattoo_shared import configuration
+from pattoo_shared.post import Post
 from pattoo_shared.agent import Agent, AgentCLI
 from pattoo_agents.agents.snmp import collector
-from pattoo_agents import post
 
 
 class PollingAgent(Agent):
@@ -74,7 +74,7 @@ class PollingAgent(Agent):
 
         """
         # Initialize key variables
-        config = configuration.Config()
+        config = Config()
         interval = config.polling_interval()
 
         # Post data to the remote server
@@ -83,7 +83,7 @@ class PollingAgent(Agent):
             agentdata = collector.poll()
 
             # Post to remote server
-            server = post.Post(agentdata)
+            server = Post(agentdata)
 
             # Post data
             success = server.post()

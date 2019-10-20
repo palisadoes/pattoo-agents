@@ -2,8 +2,8 @@
 """Pattoo get library."""
 
 # Pattoo libraries
-from pattoo_agents import post
 from pattoo_agents import get
+from pattoo_shared.post import Post
 from pattoo_shared import converter
 from pattoo_shared.constants import PATTOO_AGENT_OS_SPOKED_API_PREFIX
 
@@ -48,7 +48,7 @@ def relay(ip_device, ip_bind_port):
     if bool(data_dict) is True:
         # Post to remote server
         agentdata = converter.convert(data_dict)
-        server = post.Post(agentdata)
+        server = Post(agentdata)
         success = server.post()
 
         # Purge cache if success is True
