@@ -16,11 +16,11 @@ from copy import deepcopy
 from .variables import (
     DataVariable, DataVariablesHost, AgentPolledData)
 from .constants import (
-    DATA_FLOAT, DATA_INT, DATA_COUNT64, DATA_COUNT, DATA_STRING)
+    DATA_FLOAT, DATA_INT, DATA_COUNT64, DATA_COUNT, DATA_STRING, DATA_NONE)
 
 
 class ConvertAgentPolledData(object):
-    """Pattoo agent that gathers data."""
+    """Converts AgentPolledData object to a standardized dict."""
 
     def __init__(self, agentdata):
         """Initialize the class.
@@ -102,7 +102,6 @@ def convert(_data=None):
 
     Args:
         _data: Agent data dict
-        filename: Name of file with Agent data dict
 
     Returns:
         agentdata: AgentPolledData object
@@ -125,7 +124,7 @@ def convert(_data=None):
     # Iterate through devices polled by the agent
     for device, devicedata in sorted(polled_data.items()):
         # Create DataVariablesHost
-        dv_host = _datavariablelist(device, devicedata)
+        dv_host = _datavariableshost(device, devicedata)
 
         # Append the DataVariablesHost to the AgentPolledData object
         if dv_host.active is True:
@@ -186,7 +185,7 @@ def _valid_agent(_data):
     return result
 
 
-def _datavariablelist(device, devicedata):
+def _datavariableshost(device, devicedata):
     """Create a DataVariablesHost object from Agent data.
 
     Args:
@@ -194,7 +193,7 @@ def _datavariablelist(device, devicedata):
         devicedata: Data polled from device by agent
 
     Returns:
-        datavariablelist: DataVariablesHost object
+        datavariableshost: DataVariablesHost object
 
     """
     # Initialize key variables
@@ -202,36 +201,36 @@ def _datavariablelist(device, devicedata):
 
     # Ignore invalid data
     if isinstance(devicedata, dict) is True:
-        # Iterate through the data_labels in the dict
-        for data_label, data4label in sorted(devicedata.items()):
+        # Iterate through the expected data_labels in the dict
+        for data_label, label_dict in sorted(devicedata.items()):
             # Ignore invalid data
-            if isinstance(data4label, dict) is False:
+            if isinstance(label_dict, dict) is False:
                 continue
 
             # Validate the presence of required keys, then process
-            if 'data' and 'data_type' in data4label:
+            if 'data' and 'data_type' in label_dict:
                 # Skip invalid types
-                if data4label['data_type'] not in [
+                if label_dict['data_type'] not in [
                         DATA_FLOAT, DATA_INT, DATA_COUNT64, DATA_COUNT,
-                        DATA_STRING]:
+                        DATA_STRING, DATA_NONE]:
                     continue
-                if isinstance(data4label['data'], list) is False:
+                if isinstance(label_dict['data'], list) is False:
                     continue
 
                 # Add to the DataVariablesHost
-                datavariables = _datavariables(data_label, data4label)
+                datavariables = _datavariables(data_label, label_dict)
                 dv_host.extend(datavariables)
 
     # Return
     return dv_host
 
 
-def _datavariables(data_label, data4label):
+def _datavariables(data_label, label_dict):
     """Create a valid list of DataVariables for a specific label.
 
     Args:
         data_label: Label for data
-        data4label: Dict of data represented by the data_label
+        label_dict: Dict of data represented by the data_label
 
     Returns:
         datavariables: List of DataVariable objects
@@ -239,17 +238,17 @@ def _datavariables(data_label, data4label):
     """
     # Initialize key variables
     datavariables = []
-    data_type = data4label['data_type']
+    data_type = label_dict['data_type']
 
     # Add the data to the DataVariablesHost
-    for item in data4label['data']:
+    for item in label_dict['data']:
         if isinstance(item, list) is True:
             if len(item) == 2:
                 data_index = item[0]
                 value = item[1]
 
                 # Skip invalid numerical data
-                if data_type is not DATA_STRING:
+                if data_type not in (DATA_STRING, DATA_NONE):
                     try:
                         float(value)
                     except:
@@ -260,7 +259,7 @@ def _datavariables(data_label, data4label):
                     value=value,
                     data_label=data_label,
                     data_index=data_index,
-                    data_type=data4label['data_type'])
+                    data_type=label_dict['data_type'])
                 datavariables.append(datavariable)
 
     # Return

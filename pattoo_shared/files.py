@@ -2,7 +2,6 @@
 """Pattoo files library."""
 
 import os
-import sys
 import json
 import yaml
 
@@ -17,7 +16,7 @@ def read_yaml_files(config_directory):
         config_directory: Directory with configuration files
 
     Returns:
-        config_dict: Dict of yaml read
+        config_dict: Single dict of combined yaml read from all files
 
     """
     # Initialize key variables
@@ -52,8 +51,7 @@ def read_yaml_files(config_directory):
         log_message = (
             'No configuration files found in directory "{}" with ".yaml" '
             'extension.'.format(config_directory))
-        print(log_message)
-        sys.exit(1)
+        log.log2die_safe(1101, log_message)
 
     # Return
     config_dict = yaml.safe_load(all_yaml_read)
@@ -127,6 +125,51 @@ def read_yaml_file(filepath, as_string=False, die=True):
     return result
 
 
+def read_json_files(_directory, die=True):
+    """Read the contents of all JSON files in a directory.
+
+    Args:
+        _directory: Directory with JSON files
+        die: Die if there is an error
+        tuples:
+
+    Returns:
+        result: List of tuples containing JSON read from each file and filepath
+            [(filepath, JSON), (filepath, JSON) ...]
+
+    """
+    # Initialize key variables
+    json_found = False
+    result = []
+
+    if os.path.isdir(_directory) is False:
+        log_message = 'Directory "{}" doesn\'t exist!'.format(_directory)
+        log.log2die(1009, log_message)
+
+    # Cycle through list of files in directory
+    for filename in os.listdir(_directory):
+        # Examine all the '.json' files in directory
+        if filename.endswith('.json'):
+            # JSON files found
+            json_found = True
+
+            # Read file and add to string
+            filepath = '{}{}{}'.format(_directory, os.sep, filename)
+            result.append((filepath, read_json_file(filepath, die=die)))
+
+    # Verify JSON files found in directory. We cannot use logging as it
+    # requires a logfile location from the configuration directory to work
+    # properly
+    if (json_found is False) and (bool(die) is False):
+        log_message = (
+            'No JSON files found in directory "{}" with ".json" '
+            'extension.'.format(_directory))
+        log.log2die_safe(1102, log_message)
+
+    # Return
+    return result
+
+
 def read_json_file(filepath, die=True):
     """Read the contents of a YAML file.
 
@@ -135,7 +178,7 @@ def read_json_file(filepath, die=True):
         die: Die if there is an error
 
     Returns:
-        result: Dict of yaml read
+        result: Dict of JSON read
 
     """
     # Read file

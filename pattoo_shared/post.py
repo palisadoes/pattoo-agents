@@ -20,7 +20,7 @@ import requests
 from pattoo_shared import log
 from pattoo_shared import configuration
 from pattoo_shared import data as lib_data
-from pattoo_shared.converter import ConvertAgentPolledData
+from .converter import ConvertAgentPolledData
 
 
 class Post(object):
