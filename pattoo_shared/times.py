@@ -27,7 +27,8 @@ def validate_timestamp(timestamp, polling_interval):
     valids.append(bool(polling_interval))
     valids.append(data.is_numeric(timestamp))
     valids.append(data.is_numeric(polling_interval))
-
+    valids.append(isinstance(polling_interval, (int, float)))
+        
     # Process data
     if False not in valids:
         test = (int(timestamp) // polling_interval) * polling_interval
