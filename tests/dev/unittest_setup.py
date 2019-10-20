@@ -31,6 +31,9 @@ else:
 CONFIG_SUFFIX = '.pattoo-agents-unittests/config'
 CONFIG_DIRECTORY = '{}/{}'.format(os.environ['HOME'], CONFIG_SUFFIX)
 
+# Pattoo imports
+from pattoo_shared import log
+
 
 class TestConfig(object):
     """Creates configuration for testing."""
@@ -150,14 +153,18 @@ $ ./_do_all_tests.py
 
     # Make sure the PATTOO_CONFIGDIR environment variable is set
     if 'PATTOO_CONFIGDIR' not in os.environ:
-        print(screen_message)
-        sys.exit(2)
+        log.log2die_safe(1091, screen_message)
 
     # Make sure the PATTOO_CONFIGDIR environment variable is set correctly
     if os.environ['PATTOO_CONFIGDIR'] != CONFIG_DIRECTORY:
-        print(screen_message)
-        sys.exit(2)
+        log.log2die_safe(1090, screen_message)
 
+    # Make sure the PATTOO_CONFIGDIR environment variable is set to unittest
+    if 'unittest' not in os.environ['PATTOO_CONFIGDIR']:
+        log_message = (
+            'The PATTOO_CONFIGDIR is not set to a unittest directory')
+        log.log2die_safe(1615, log_message)
+        
 
 def ready():
     """Verify that we are ready to run tests."""

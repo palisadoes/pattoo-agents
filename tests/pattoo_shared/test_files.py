@@ -6,6 +6,7 @@ import unittest
 import os
 import tempfile
 import sys
+import json
 from math import pi
 from random import randint
 import shutil
@@ -14,18 +15,20 @@ import shutil
 import yaml
 
 # Try to create a working PYTHONPATH
-TEST_DIRECTORY = os.path.dirname(os.path.realpath(__file__))
-ROOT_DIRECTORY = os.path.abspath(os.path.join(TEST_DIRECTORY, os.pardir))
-if TEST_DIRECTORY.endswith('/pattoo-agents/tests') is True:
+EXEC_DIRECTORY = os.path.dirname(os.path.realpath(__file__))
+ROOT_DIRECTORY = os.path.abspath(os.path.join(
+    os.path.abspath(os.path.join(EXEC_DIRECTORY, os.pardir)), os.pardir))
+if EXEC_DIRECTORY.endswith('/pattoo-agents/tests/pattoo_shared') is True:
     sys.path.append(ROOT_DIRECTORY)
 else:
-    print(
-        'This script is not installed in the "pattoo-agents/tests" directory. '
-        'Please fix.')
+    print('''\
+This script is not installed in the "pattoo-agents/tests/pattoo_shared" \
+directory. Please fix.''')
     sys.exit(2)
 
 # Pattoo imports
 from pattoo_shared import files
+from tests.dev import unittest_setup
 
 
 class TestBasicFunctions(unittest.TestCase):
@@ -92,6 +95,12 @@ class TestBasicFunctions(unittest.TestCase):
             'key4': 4,
         }
 
+        # Create a temporary file without a json extension and test
+        tmp = tempfile.NamedTemporaryFile(delete=False)
+        with self.assertRaises(SystemExit):
+            _ = files.read_yaml_file(tmp.name)
+        os.remove(tmp.name)
+
         # Create temp file with known data
         directory = tempfile.mkdtemp()
         file_data = [
@@ -119,6 +128,71 @@ class TestBasicFunctions(unittest.TestCase):
             os.remove(delete_path)
         os.removedirs(directory)
 
+    def test_read_json_files(self):
+        """Testing method / function read_json_files."""
+        # Initializing key variables
+        dict_1 = {
+            'key1': 1,
+            'key2': 2,
+            'key3': 3,
+            'key4': 4,
+        }
+
+        dict_2 = {
+            'key6': 6,
+            'key7': 7,
+        }
+
+        # Create temp file with known data
+        directory = tempfile.mkdtemp()
+        filenames = {
+            '{}/file_1.json'.format(directory): dict_1,
+            '{}/file_2.json'.format(directory): dict_2
+        }
+        for filename, data_dict in filenames.items():
+            with open(filename, 'w') as filehandle:
+                json.dump(data_dict, filehandle)
+
+        # Get Results
+        result = files.read_json_files(directory)
+
+        # First test, only 2 files
+        self.assertEqual(len(result), 2)
+
+        # Clean up
+        for filepath, data in result:
+            self.assertEqual(filepath in filenames, True)
+            for key, value in sorted(data.items()):
+                self.assertEqual(filenames[filepath][key], value)
+            os.remove(filepath)
+        os.removedirs(directory)
+
+    def test_read_json_file(self):
+        """Testing function read_json_file."""
+        # Initialize key variables
+        data = {
+            'key1': 1,
+            'key2': 2,
+            'key3': 3,
+            'key4': 4,
+        }
+
+        # Create a temporary file without a json extension and test
+        tmp = tempfile.NamedTemporaryFile(delete=False)
+        with self.assertRaises(SystemExit):
+            _ = files.read_json_file(tmp.name)
+        os.remove(tmp.name)
+
+        # Create json file and test
+        tmp = tempfile.NamedTemporaryFile(delete=False, suffix='.json')
+        with open(tmp.name, 'w') as f_handle:
+            json.dump(data, f_handle)
+        result = files.read_json_file(tmp.name)
+        self.assertEqual(len(result), 4)
+        for key, value in sorted(result.items()):
+            self.assertEqual(data[key], value)
+        os.remove(tmp.name)
+
     def test_mkdir(self):
         """Testing function mkdir."""
         # Test with file, not directory
@@ -137,6 +211,8 @@ class TestBasicFunctions(unittest.TestCase):
 
 
 if __name__ == '__main__':
+    # Make sure the environment is OK to run unittests
+    unittest_setup.ready()
 
     # Do the unit test
     unittest.main()
