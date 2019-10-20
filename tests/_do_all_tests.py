@@ -30,7 +30,7 @@ else:
 
 # pattoo-agents libraries
 from tests.dev import unittest_setup
-from pattoo_agents import files
+from pattoo_shared import files
 
 
 def main():
@@ -44,7 +44,7 @@ def main():
 
     """
     # Determine unittest directory
-    root_dir = files.root_directory()
+    root_dir = ROOT_DIRECTORY
     test_dir = '{}/tests'.format(root_dir)
 
     # Run the test

@@ -21,10 +21,10 @@ This script is not installed in the "pattoo-agents/tests/pattoo_agents/snmp" \
 directory. Please fix.''')
     sys.exit(2)
 
+
 # Pattoo imports
 from pattoo_agents.agents.snmp import oid as class_oid
 from tests.dev import unittest_setup
-
 
 
 class TestOIDstring(unittest.TestCase):
