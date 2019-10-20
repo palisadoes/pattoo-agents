@@ -7,8 +7,8 @@ from copy import deepcopy
 # Import project libraries
 from pattoo_shared import configuration
 from pattoo_shared.configuration import Config
-from pattoo_agents.variables import SNMPAuth, SNMPVariableList, OIDVariable
 from pattoo_shared.constants import PATTOO_AGENT_SNMPD
+from .variables import SNMPAuth, SNMPVariableList, OIDVariable
 
 
 class ConfigSNMP(Config):
