@@ -17,6 +17,7 @@ from .variables import (
     DataVariable, DataVariablesHost, AgentPolledData)
 from .constants import (
     DATA_FLOAT, DATA_INT, DATA_COUNT64, DATA_COUNT, DATA_STRING, DATA_NONE)
+from pattoo_shared import times
 
 
 class ConvertAgentPolledData(object):
@@ -36,6 +37,7 @@ class ConvertAgentPolledData(object):
         self._data = defaultdict(lambda: defaultdict(dict))
         self._list_of_dv_host = agentdata.data
         self._data['timestamp'] = agentdata.timestamp
+        self._data['polling_interval'] = agentdata.polling_interval
         self._data['agent_id'] = agentdata.agent_id
         self._data['agent_program'] = agentdata.agent_program
         self._data['agent_hostname'] = agentdata.agent_hostname
@@ -112,14 +114,16 @@ def convert(_data=None):
     agent_program = None
     agent_hostname = None
     timestamp = None
+    polling_interval = None
 
     # Get values to instantiate an AgentPolledData object
-    (agent_id, agent_program, agent_hostname,
-     timestamp, polled_data, agent_valid) = _valid_agent(_data)
+    (agent_id, agent_program, agent_hostname, timestamp, polling_interval,
+     polled_data, agent_valid) = _valid_agent(_data)
     if agent_valid is False:
         return None
     agentdata = AgentPolledData(
-        agent_id, agent_program, agent_hostname, timestamp)
+        agent_id, agent_program, agent_hostname,
+        timestamp=timestamp, polling_interval=polling_interval)
 
     # Iterate through devices polled by the agent
     for device, devicedata in sorted(polled_data.items()):
@@ -154,6 +158,7 @@ def _valid_agent(_data):
     agent_program = None
     agent_hostname = None
     timestamp = None
+    polling_interval = None
     polled_data = None
     agent_valid = False
 
@@ -163,25 +168,32 @@ def _valid_agent(_data):
             agent_id = _data['agent_id']
         if 'agent_program' in _data:
             agent_program = _data['agent_program']
-        if 'agent_program' in _data:
+        if 'agent_hostname' in _data:
             agent_hostname = _data['agent_hostname']
         if 'timestamp' in _data:
             if isinstance(_data['timestamp'], int) is True:
                 timestamp = _data['timestamp']
+        if 'polling_interval' in _data:
+            if isinstance(_data['polling_interval'], int) is True:
+                polling_interval = _data['polling_interval']
         if 'devices' in _data:
             if isinstance(_data['devices'], dict) is True:
                 polled_data = deepcopy(_data['devices'])
+
+    # Valid timestamp related data?
+    valid_times = times.validate_timestamp(timestamp, polling_interval)
 
     # Determine validity
     agent_valid = False not in [
         bool(agent_id), bool(agent_program),
         bool(agent_hostname), bool(timestamp),
-        bool(polled_data)]
+        bool(polling_interval), bool(polled_data),
+        bool(valid_times)]
 
     # Return
     result = (
         agent_id, agent_program, agent_hostname,
-        timestamp, polled_data, agent_valid)
+        timestamp, polling_interval, polled_data, agent_valid)
     return result
 
 

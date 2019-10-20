@@ -12,7 +12,6 @@ import psutil
 
 # Pattoo libraries
 from pattoo_shared import agent
-from pattoo_shared import times
 from pattoo_shared.variables import (
     DataVariable, DataVariablesHost, AgentPolledData)
 from pattoo_shared.constants import (
@@ -34,9 +33,7 @@ def poll(agent_program):
     # Initialize AgentPolledData
     agent_id = agent.get_agent_id(agent_program)
     agent_hostname = socket.getfqdn()
-    timestamp = times.normalized_timestamp()
-    agentdata = AgentPolledData(
-        agent_id, agent_program, agent_hostname, timestamp)
+    agentdata = AgentPolledData(agent_id, agent_program, agent_hostname)
 
     # Intialize data gathering
     dv_host = DataVariablesHost(agent_hostname)

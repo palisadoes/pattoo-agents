@@ -9,7 +9,6 @@ import socket
 # Pattoo libraries
 from pattoo_agents.agents.snmp import configuration
 from pattoo_agents.agents.snmp import snmp
-from pattoo_shared import times
 from pattoo_shared import agent
 from pattoo_shared.constants import PATTOO_AGENT_SNMPD
 from pattoo_shared.variables import DataVariablesHost, AgentPolledData
@@ -36,9 +35,7 @@ def poll():
     agent_program = PATTOO_AGENT_SNMPD
     agent_id = agent.get_agent_id(agent_program)
     agent_hostname = socket.getfqdn()
-    timestamp = times.normalized_timestamp()
-    agentdata = AgentPolledData(
-        agent_id, agent_program, agent_hostname, timestamp)
+    agentdata = AgentPolledData(agent_id, agent_program, agent_hostname)
 
     # Get SNMP OIDs to be polled (Along with authorizations and ip_devices)
     snmpvariables = config.snmpvariables()

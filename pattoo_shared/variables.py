@@ -2,6 +2,7 @@
 
 # pattoo imports
 from .constants import DATA_INT
+from pattoo_shared import times
 
 
 class DataVariable(object):
@@ -40,7 +41,7 @@ class DataVariable(object):
         """
         # Create a printable variation of the value
         printable_value = _strip_non_printable(self.value)
-        return (
+        result = (
             '<{0} value={1} data_label={2}, data_index={3}, data_type={4}>'
             ''.format(
                 self.__class__.__name__,
@@ -48,6 +49,7 @@ class DataVariable(object):
                 repr(self.data_index), repr(self.data_type)
             )
         )
+        return result
 
     def __setattr__(self, name, value):
         """Set attibutes.
@@ -121,7 +123,8 @@ class DataVariablesHost(object):
 class AgentPolledData(object):
     """Object defining data received from / sent by Agent."""
 
-    def __init__(self, agent_id, agent_program, agent_hostname, timestamp):
+    def __init__(self, agent_id, agent_program, agent_hostname,
+                 timestamp=None, polling_interval=None):
         """Initialize the class.
 
         Args:
@@ -129,6 +132,7 @@ class AgentPolledData(object):
             agent_program: Name of agent program collecting the data
             agent_hostname: Hostname on which the agent ran
             timestamp: Timestamp of data
+            polling_interval: Polling interval used to collect the data
 
         Returns:
             None
@@ -138,9 +142,30 @@ class AgentPolledData(object):
         self.agent_id = agent_id
         self.agent_program = agent_program
         self.agent_hostname = agent_hostname
-        self.timestamp = timestamp
+        (self.timestamp, self.polling_interval) = times.normalized_timestamp(
+            polling_interval, timestamp=timestamp)
         self.data = []
         self.active = False
+
+    def __repr__(self):
+        """Return a representation of the attributes of the class.
+
+        Args:
+            None
+
+        Returns:
+            result: String representation.
+
+        """
+        # Return
+        result = ('''\
+<{0} agent_id={1} agent_program={2}, agent_hostname={3}, timestamp={4}> \
+polling_interval={5}, active={6}
+'''.format(self.__class__.__name__, repr(self.agent_id),
+           repr(self.agent_program), repr(self.agent_hostname),
+           repr(self.timestamp), repr(self.polling_interval),
+           repr(self.active)))
+        return result
 
     def append(self, item):
         """Append DataVariable to the list.
@@ -160,7 +185,7 @@ class AgentPolledData(object):
             self.active = False not in [
                 bool(self.agent_id), bool(self.agent_program),
                 bool(self.agent_hostname), bool(self.timestamp),
-                bool(self.data)]
+                bool(self.polling_interval), bool(self.data)]
 
     def extend(self, items):
         """Extend the DataVariable list.
