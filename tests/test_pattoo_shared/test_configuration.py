@@ -4,15 +4,8 @@
 # Standard imports
 import unittest
 import os
-import tempfile
 import sys
-import json
-from math import pi
-from random import randint
-import shutil
 
-# PIP imports
-import yaml
 
 # Try to create a working PYTHONPATH
 EXEC_DIRECTORY = os.path.dirname(os.path.realpath(__file__))
@@ -47,7 +40,7 @@ class TestConfig(unittest.TestCase):
     def test_api_listen_address(self):
         """Testing function api_listen_address."""
         # Initialize key values
-        expected = 6060
+        expected = '0.0.0.0'
 
         # Test
         result = self.config.api_listen_address()
@@ -101,10 +94,11 @@ class TestConfig(unittest.TestCase):
     def test_api_server_url(self):
         """Testing function api_server_url."""
         # Initialize key values
-        expected = '/pattoo/agent/receive'
+        expected = 'http://127.0.0.1:6060/pattoo/agent/receive/123'
+        agent_id = 123
 
         # Test
-        result = self.config.api_server_url()
+        result = self.config.api_server_url(agent_id)
         self.assertEqual(result, expected)
 
     def test_log_directory(self):
@@ -113,15 +107,32 @@ class TestConfig(unittest.TestCase):
 
     def test_log_file(self):
         """Testing function log_file."""
-        pass
+        # Initialize key values
+        expected = '{1}{0}pattoo.log'.format(
+            os.sep, self.config.log_directory())
+
+        # Test
+        result = self.config.log_file()
+        self.assertEqual(result, expected)
 
     def test_log_file_api(self):
         """Testing function log_file_api."""
-        pass
+        # Initialize key values
+        expected = '{1}{0}pattoo-api.log'.format(
+            os.sep, self.config.log_directory())
+
+        # Test
+        result = self.config.log_file_api()
+        self.assertEqual(result, expected)
 
     def test_log_level(self):
         """Testing function log_level."""
-        pass
+        # Initialize key values
+        expected = 'debug'
+
+        # Test
+        result = self.config.log_level()
+        self.assertEqual(result, expected)
 
     def test_cache_directory(self):
         """Testing function cache_directory."""
@@ -129,11 +140,62 @@ class TestConfig(unittest.TestCase):
 
     def test_agent_cache_directory(self):
         """Testing function agent_cache_directory."""
-        pass
+        # Initialize key values
+        agent_id = 123
+        expected = '{1}{0}{2}'.format(
+            os.sep, self.config.cache_directory(), agent_id)
+
+        # Test
+        result = self.config.agent_cache_directory(agent_id)
+        self.assertEqual(result, expected)
+
+
+class TestBasicFunctions(unittest.TestCase):
+    """Checks all functions and methods."""
+
+    #########################################################################
+    # General object setup
+    #########################################################################
 
     def test_search(self):
         """Testing function search."""
-        pass
+        # Initialize key variables
+        data = {
+            1: {
+                11: '11',
+                12: '12'
+            },
+            2: {
+                21: '21',
+                22: '22'
+            },
+            3: {
+                31: '31',
+                32: '32'
+            },
+            4: {
+                41: '41',
+                42: '42'
+            }
+        }
+
+        # Test OK value
+        expected = '11'
+        result = configuration.search(1, 11, data)
+        self.assertEqual(result, expected)
+
+        # Test all values
+        for key, key_dict in data.items():
+            for sub_key, expected in key_dict.items():
+                result = configuration.search(key, sub_key, data)
+                self.assertEqual(result, expected)
+
+        # Test bad values
+        with self.assertRaises(SystemExit):
+            _ = configuration.search('1111111', 11, data)
+
+        # Test bad values
+        _ = configuration.search('1111111', 11, data, die=False)
 
 
 if __name__ == '__main__':
