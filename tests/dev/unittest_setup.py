@@ -56,16 +56,13 @@ class TestConfig(object):
             'main': {
                 'log_directory': self._log_directory,
                 'log_level': 'debug',
-                'ingest_cache_directory': self._cache_directory,
-                'ingest_pool_size': 20,
-                'bind_port': 3000,
-                'interval': 300,
-                'sqlalchemy_pool_size': 10,
-                'sqlalchemy_max_overflow': 10,
-                'db_hostname': 'localhost',
-                'db_username': 'travis',
-                'db_password': '',
-                'db_name': 'test_switchmap'
+                'cache_directory': self._cache_directory,
+                'polling_interval': 20
+            },
+            'pattoo-api-agentd': {
+                'api_ip_address': '127.0.0.1',
+                'api_ip_bind_port': 6060,
+                'api_uses_https': False
             }
         }
 
