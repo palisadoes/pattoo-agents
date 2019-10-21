@@ -62,7 +62,7 @@ class TestConfigSNMP(unittest.TestCase):
 
     def test_oidvariables(self):
         """Testing function oidvariables."""
-        # Initialize key variables
+        # Initialize key variables.
         result = self.config.oidvariables()
         print(result)
 
