@@ -2,6 +2,7 @@
 """Pattoo files library."""
 
 import os
+import sys
 import json
 import yaml
 
@@ -28,7 +29,7 @@ def read_yaml_files(config_directory):
         log_message = (
             'Configuration directory "{}" '
             'doesn\'t exist!'.format(config_directory))
-        log.log2die(1009, log_message)
+        log.log2die_safe(1026, log_message)
 
     # Cycle through list of files in directory
     for filename in os.listdir(config_directory):
@@ -51,7 +52,7 @@ def read_yaml_files(config_directory):
         log_message = (
             'No configuration files found in directory "{}" with ".yaml" '
             'extension.'.format(config_directory))
-        log.log2die_safe(1101, log_message)
+        log.log2die_safe(1027, log_message)
 
     # Return
     config_dict = yaml.safe_load(all_yaml_read)

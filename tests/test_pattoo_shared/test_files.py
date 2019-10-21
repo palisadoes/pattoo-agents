@@ -18,11 +18,11 @@ import yaml
 EXEC_DIRECTORY = os.path.dirname(os.path.realpath(__file__))
 ROOT_DIRECTORY = os.path.abspath(os.path.join(
     os.path.abspath(os.path.join(EXEC_DIRECTORY, os.pardir)), os.pardir))
-if EXEC_DIRECTORY.endswith('/pattoo-agents/tests/pattoo_shared') is True:
+if EXEC_DIRECTORY.endswith('/pattoo-agents/tests/test_pattoo_shared') is True:
     sys.path.append(ROOT_DIRECTORY)
 else:
     print('''\
-This script is not installed in the "pattoo-agents/tests/pattoo_shared" \
+This script is not installed in the "pattoo-agents/tests/test_pattoo_shared" \
 directory. Please fix.''')
     sys.exit(2)
 
@@ -203,7 +203,7 @@ class TestBasicFunctions(unittest.TestCase):
         os.remove(tmpfile)
 
         # Create a sub directory of a temp directory.
-        directory = '/tmp/pattoo-unittest/{}.fake'.format(
+        directory = '/tmp/test_pattoo-unittest/{}.fake'.format(
             randint(1, 10000) * pi)
         files.mkdir(directory)
         self.assertTrue(os.path.isdir(directory))

@@ -16,6 +16,7 @@ import locale
 import os
 import sys
 import subprocess
+import argparse
 
 # Try to create a working PYTHONPATH
 TEST_DIRECTORY = os.path.dirname(os.path.realpath(__file__))
@@ -43,12 +44,19 @@ def main():
         None
 
     """
+    # Set up parser
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--verbose', '-v', help='', action='store_true')
+    args = parser.parse_args()
+
     # Determine unittest directory
     root_dir = ROOT_DIRECTORY
     test_dir = '{}/tests'.format(root_dir)
 
     # Run the test
     command = 'python3 -m unittest discover --start {}'.format(test_dir)
+    if args.verbose is True:
+        command = '{} --verbose'.format(command)
     run_script(command)
 
     # Print

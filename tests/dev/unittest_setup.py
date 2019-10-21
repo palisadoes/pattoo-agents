@@ -41,7 +41,6 @@ class TestConfig(object):
     def __init__(self):
         """Initialize the class."""
         # Set global variables
-        global CONFIG_DIRECTORY
         self._log_directory = tempfile.mkdtemp()
         self._cache_directory = tempfile.mkdtemp()
 
@@ -135,10 +134,6 @@ def _environment():
         None
 
     """
-    # Initialize key variables
-    global CONFIG_DIRECTORY
-    os.environ['PATTOO_CONFIGDIR'] = CONFIG_DIRECTORY
-
     # Create a message for the screen
     screen_message = ('''
 The PATTOO_CONFIGDIR is set to the wrong directory. Run this command to do \
@@ -153,18 +148,18 @@ $ ./_do_all_tests.py
 
     # Make sure the PATTOO_CONFIGDIR environment variable is set
     if 'PATTOO_CONFIGDIR' not in os.environ:
-        log.log2die_safe(1091, screen_message)
+        log.log2die_safe(1023, screen_message)
 
     # Make sure the PATTOO_CONFIGDIR environment variable is set correctly
     if os.environ['PATTOO_CONFIGDIR'] != CONFIG_DIRECTORY:
-        log.log2die_safe(1090, screen_message)
+        log.log2die_safe(1024, screen_message)
 
     # Make sure the PATTOO_CONFIGDIR environment variable is set to unittest
     if 'unittest' not in os.environ['PATTOO_CONFIGDIR']:
         log_message = (
             'The PATTOO_CONFIGDIR is not set to a unittest directory')
-        log.log2die_safe(1615, log_message)
-        
+        log.log2die_safe(1025, log_message)
+
 
 def ready():
     """Verify that we are ready to run tests."""

@@ -10,12 +10,8 @@ import getpass
 import logging
 
 
-# Pattoo libraries
-from pattoo_shared import configuration
-
 # Define global variable
 LOGGER = {}
-
 
 
 def check_environment():
@@ -32,8 +28,10 @@ def check_environment():
     if 'PATTOO_CONFIGDIR' not in os.environ:
         log_message = (
             'Environment variable $PATTOO_CONFIGDIR needs '
-            'to be set to the slurpy configuration directory.')
-        log2die_safe(1159, log_message)
+            'to be set to the pattoo configuration directory.')
+        # Must print statement as logging requires a config directory
+        print(log_message)
+        sys.exit(1)
 
     # Verify configuration directory
     config_directory = os.environ['PATTOO_CONFIGDIR']
@@ -43,7 +41,9 @@ def check_environment():
             'Environment variable $PATTOO_CONFIGDIR set to '
             'directory {} that does not exist'
             ''.format(config_directory))
-        log2die_safe(1179, log_message)
+        # Must print statement as logging requires a config directory
+        print(log_message)
+        sys.exit(1)
 
     # Return
     path = os.environ['PATTOO_CONFIGDIR']
@@ -55,6 +55,9 @@ class _GetLog(object):
 
     def __init__(self):
         """Initialize the class."""
+        # Pattoo libraries
+        from pattoo_shared.configuration import Config
+
         # Define key variables
         app_name = 'pattoo'
         levels = {
@@ -66,7 +69,7 @@ class _GetLog(object):
         }
 
         # Get the logging directory
-        config = configuration.Config()
+        config = Config()
         log_file = config.log_file()
         config_log_level = config.log_level()
 
