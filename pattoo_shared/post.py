@@ -79,7 +79,7 @@ class Post(object):
                 log_message = (
                     'Agent data invalid agent_id "{}". Will not post.'
                     ''.format(self._agentdata.agent_id))
-                log.log2info(1028, log_message)
+                log.log2info(1017, log_message)
                 success = False
                 return success
         else:
