@@ -61,7 +61,7 @@ class TestConfigHubd(unittest.TestCase):
     """Checks all ConfigHubd methods."""
 
     ##########################################################################
-    # Initialize variable class
+    # Initialize variable class.
     ##########################################################################
     config = configuration.ConfigHubd()
 
