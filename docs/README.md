@@ -20,9 +20,9 @@ Here is a description of currently supported `pattoo` agents.
 
 | Agent | Description                    |
 |--|--|
-|[pattoo-os-spoked](PATTOO-OS.md)| Python3 based daemon that presents `pattoo` data via a web API URL. This data can be regularly polled from a central server|
-|[pattoo-os-hubd](PATTOO-OS.md)| Python3 based daemon that polls `pattoo-os-spoked` APIs for data. 
-|[pattoo-os-autonomousd](PATTOO-OS.md)| Python3 based daemon that posts  `pattoo` to a central server.|
+|[pattoo-agent-os-spoked](PATTOO-OS.md)| Python3 based daemon that presents `pattoo` data via a web API URL. This data can be regularly polled from a central server|
+|[pattoo-agent-os-hubd](PATTOO-OS.md)| Python3 based daemon that polls `pattoo-agent-os-spoked` APIs for data. 
+|[pattoo-agent-os-autonomousd](PATTOO-OS.md)| Python3 based daemon that posts  `pattoo` to a central server.|
 |[pattoo-os-snmpd](PATTOO-SNMPD.md)| Python3 based daemon that polls remote `ip_devices` for SNMP data.
 
 ## JSON Data Format
