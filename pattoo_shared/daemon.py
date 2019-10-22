@@ -86,9 +86,9 @@ class Daemon(object):
         # Temporarily comment out these three lines when troubleshooting daemon
         # operation. Errors will become immediately apparent.
         #######################################################################
-        #os.dup2(f_handle_si.fileno(), sys.stdin.fileno())
-        #os.dup2(f_handle_so.fileno(), sys.stdout.fileno())
-        #os.dup2(f_handle_se.fileno(), sys.stderr.fileno())
+        os.dup2(f_handle_si.fileno(), sys.stdin.fileno())
+        os.dup2(f_handle_so.fileno(), sys.stdout.fileno())
+        os.dup2(f_handle_se.fileno(), sys.stderr.fileno())
 
         # write pidfile
         atexit.register(self.delpid)
@@ -291,7 +291,7 @@ class _Directory(object):
         """
         # Initialize key variables
         config = configuration.Config()
-        self.root = '{}/.pattoo'.format(config.cache_directory())
+        self._root = config.daemon_directory()
 
     def pid(self):
         """Define the hidden pid directory.
@@ -304,7 +304,7 @@ class _Directory(object):
 
         """
         # Return
-        value = '{}/pid'.format(self.root)
+        value = '{}/pid'.format(self._root)
         return value
 
     def lock(self):
@@ -318,7 +318,7 @@ class _Directory(object):
 
         """
         # Return
-        value = '{}/lock'.format(self.root)
+        value = '{}/lock'.format(self._root)
         return value
 
     def agent_id(self):
@@ -332,7 +332,7 @@ class _Directory(object):
 
         """
         # Return
-        value = '{}/agent_id'.format(self.root)
+        value = '{}/agent_id'.format(self._root)
         return value
 
 
@@ -350,7 +350,7 @@ class _File(object):
 
         """
         # Initialize key variables
-        self.directory = _Directory()
+        self._directory = _Directory()
 
     def pid(self, prefix):
         """Define the hidden pid directory.
@@ -363,8 +363,8 @@ class _File(object):
 
         """
         # Return
-        files.mkdir(self.directory.pid())
-        value = '{}/{}.pid'.format(self.directory.pid(), prefix)
+        files.mkdir(self._directory.pid())
+        value = '{}/{}.pid'.format(self._directory.pid(), prefix)
         return value
 
     def lock(self, prefix):
@@ -378,8 +378,8 @@ class _File(object):
 
         """
         # Return
-        files.mkdir(self.directory.lock())
-        value = '{}/{}.lock'.format(self.directory.lock(), prefix)
+        files.mkdir(self._directory.lock())
+        value = '{}/{}.lock'.format(self._directory.lock(), prefix)
         return value
 
     def agent_id(self, prefix):
@@ -393,8 +393,8 @@ class _File(object):
 
         """
         # Return
-        files.mkdir(self.directory.agent_id())
-        value = '{}/{}.agent_id'.format(self.directory.agent_id(), prefix)
+        files.mkdir(self._directory.agent_id())
+        value = '{}/{}.agent_id'.format(self._directory.agent_id(), prefix)
         return value
 
 

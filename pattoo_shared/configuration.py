@@ -288,6 +288,32 @@ class Config(object):
         # Return
         return value
 
+    def daemon_directory(self):
+        """Determine the daemon_directory.
+
+        Args:
+            None
+
+        Returns:
+            value: configured daemon_directory
+
+        """
+        # Initialize key variables
+        key = 'main'
+        sub_key = 'daemon_directory'
+
+        # Get result
+        _value = search(key, sub_key, self._configuration)
+
+        # Expand linux ~ notation for home directories if provided.
+        value = os.path.expanduser(_value)
+
+        # Create directory if it doesn't exist
+        files.mkdir(value)
+
+        # Return
+        return value
+
     def agent_cache_directory(self, agent_program):
         """Get agent_cache_directory.
 

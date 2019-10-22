@@ -298,7 +298,7 @@ fix.'''.format(self.pidfile_parent))
         # Assign options in format that the Gunicorn WSGI will accept
         #
         # NOTE! to get a full set of valid options pprint(self.cfg.settings)
-        # in the instantiation of StandaloneApplication. The option names
+        # in the instantiation of _StandaloneApplication. The option names
         # do not exactly match the CLI options found at
         # http://docs.gunicorn.org/en/stable/settings.html
         #
@@ -325,10 +325,10 @@ fix.'''.format(self.pidfile_parent))
         log.log2info(1022, log_message)
 
         # Run
-        StandaloneApplication(self._app, options).run()
+        _StandaloneApplication(self._app, options).run()
 
 
-class StandaloneApplication(BaseApplication):
+class _StandaloneApplication(BaseApplication):
     """Class to integrate the Gunicorn WSGI with the Pattoo Flask application.
 
     Modified from: http://docs.gunicorn.org/en/latest/custom.html
@@ -346,7 +346,7 @@ class StandaloneApplication(BaseApplication):
         # Initialize key variables
         self.options = options or {}
         self.application = app
-        super(StandaloneApplication, self).__init__()
+        super(_StandaloneApplication, self).__init__()
 
     def load_config(self):
         """Load the configuration."""
@@ -381,23 +381,23 @@ def _ip_binding(aav):
     # Initialize key variables
     ip_address = aav.listen_address
     ip_bind_port = aav.ip_bind_port
-    ipv4 = False
+    result = None
 
     # Check IP address type
     try:
         ip_object = ipaddress.ip_address(ip_address)
     except:
-        log_message = (
-            'The {} IP address in the configuration file is incorrectly '
-            'formatted'.format(ip_address))
-        log.log2die(1234, log_message)
-
-    # Is this an IPv4 address?
-    ipv4 = isinstance(ip_object, ipaddress.IPv4Address)
-    if ipv4 is True:
         result = '{}:{}'.format(ip_address, ip_bind_port)
-    else:
-        result = '[{}]:{}'.format(ip_address, ip_bind_port)
+
+    if bool(result) is False:
+        # Is this an IPv4 address?
+        ipv4 = isinstance(ip_object, ipaddress.IPv4Address)
+        if ipv4 is True:
+            result = '{}:{}'.format(ip_address, ip_bind_port)
+        else:
+            result = '[{}]:{}'.format(ip_address, ip_bind_port)
+
+    # Return result
     return result
 
 

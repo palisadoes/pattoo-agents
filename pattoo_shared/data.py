@@ -34,7 +34,7 @@ def hashstring(string, sha=256, utf8=False):
         elif listing[index] == 224:
             hasher = hashlib.sha224()
         elif listing[index] == 384:
-            hasher = hashlib.sha512()
+            hasher = hashlib.sha384()
         elif listing[index] == 512:
             hasher = hashlib.sha512()
         else:
