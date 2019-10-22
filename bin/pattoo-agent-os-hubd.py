@@ -24,9 +24,10 @@ else:
     sys.exit(2)
 
 # Pattoo libraries
-from pattoo_shared.constants import PATTOO_AGENT_OS_HUBD
+from pattoo_shared.constants import (
+    PATTOO_AGENT_OS_HUBD, PATTOO_AGENT_OS_SPOKED_API_PREFIX)
 from pattoo_shared.agent import Agent, AgentCLI
-from pattoo_agents.agents.os import relay
+from pattoo_shared.phttp import PassiveAgent
 from pattoo_agents.agents.os import configuration
 
 
@@ -95,18 +96,53 @@ def _parallel_poll():
             continue
 
         # Append argument
-        argument_list.append(
-            (ip_device['ip_address'], ip_device['ip_bind_port'])
-        )
+        url = _spoked_url(ip_device['ip_address'], ip_device['ip_bind_port'])
+        argument_list.append((url,))
 
     # Create a pool of sub process resources
     with multiprocessing.Pool(processes=sub_processes_in_pool) as pool:
 
         # Create sub processes from the pool
-        pool.starmap(relay.relay, argument_list)
+        pool.starmap(_relay, argument_list)
 
     # Wait for all the processes to end
     pool.join()
+
+
+def _relay(url):
+    """Relay data to pattoo server.
+
+    Args:
+        url: Pattoo spoked agent URL
+
+    Returns:
+        None
+
+    """
+    # Initialize key variables
+    passive = PassiveAgent(url)
+    passive.relay()
+
+def _spoked_url(ip_device, ip_bind_port):
+    """Poll a spoke.
+
+    Args:
+        ip_device: IP device to poll for data
+        ip_bind_port: TCP listening port
+
+    Returns:
+        url: URL of spoke
+
+    """
+    # Initialize key variables
+    hostname = ip_device
+    if ':' in ip_device:
+        hostname = '[{}]'.format(hostname)
+
+    # Return
+    url = 'http://{}:{}{}'.format(
+        ip_device, ip_bind_port, PATTOO_AGENT_OS_SPOKED_API_PREFIX)
+    return url
 
 
 def main():

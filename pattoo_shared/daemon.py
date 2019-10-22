@@ -10,7 +10,7 @@ import time
 # Pattoo imports
 from pattoo_shared import log
 from pattoo_shared import files
-from pattoo_shared import configuration
+from pattoo_shared.configuration import Config
 
 
 class Daemon(object):
@@ -35,6 +35,7 @@ class Daemon(object):
         self.name = agent.name()
         self.pidfile = agent.pidfile_parent
         self.lockfile = agent.lockfile_parent
+        self._config = Config()
 
     def _daemonize(self):
         """Deamonize class. UNIX double fork mechanism.
@@ -46,6 +47,9 @@ class Daemon(object):
             None
 
         """
+        # Initialize key variables
+        daemon_log_file = self._config.log_file_daemon()
+
         # Create a parent process that will manage the child
         # when the code using this class is done.
         try:
@@ -79,13 +83,8 @@ class Daemon(object):
         sys.stdout.flush()
         sys.stderr.flush()
         f_handle_si = open(os.devnull, 'r')
-        f_handle_so = open(os.devnull, 'a+')
-        f_handle_se = open(os.devnull, 'a+')
-
-        #######################################################################
-        # Temporarily comment out these three lines when troubleshooting daemon
-        # operation. Errors will become immediately apparent.
-        #######################################################################
+        f_handle_so = open(daemon_log_file, 'a+')
+        f_handle_se = open(daemon_log_file, 'a+')
         os.dup2(f_handle_si.fileno(), sys.stdin.fileno())
         os.dup2(f_handle_so.fileno(), sys.stdout.fileno())
         os.dup2(f_handle_se.fileno(), sys.stderr.fileno())
@@ -94,7 +93,7 @@ class Daemon(object):
         atexit.register(self.delpid)
         pid = str(os.getpid())
         with open(self.pidfile, 'w+') as f_handle:
-            f_handle.write(pid + '\n')
+            f_handle.write('{}\n'.format(pid))
 
     def delpid(self):
         """Delete the PID file.
@@ -290,7 +289,7 @@ class _Directory(object):
 
         """
         # Initialize key variables
-        config = configuration.Config()
+        config = Config()
         self._root = config.daemon_directory()
 
     def pid(self):

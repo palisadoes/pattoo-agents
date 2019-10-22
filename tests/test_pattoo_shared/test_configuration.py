@@ -140,6 +140,16 @@ class TestConfig(unittest.TestCase):
         result = self.config.log_level()
         self.assertEqual(result, expected)
 
+    def test_log_file_daemon(self):
+        """Testing function log_file_daemon."""
+        # Initialize key values
+        expected = '{1}{0}pattoo-daemon.log'.format(
+            os.sep, self.config.log_directory())
+
+        # Test
+        result = self.config.log_file_daemon()
+        self.assertEqual(result, expected)
+
     def test_cache_directory(self):
         """Testing function cache_directory."""
         # Nothing should happen. Directory exists in testing.
