@@ -8,10 +8,11 @@ from easysnmp import exceptions
 
 # Import Pattoo libraries
 from pattoo_shared import log
-from pattoo_agents.agents.snmp import oid as class_oid
 from pattoo_shared.variables import DataVariable
 from pattoo_shared.constants import (
     DATA_INT, DATA_COUNT64, DATA_COUNT, DATA_STRING, DATA_NONE)
+from pattoo_agents.agents.snmp import oid as class_oid
+from pattoo_agents.agents.snmp.variables import SNMPVariable
 
 
 class SNMP(object):
@@ -29,14 +30,8 @@ class SNMP(object):
         """
         # Initialize key variables
         self._snmp_ip_device = snmpvariable.ip_device
-        self._snmp_port = snmpvariable.snmpauth.port
         self._snmp_version = snmpvariable.snmpauth.version
-        self._snmp_community = snmpvariable.snmpauth.community
-        self._snmp_secname = snmpvariable.snmpauth.secname
-        self._snmp_authprotocol = snmpvariable.snmpauth.authprotocol
-        self._snmp_authpassword = snmpvariable.snmpauth.authpassword
-        self._snmp_privprotocol = snmpvariable.snmpauth.privprotocol
-        self._snmp_privpassword = snmpvariable.snmpauth.privpassword
+        self._snmpvariable = snmpvariable
 
     def contactable(self):
         """Check if device is contactable.
@@ -360,7 +355,15 @@ class _Session(object):
         """
         # Initialize key variables
         self._context_name = context_name
-        self._snmpvariable = snmpvariable
+        self._snmp_ip_device = snmpvariable.ip_device
+        self._snmp_port = snmpvariable.snmpauth.port
+        self._snmp_version = snmpvariable.snmpauth.version
+        self._snmp_community = snmpvariable.snmpauth.community
+        self._snmp_secname = snmpvariable.snmpauth.secname
+        self._snmp_authprotocol = snmpvariable.snmpauth.authprotocol
+        self._snmp_authpassword = snmpvariable.snmpauth.authpassword
+        self._snmp_privprotocol = snmpvariable.snmpauth.privprotocol
+        self._snmp_privpassword = snmpvariable.snmpauth.privpassword
 
         # Fail if snmpvariable dictionary is empty
         if self._snmp_version is None:
@@ -370,10 +373,15 @@ class _Session(object):
             log.log2die(1223, log_message)
 
         # Fail if snmpvariable dictionary is empty
-        if bool(self._snmpvariable) is False:
+        if bool(snmpvariable) is False:
             log_message = ('SNMP parameters provided are blank. '
                            'Non existent host?')
             log.log2die(1215, log_message)
+
+        # Fail if invalid snmpvariable
+        if isinstance(snmpvariable, SNMPVariable) is False:
+            log_message = ('Invalid SNMPVariable parameters')
+            log.log2die(1216, log_message)
 
         # Create SNMP session
         self.session = self._session()

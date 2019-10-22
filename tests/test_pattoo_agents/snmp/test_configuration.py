@@ -51,14 +51,15 @@ class TestConfigSNMP(unittest.TestCase):
         # Test the only SNMPVariable in the result
         snmpvariable = result[0]
         self.assertEqual(isinstance(snmpvariable, SNMPVariable), True)
-        self.assertEqual(snmpvariable.community, 'public')
-        self.assertEqual(snmpvariable.port, 161)
-        self.assertEqual(snmpvariable.version, 2)
-        self.assertEqual(snmpvariable.authpassword, None)
-        self.assertEqual(snmpvariable.authprotocol, None)
-        self.assertEqual(snmpvariable.privpassword, None)
-        self.assertEqual(snmpvariable.privprotocol, None)
-        self.assertEqual(snmpvariable.secname, None)
+        authvariable = snmpvariable.snmpauth
+        self.assertEqual(authvariable.community, 'public')
+        self.assertEqual(authvariable.port, 161)
+        self.assertEqual(authvariable.version, 2)
+        self.assertEqual(authvariable.authpassword, None)
+        self.assertEqual(authvariable.authprotocol, None)
+        self.assertEqual(authvariable.privpassword, None)
+        self.assertEqual(authvariable.privprotocol, None)
+        self.assertEqual(authvariable.secname, None)
 
     def test_oidvariables(self):
         """Testing function oidvariables."""
