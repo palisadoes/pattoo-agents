@@ -30,6 +30,7 @@ Mandatory Configuration Sections
        log_level: debug
        log_directory: ~/GitHub/pattoo-agents/log
        cache_directory: ~/GitHub/pattoo-agents/cache
+       daemon_directory: ~/GitHub/pattoo-agents/daemon
        language: en
        polling_interval: 300
 
@@ -62,6 +63,9 @@ This table outlines the purpose of each configuration parameter
    * - 
      - ``cache_directory``
      - Directory of unsuccessful data posts to ``pattoodb``
+   * - 
+     - ``daemon_directory``
+     - Directory used to store daemon related data that needs to be maintained between reboots
    * - 
      - ``language``
      - Language  to be used in reporting statistics in JSON output. Language files can be found in the ``metadata/language/agents/`` directory.

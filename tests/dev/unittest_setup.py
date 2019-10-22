@@ -43,6 +43,7 @@ class TestConfig(object):
         # Set global variables
         self._log_directory = tempfile.mkdtemp()
         self._cache_directory = tempfile.mkdtemp()
+        self._daemon_directory = tempfile.mkdtemp()
 
         # Make sure the environmental variables are OK
         _environment()
@@ -57,6 +58,7 @@ class TestConfig(object):
                 'log_directory': self._log_directory,
                 'log_level': 'debug',
                 'cache_directory': self._cache_directory,
+                'daemon_directory': self._daemon_directory,
                 'polling_interval': 20
             },
             'pattoo-api-agentd': {
@@ -134,6 +136,7 @@ class TestConfig(object):
         directories = [
             self._log_directory,
             self._cache_directory,
+            self._daemon_directory,
             self._config_directory]
         for directory in directories:
             _delete_files(directory)

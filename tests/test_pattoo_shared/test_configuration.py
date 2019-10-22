@@ -101,9 +101,15 @@ class TestConfig(unittest.TestCase):
         result = self.config.api_server_url(agent_id)
         self.assertEqual(result, expected)
 
+    def test_daemon_directory(self):
+        """Testing function daemon_directory."""
+        # Nothing should happen. Directory exists in testing.
+        _ = self.config.daemon_directory()
+
     def test_log_directory(self):
         """Testing function log_directory."""
-        pass
+        # Nothing should happen. Directory exists in testing.
+        _ = self.config.log_directory()
 
     def test_log_file(self):
         """Testing function log_file."""
@@ -136,7 +142,8 @@ class TestConfig(unittest.TestCase):
 
     def test_cache_directory(self):
         """Testing function cache_directory."""
-        pass
+        # Nothing should happen. Directory exists in testing.
+        _ = self.config.cache_directory()
 
     def test_agent_cache_directory(self):
         """Testing function agent_cache_directory."""
