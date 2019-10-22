@@ -48,7 +48,7 @@ class Daemon(object):
 
         """
         # Initialize key variables
-        daemon_log_file = self._config.daemon_log_file_daemon()
+        daemon_log_file = self._config.log_file_daemon()
 
         # Create a parent process that will manage the child
         # when the code using this class is done.
