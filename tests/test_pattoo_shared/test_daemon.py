@@ -22,7 +22,6 @@ directory. Please fix.''')
 # Pattoo imports
 from pattoo_shared import daemon
 from pattoo_shared.configuration import Config
-from pattoo_shared.constants import DATA_INT, DATA_STRING
 from tests.dev import unittest_setup
 
 
