@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
-"""Test the phttp module."""
+"""Test the converter module."""
 
 # Standard imports
 import unittest
 import os
 import sys
+import multiprocessing
+from random import random
 
 
 # Try to create a working PYTHONPATH
@@ -20,12 +22,12 @@ directory. Please fix.''')
     sys.exit(2)
 
 # Pattoo imports
-from pattoo_shared import phttp
+from pattoo_shared import converter
 from pattoo_shared.configuration import Config
 from tests.dev import unittest_setup
 
 
-class TestPost(unittest.TestCase):
+class TestConvertAgentPolledData(unittest.TestCase):
     """Checks all functions and methods."""
 
     #########################################################################
@@ -36,32 +38,36 @@ class TestPost(unittest.TestCase):
         """Testing method / function __init__."""
         pass
 
-    def test_post(self):
-        """Testing method / function post."""
+    def test__process(self):
+        """Testing method / function _process."""
         pass
 
-    def test_purge(self):
-        """Testing method / function purge."""
+    def test_data(self):
+        """Testing method / function data."""
         pass
 
 
-class TestPassiveAgent(unittest.TestCase):
+class TestBasicFunctions(unittest.TestCase):
     """Checks all functions and methods."""
 
     #########################################################################
     # General object setup
     #########################################################################
 
-    def test___init__(self):
-        """Testing method / function __init__."""
+    def test_convert(self):
+        """Testing method / function convert."""
         pass
 
-    def test_relay(self):
-        """Testing method / function relay."""
+    def test__valid_agent(self):
+        """Testing method / function _valid_agent."""
         pass
 
-    def test_get(self):
-        """Testing method / function get."""
+    def test__datavariableshost(self):
+        """Testing method / function _datavariableshost."""
+        pass
+
+    def test__datavariables(self):
+        """Testing method / function _datavariables."""
         pass
 
 
