@@ -239,6 +239,21 @@ class Config(object):
         result = '{}{}pattoo-api.log'.format(_log_directory, os.sep)
         return result
 
+    def log_file_daemon(self):
+        """Get log_file_daemon.
+
+        Args:
+            None
+
+        Returns:
+            result: result
+
+        """
+        # Get result
+        _log_directory = self.log_directory()
+        result = '{}{}pattoo-daemon.log'.format(_log_directory, os.sep)
+        return result
+
     def log_level(self):
         """Get log_level.
 
