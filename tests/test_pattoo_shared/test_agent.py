@@ -196,12 +196,11 @@ class TestBasicFunctions(unittest.TestCase):
         agent_name = random()
         expected = agent.get_agent_id(agent_name)
         result = agent.get_agent_id(agent_name)
-        self.assertEqual(result, expected)        
+        self.assertEqual(result, expected)
 
     def test__generate_agent_id(self):
         """Testing method / function _generate_agent_id."""
         pass
-
 
 
 if __name__ == '__main__':
