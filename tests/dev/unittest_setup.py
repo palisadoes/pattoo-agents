@@ -113,7 +113,7 @@ class TestConfig(object):
 
         """
         # Initialize key variables
-        config_file = '{}/tests_config.yaml'.format(self._config_directory)
+        config_file = '{}/unittest_config.yaml'.format(self._config_directory)
 
         # Write good_config to file
         with open(config_file, 'w') as f_handle:
@@ -201,14 +201,18 @@ def ready():
     _environment()
 
     # Create configuration
-    TestConfig().create()
+    config = TestConfig()
+    _ = config.create()
 
 
 def main():
     """Verify that we are ready to run tests."""
     # Check environment
+    _environment()
+
+    # Check environment
     config = TestConfig()
-    config.create()
+    _ = config.create()
 
 
 if __name__ == '__main__':
