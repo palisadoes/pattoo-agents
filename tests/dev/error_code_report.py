@@ -23,7 +23,7 @@ else:
 
 
 # Import pattoo libraries
-from pattoo_agents import log
+from pattoo_shared import log
 
 
 def main():

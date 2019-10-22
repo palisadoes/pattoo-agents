@@ -52,7 +52,7 @@ def read_yaml_files(config_directory):
         log_message = (
             'No configuration files found in directory "{}" with ".yaml" '
             'extension.'.format(config_directory))
-        log.log2die_safe(1027, log_message)
+        log.log2die_safe(1015, log_message)
 
     # Return
     config_dict = yaml.safe_load(all_yaml_read)
@@ -90,7 +90,7 @@ def read_yaml_file(filepath, as_string=False, die=True):
             if bool(die) is True:
                 log.log2die_safe(1006, log_message)
             else:
-                log.log2debug(1024, log_message)
+                log.log2debug(1014, log_message)
                 return {}
 
         # Get result

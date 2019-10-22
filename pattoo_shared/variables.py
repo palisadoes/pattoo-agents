@@ -159,8 +159,8 @@ class AgentPolledData(object):
         """
         # Return
         result = ('''\
-<{0} agent_id={1} agent_program={2}, agent_hostname={3}, timestamp={4}> \
-polling_interval={5}, active={6}
+<{0} agent_id={1} agent_program={2}, agent_hostname={3}, timestamp={4} \
+polling_interval={5}, active={6}>\
 '''.format(self.__class__.__name__, repr(self.agent_id),
            repr(self.agent_program), repr(self.agent_hostname),
            repr(self.timestamp), repr(self.polling_interval),
@@ -232,14 +232,14 @@ class AgentAPIVariable(object):
             result: String representation.
 
         """
-        return (
-            '<{0} ip_bind_port={1}, listen_address={2}>'
-            ''.format(
-                self.__class__.__name__,
-                repr(self.ip_bind_port),
-                repr(self.listen_address)
-            )
+        result = ('''\
+<{0} ip_bind_port={1}, listen_address={2}>\
+'''.format(self.__class__.__name__,
+           repr(self.ip_bind_port),
+           repr(self.listen_address)
+           )
         )
+        return result
 
     def __setattr__(self, name, value):
         """Set attibutes.

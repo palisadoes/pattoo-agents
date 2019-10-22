@@ -56,7 +56,7 @@ def main():
                 result.append((filepath, agentdata))
                 break
 
-    #
+    # Show results prior to writing code to add to database.
     pprint(result)
 
 

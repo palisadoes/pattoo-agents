@@ -56,17 +56,48 @@ class TestConfig(object):
             'main': {
                 'log_directory': self._log_directory,
                 'log_level': 'debug',
-                'ingest_cache_directory': self._cache_directory,
-                'ingest_pool_size': 20,
-                'bind_port': 3000,
-                'interval': 300,
-                'sqlalchemy_pool_size': 10,
-                'sqlalchemy_max_overflow': 10,
-                'db_hostname': 'localhost',
-                'db_username': 'travis',
-                'db_password': '',
-                'db_name': 'test_switchmap'
-            }
+                'cache_directory': self._cache_directory,
+                'polling_interval': 20
+            },
+            'pattoo-api-agentd': {
+                'api_ip_address': '127.0.0.1',
+                'api_ip_bind_port': 6060,
+                'api_uses_https': False
+            },
+            'pattoo-agent-snmpd': {
+                'oid_groups': [
+                    {
+                        'group_name': 'TEST',
+                        'ip_devices': ['localhost'],
+                        'oids': ['.1.3.6.1.2.1.2.2.1.10',
+                                 '.1.3.6.1.2.1.2.2.1.16']
+                    }
+                ],
+                'snmp_groups': [
+                    {
+                        'group_name': 'TEST',
+                        'snmp_authpassword': None,
+                        'snmp_authprotocol': None,
+                        'snmp_community': 'public',
+                        'snmp_port': 161,
+                        'snmp_privpassword': None,
+                        'snmp_privprotocol': None,
+                        'snmp_secname': None,
+                        'snmp_version': 2,
+                        'ip_devices': ['localhost']
+                    }
+                ]
+            },
+            'pattoo-agent-os-spoked': {
+                'listen_address': '127.0.0.1',
+                'ip_bind_port': 5000
+                },
+            'pattoo-agent-os-hubd': {
+
+                'ip_devices': [
+                    {'ip_address': '127.0.0.1',
+                     'ip_bind_port': 5000}]
+                }
         }
 
     def create(self):

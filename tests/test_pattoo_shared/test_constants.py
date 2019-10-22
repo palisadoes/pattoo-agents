@@ -48,7 +48,6 @@ class TestConstants(unittest.TestCase):
 
     def test_constants(self):
         """Testing constants."""
-
         # Test data type constants
         self.assertEqual(DATA_FLOAT, 1)
         self.assertEqual(DATA_INT, 0)
