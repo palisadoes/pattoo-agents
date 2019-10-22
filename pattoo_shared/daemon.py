@@ -86,9 +86,9 @@ class Daemon(object):
         # Temporarily comment out these three lines when troubleshooting daemon
         # operation. Errors will become immediately apparent.
         #######################################################################
-        #os.dup2(f_handle_si.fileno(), sys.stdin.fileno())
-        #os.dup2(f_handle_so.fileno(), sys.stdout.fileno())
-        #os.dup2(f_handle_se.fileno(), sys.stderr.fileno())
+        os.dup2(f_handle_si.fileno(), sys.stdin.fileno())
+        os.dup2(f_handle_so.fileno(), sys.stdout.fileno())
+        os.dup2(f_handle_se.fileno(), sys.stderr.fileno())
 
         # write pidfile
         atexit.register(self.delpid)
