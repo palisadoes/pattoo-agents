@@ -28,8 +28,7 @@ All ``pattoo`` agents report data using a standardized JSON format. The data is 
 Documentation
 -------------
 
-See the `\ ``docs/`` directory <docs/README.rst>`_ for more details on:
-
+`See our ReadTheDocs page <https://pattoo-agents.readthedocs.io/>`_  for complete details. Topics covered include:
 
 #. Available agents
 #. Data formatting
