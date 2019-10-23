@@ -33,8 +33,8 @@ def poll():
 
     # Initialize AgentPolledData
     agent_program = PATTOO_AGENT_SNMPD
-    agent_id = agent.get_agent_id(agent_program)
     agent_hostname = socket.getfqdn()
+    agent_id = agent.get_agent_id(agent_program, agent_hostname)
     agentdata = AgentPolledData(agent_id, agent_program, agent_hostname)
 
     # Get SNMP OIDs to be polled (Along with authorizations and ip_devices)
