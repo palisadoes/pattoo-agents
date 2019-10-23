@@ -23,7 +23,7 @@ directory. Please fix.''')
 
 # Pattoo imports
 from pattoo_agents.agents.os import configuration
-from tests.dev import unittest_setup
+from tests.libraries.configuration import UnittestConfig
 
 
 class TestConfigSpoked(unittest.TestCase):
@@ -86,7 +86,7 @@ class TestConfigHubd(unittest.TestCase):
 
 if __name__ == '__main__':
     # Make sure the environment is OK to run unittests
-    unittest_setup.ready()
+    UnittestConfig().create()
 
     # Do the unit test
     unittest.main()

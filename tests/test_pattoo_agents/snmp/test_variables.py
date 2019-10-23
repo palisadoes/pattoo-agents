@@ -24,7 +24,7 @@ directory. Please fix.''')
 # Pattoo imports
 from pattoo_agents.agents.snmp.variables import (
     SNMPVariable, SNMPVariableList, OIDVariable, SNMPAuth)
-from tests.dev import unittest_setup
+from tests.libraries.configuration import UnittestConfig
 
 
 class TestSNMPAuth(unittest.TestCase):
@@ -261,7 +261,7 @@ class TestBasicFunctions(unittest.TestCase):
 
 if __name__ == '__main__':
     # Make sure the environment is OK to run unittests
-    unittest_setup.ready()
+    UnittestConfig().create()
 
     # Do the unit test
     unittest.main()

@@ -1,0 +1,14 @@
+[Unit]
+Description=pattoo-agent-os-autonomousd daemon
+Wants=network.target
+After=network.target
+
+[Service]
+Environment="PATTOO_CONFIGDIR=x"
+Environment="BIN_DIR=x"
+ExecStart=$BIN_DIR/pattoo-agent-os-autonomousd --start
+ExecStop=$BIN_DIR/pattoo-agent-os-autonomousd --stop
+ExecReload=$BIN_DIR/pattoo-agent-os-autonomousd --restart
+
+[Install]
+WantedBy=multi-user.target

@@ -19,18 +19,20 @@ import subprocess
 import argparse
 
 # Try to create a working PYTHONPATH
-TEST_DIRECTORY = os.path.dirname(os.path.realpath(__file__))
-ROOT_DIRECTORY = os.path.abspath(os.path.join(TEST_DIRECTORY, os.pardir))
-if TEST_DIRECTORY.endswith('/pattoo-agents/tests') is True:
-    sys.path.append(ROOT_DIRECTORY)
+DEV_DIR = os.path.dirname(os.path.realpath(__file__))
+ROOT_DIR = os.path.abspath(os.path.join(
+    os.path.abspath(os.path.join(DEV_DIR, os.pardir)), os.pardir))
+if DEV_DIR.endswith('/pattoo-agents/tests/bin') is True:
+    sys.path.insert(0, ROOT_DIR)
 else:
-    print(
-        'This script is not installed in the "pattoo-agents/tests" directory. '
-        'Please fix.')
+    print('''\
+This script is not installed in the "pattoo-agents/tests/bin" directory. \
+Please fix.''')
     sys.exit(2)
 
 # pattoo-agents libraries
-from tests.dev import unittest_setup
+from tests.libraries import error_code
+from tests.libraries.configuration import UnittestConfig
 from pattoo_shared import files
 
 
@@ -50,7 +52,7 @@ def main():
     args = parser.parse_args()
 
     # Determine unittest directory
-    root_dir = ROOT_DIRECTORY
+    root_dir = ROOT_DIR
     test_dir = '{}/tests'.format(root_dir)
 
     # Run the test
@@ -58,6 +60,9 @@ def main():
     if args.verbose is True:
         command = '{} --verbose'.format(command)
     run_script(command)
+
+    # Check error codes
+    error_code.check(root_dir)
 
     # Print
     message = ('\nHooray - All Done OK!\n')
@@ -132,7 +137,7 @@ def run_script(cli_string):
 
 if __name__ == '__main__':
     # Test the configuration variables
-    unittest_setup.ready()
+    UnittestConfig().create()
 
     # Do the unit test
     main()
