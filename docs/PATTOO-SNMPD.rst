@@ -12,10 +12,10 @@ Installation
 Follow these steps.
 
 
-#. Follow the installation steps in the `INSTALLATION.md <INSTALLATION.md>`_ file. 
-#. Configure the main section of the configuration file following the steps in `CONFIGURATION.md <CONFIGURATION.md>`_ file. 
+#. Follow the installation steps in the `INSTALLATION.rst <INSTALLATION.rst>`_ file. 
+#. Configure the main section of the configuration file following the steps in `CONFIGURATION.rst <CONFIGURATION.rst>`_ file. 
 #. Populate the configuration with the agent specific details listed below
-#. Start the desired daemons using the commands below. You may want to make these ``systemd`` daemons, if so follow the steps in the `INSTALLATION.md <INSTALLATION.md>`_ file. 
+#. Start the desired daemons using the commands below. You may want to make these ``syst.rst`` daemons, if so follow the steps in the `INSTALLATION.rst <INSTALLATION.rst>`_ file. 
 
 Usage
 -----
@@ -51,7 +51,7 @@ You will need to edit a configuration file in ``etc/``\ directory. Pattoo will r
 For the sake of simplicity we will assume there is one file called ``etc/config.yaml``
 
 
-#. Make sure you have configured the ``main`` and ``remote_api`` sections of ``etc/config.yaml`` file before adding any sections for ``pattoo-os`` related daemons. The `CONFIGURATION.md <CONFIGURATION.md>`_ file explains this in detail.
+#. Make sure you have configured the ``main`` and ``remote_api`` sections of ``etc/config.yaml`` file before adding any sections for ``pattoo-os`` related daemons. The `CONFIGURATION.rst <CONFIGURATION.rst>`_ file explains this in detail.
 #. After doing this, edit the ``etc/config.yaml`` file to change configuration options specific to the daemons . An explanation follows.
 
 pattoo-agent-snmpd Section
