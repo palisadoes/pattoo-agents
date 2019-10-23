@@ -16,13 +16,13 @@ Follow these steps
 
       $ sudo pip3 install -r pip_requirements.txt
 
-#. Populate the mandatory sections of the `configuration files. <CONFIGURATION.md>`_
-#. Follow the configuration steps for each daemon as explained in the `README.md <README.md>`_ file.
+#. Populate the mandatory sections of the `configuration files. <CONFIGURATION.rst>`_
+#. Follow the configuration steps for each daemon as explained in the `README.rst <README.rst>`_ file.
 
-Configuring Agents as Systemd Daemons
+Configuring Agents as Syst.rst Daemons
 -------------------------------------
 
-You can setup all the ``patoo-agents`` agents as system daemons by executing the ``setup/systemd/bin/install_systemd.py`` script.
+You can setup all the ``patoo-agents`` agents as system daemons by executing the ``setup/syst.rst/bin/install_syst.rst.py`` script.
 
 You have to specify a ``--config_dir`` defining the configuration file directory.
 
@@ -32,9 +32,9 @@ After running the script you will be able to start/stop and enable/disable the d
 
 .. code-block:: bash
 
-   $ sudo setup/systemd/bin/install_systemd.py --config_dir ~/GitHub/pattoo-agents/etc
+   $ sudo setup/syst.rst/bin/install_syst.rst.py --config_dir ~/GitHub/pattoo-agents/etc
 
-   SUCCESS! You are now able to start/stop and enable/disable the following systemd services:
+   SUCCESS! You are now able to start/stop and enable/disable the following syst.rst services:
 
    pattoo-agent-os-spoked.service
    pattoo-agent-snmpd.service

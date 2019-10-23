@@ -92,7 +92,7 @@ This table outlines the purpose of each configuration parameter
 Agent Configuration
 -------------------
 
-See the `README.md <README.md>`_ file for details on how to configure each type of agent.
+See the `README.rst <README.rst>`_ file for details on how to configure each type of agent.
 
 Notes
 -----

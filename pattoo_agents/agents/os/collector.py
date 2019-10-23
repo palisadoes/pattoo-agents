@@ -31,8 +31,8 @@ def poll(agent_program):
 
     """
     # Initialize AgentPolledData
-    agent_id = agent.get_agent_id(agent_program)
     agent_hostname = socket.getfqdn()
+    agent_id = agent.get_agent_id(agent_program, agent_hostname)
     agentdata = AgentPolledData(agent_id, agent_program, agent_hostname)
 
     # Intialize data gathering
