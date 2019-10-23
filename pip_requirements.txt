@@ -1,4 +1,13 @@
+#############################################
 # These additional PIP3 packages are required
+#############################################
+
+# Pattoo packages
+
+PattooShared
+
+# Miscellaneous packages
+
 psutil
 Flask
 gunicorn

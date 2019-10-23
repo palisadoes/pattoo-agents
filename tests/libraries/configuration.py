@@ -12,46 +12,33 @@ automated tests such as 'Travis CI'.
 from __future__ import print_function
 import tempfile
 import os
-import sys
 import yaml
-
-# Try to create a working PYTHONPATH
-DEV_DIR = os.path.dirname(os.path.realpath(__file__))
-ROOT_DIR = os.path.abspath(os.path.join(
-    os.path.abspath(os.path.join(DEV_DIR, os.pardir)), os.pardir))
-if DEV_DIR.endswith('/pattoo-agents/tests/dev') is True:
-    sys.path.append(ROOT_DIR)
-else:
-    print(
-        'This script is not installed in the "tests/dev" directory. '
-        'Please fix.')
-    sys.exit(2)
-
-# Initialize GLOBAL variables
-CONFIG_SUFFIX = '.pattoo-agents-unittests/config'
-CONFIG_DIRECTORY = '{}/{}'.format(os.environ['HOME'], CONFIG_SUFFIX)
 
 # Pattoo imports
 from pattoo_shared import log
 
 
-class TestConfig(object):
+class UnittestConfig(object):
     """Creates configuration for testing."""
 
     def __init__(self):
         """Initialize the class."""
+        # Initialize GLOBAL variables
+        config_suffix = '.pattoo-agents-unittests/config'
+        self._config_directory = (
+            '{}/{}'.format(os.environ['HOME'], config_suffix))
+
+        # Make sure the environmental variables are OK
+        _environment(self._config_directory)
+
         # Set global variables
         self._log_directory = tempfile.mkdtemp()
         self._cache_directory = tempfile.mkdtemp()
         self._daemon_directory = tempfile.mkdtemp()
 
-        # Make sure the environmental variables are OK
-        _environment()
-
         # Make sure the configuration directory is OK
-        self._config_directory = CONFIG_DIRECTORY
-        if os.path.isdir(CONFIG_DIRECTORY) is False:
-            os.makedirs(CONFIG_DIRECTORY, mode=0o750, exist_ok=True)
+        if os.path.isdir(self._config_directory) is False:
+            os.makedirs(self._config_directory, mode=0o750, exist_ok=True)
 
         self._config = {
             'main': {
@@ -158,11 +145,11 @@ def _delete_files(directory):
     os.rmdir(directory)
 
 
-def _environment():
+def _environment(config_directory):
     """Make sure environmental variables are OK.
 
     Args:
-        None
+        config_directory: Directory with the configuration
 
     Returns:
         None
@@ -178,43 +165,25 @@ $ export PATTOO_CONFIGDIR={}
 Then run this command again, followed by.
 
 $ ./_do_all_tests.py
-'''.format(CONFIG_DIRECTORY))
+'''.format(config_directory))
 
     # Make sure the PATTOO_CONFIGDIR environment variable is set
     if 'PATTOO_CONFIGDIR' not in os.environ:
         log.log2die_safe(1023, screen_message)
 
     # Make sure the PATTOO_CONFIGDIR environment variable is set correctly
-    if os.environ['PATTOO_CONFIGDIR'] != CONFIG_DIRECTORY:
+    if os.environ['PATTOO_CONFIGDIR'] != config_directory:
         log.log2die_safe(1024, screen_message)
+
+    # Update message
+    screen_message = ('''{}
+
+PATTOO_CONFIGDIR is incorrectly set to {}
+
+'''.format(screen_message, os.environ['PATTOO_CONFIGDIR']))
 
     # Make sure the PATTOO_CONFIGDIR environment variable is set to unittest
     if 'unittest' not in os.environ['PATTOO_CONFIGDIR']:
         log_message = (
             'The PATTOO_CONFIGDIR is not set to a unittest directory')
         log.log2die_safe(1025, log_message)
-
-
-def ready():
-    """Verify that we are ready to run tests."""
-    # Check environment
-    _environment()
-
-    # Create configuration
-    config = TestConfig()
-    _ = config.create()
-
-
-def main():
-    """Verify that we are ready to run tests."""
-    # Check environment
-    _environment()
-
-    # Check environment
-    config = TestConfig()
-    _ = config.create()
-
-
-if __name__ == '__main__':
-    # Do the unit test
-    main()

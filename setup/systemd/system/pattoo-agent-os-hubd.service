@@ -1,0 +1,14 @@
+[Unit]
+Description=pattoo-agent-os-hubd daemon
+Wants=network.target
+After=network.target
+
+[Service]
+Environment="PATTOO_CONFIGDIR=x"
+Environment="BIN_DIR=x"
+ExecStart=$BIN_DIR/pattoo-agent-os-hubd --start
+ExecStop=$BIN_DIR/pattoo-agent-os-hubd --stop
+ExecReload=$BIN_DIR/pattoo-agent-os-hubd --restart
+
+[Install]
+WantedBy=multi-user.target
