@@ -25,7 +25,7 @@ class OIDstring(object):
         if data.is_numeric(self.oid):
             log_message = ('OID value {} is not a string.'.format(
                 self.oid))
-            log.log2die(1380, log_message)
+            log.log2die(51380, log_message)
 
     def node_z(self):
         """Get the last node of OID.
@@ -44,7 +44,7 @@ class OIDstring(object):
         if self.valid_format() is False:
             log_message = ('OID {} has incorrect format'.format(
                 oid))
-            log.log2die(1446, log_message)
+            log.log2die(51446, log_message)
 
         # Process data
         nodes = oid.split('.')
@@ -67,7 +67,7 @@ class OIDstring(object):
         if self.valid_format() is False:
             log_message = ('OID {} has incorrect format'.format(
                 oid))
-            log.log2die(1448, log_message)
+            log.log2die(51448, log_message)
 
         # Process data
         nodes = oid.split('.')
@@ -90,7 +90,7 @@ class OIDstring(object):
         if self.valid_format() is False:
             log_message = ('OID {} has incorrect format'.format(
                 oid))
-            log.log2die(1447, log_message)
+            log.log2die(51447, log_message)
 
         # Process data
         nodes = oid.split('.')
@@ -166,14 +166,14 @@ class OIDstring(object):
         if self.valid_format() is False:
             log_message = ('OID {} has incorrect format'.format(
                 oid))
-            log.log2die(1443, log_message)
+            log.log2die(51443, log_message)
 
         # Valid branch?
         oid_methods = OIDstring(branch)
         if oid_methods.valid_format() is False:
             log_message = ('Branch {} has incorrect format'.format(
                 branch))
-            log.log2die(1444, log_message)
+            log.log2die(51444, log_message)
 
         # Process OID and branch
         if branch in oid:

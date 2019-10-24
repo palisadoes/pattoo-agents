@@ -261,7 +261,7 @@ your command AND make sure you set ---active=True. Error: {}\
         valid_format = oid_string.valid_format()
         if valid_format is False:
             log_message = ('OID {} has an invalid format'.format(oid_to_get))
-            log.log2die(1449, log_message)
+            log.log2die(51449, log_message)
 
         # Create SNMP session
         session = _Session(
@@ -330,7 +330,7 @@ your command AND make sure you set ---active=True. Error: {}\
                     sys.exc_info()[1],
                     sys.exc_info()[2],
                     self._snmp_ip_device))
-            log.log2die(1029, log_message)
+            log.log2die(51029, log_message)
 
         # Format results
         values = _convert_results(results)
@@ -370,18 +370,18 @@ class _Session(object):
             log_message = (
                 'SNMP version is "None". Non existent host? - {}'
                 ''.format(self._snmp_ip_device))
-            log.log2die(1223, log_message)
+            log.log2die(51223, log_message)
 
         # Fail if snmpvariable dictionary is empty
         if bool(snmpvariable) is False:
             log_message = ('SNMP parameters provided are blank. '
                            'Non existent host?')
-            log.log2die(1215, log_message)
+            log.log2die(51215, log_message)
 
         # Fail if invalid snmpvariable
         if isinstance(snmpvariable, SNMPVariable) is False:
             log_message = ('Invalid SNMPVariable parameters')
-            log.log2die(1216, log_message)
+            log.log2die(51216, log_message)
 
         # Create SNMP session
         self.session = self._session()
@@ -552,7 +552,7 @@ def _process_error(
 
     # Die an agonizing death!
     log_message = ('{}: {}'.format(error_name, log_message))
-    log.log2die(1569, log_message)
+    log.log2die(51569, log_message)
     return None
 
 
