@@ -62,7 +62,7 @@ This table outlines the purpose of each configuration parameter
      - Default level of logging. ``debug`` is best for troubleshooting.
    * -
      - ``cache_directory``
-     - Directory of unsuccessful data posts to ``pattoodb``
+     - Directory of unsuccessful data posts to ``pattoo``
    * -
      - ``daemon_directory``
      - Directory used to store daemon related data that needs to be maintained between reboots
@@ -77,13 +77,13 @@ This table outlines the purpose of each configuration parameter
      - **Note** The ``remote_api`` section is not required for ``patoo-os-spoked`` configurations
    * -
      - ``api_ip_address``
-     - IP address of remote ``pattoodb`` server
+     - IP address of remote ``pattoo`` server
    * -
      - ``api_ip_bind_port``
-     - Port of remote ``pattoodb`` server
+     - Port of remote ``pattoo`` server
    * -
      - ``api_uses_https``
-     - Use ``https`` when sending data  to remote ``pattoodb`` server
+     - Use ``https`` when sending data  to remote ``pattoo`` server
    * -
      - ``api_listen_address``
      - IP address on which the API server will listen. Setting this to ``0.0.0.0`` will make it listen on all IPv4 addresses. Setting to ``"0::"`` will make it listen on all IPv6 configured interfaces. It will not listen on IPv4 and IPv6 addresses simultaneously. You must **quote** all IPv6 addresses. The default is ``0.0.0.0``

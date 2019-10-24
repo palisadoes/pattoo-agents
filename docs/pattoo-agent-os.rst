@@ -4,7 +4,7 @@ Pattoo Operating System Agents
 
 ``pattoo-agent-os`` daemons provide performance data on any Linux system it runs on. The data is presented in ``json`` format and can either be posted using HTTP to a remote server or viewed on the server on which it runs by visiting a well known URL.
 
-The ``json`` data is formatted for easy ingestion by `pattooDB <https://github.com/PalisadoesFoundation/pattoo-ng>`_
+The ``json`` data is formatted for easy ingestion by `the Pattoo Server <https://pattoo.readthedocs.io/>`_
 
 Installation
 ------------

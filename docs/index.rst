@@ -8,6 +8,8 @@ Pattoo Agents
 
 ``pattoo`` agents collect IoT data for a centralized ``pattoo`` server.
 
+Visit the `Pattoo Agents GitHub site <https://github.com/PalisadoesFoundation/pattoo-agents>`_ to see the code.
+
 Introduction
 ------------
 

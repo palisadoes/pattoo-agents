@@ -4,7 +4,7 @@ Pattoo SNMP Agents
 
 ``pattoo-agent-snmpd`` provides performance data on any SNMP enabled system it can poll. The data gathered is posted in ``json`` format using HTTP to a remote server.
 
-The ``json`` data is formatted for easy ingestion by `pattooDB <https://github.com/PalisadoesFoundation/pattoo-ng>`_
+The ``json`` data is formatted for easy ingestion by `the Pattoo Server <https://pattoo.readthedocs.io/>`_
 
 Installation
 ------------

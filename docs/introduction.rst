@@ -15,6 +15,11 @@ The agents can also report on the status of systems that support the ``python3``
 
 All ``pattoo`` agents report data using a standardized JSON format. The data is sent to a centralized ``pattoo`` server for processing. The server data can then be accessed through an API.
 
+Pattoo Agents Objective
+=======================
+
+There are infinite types of available timeseries data. The ``pattoo`` agents were created to gather data for a limited number of well known cases. Developers may use the `PattooShared <https://pattoo-shared.readthedocs.io/>`_ pip library to to create their own collectors to post data to the central ``pattoo`` server.
+
 Related Documentation
 =====================
 
