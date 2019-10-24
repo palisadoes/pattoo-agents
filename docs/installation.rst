@@ -7,7 +7,7 @@ This section covers some key steps to get you started.
 Installation
 ------------
 
-Follow these steps. 
+Follow these steps.
 
 #. Install the prerequisite packages for the ``easysnmp`` python pip package. `Instructions can be found here. <https://easysnmp.readthedocs.io/en/latest/>`_
 #. Install the required packages using the ``pip_requirements`` document in the root directory
@@ -17,7 +17,7 @@ Follow these steps.
       $ sudo pip3 install -r pip_requirements.txt
 
 #. Populate the mandatory sections of the :doc:`configuration`
-#. Follow the configuration steps for each daemon as explained in the `README.rst <README.rst>`_ file.
+#. Follow the configuration steps for each daemon as explained in the :doc:`agent`.
 
 Configuring Agents as systemd Daemons
 -------------------------------------
