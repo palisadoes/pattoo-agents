@@ -3,13 +3,45 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to Pattoo Agents's documentation!
-=========================================
+Pattoo Agents
+=============
+
+``pattoo`` agents collect IoT data for a centralized ``pattoo`` server.
+
+Introduction
+------------
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: Introduction:
 
+   palisadoes
+   introduction
+   installation
+   configuration
+
+Agent Setup
+-----------
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Agent Setup:
+
+   agent
+   pattoo-agent-os
+   pattoo-agent-snmpd
+
+Miscellaneous Information
+-------------------------
+
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Miscellaneous Information:
+
+   troubleshooting
+   data
+   glossary
 
 
 Indices and tables
