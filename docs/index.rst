@@ -13,6 +13,8 @@ Visit the `Pattoo Agents GitHub site <https://github.com/PalisadoesFoundation/pa
 Introduction
 ------------
 
+General information about the project, including the the prerequisite steps to get it operational on your system.
+
 .. toctree::
    :maxdepth: 2
    :caption: Introduction:
@@ -25,6 +27,8 @@ Introduction
 Agent Setup
 -----------
 
+How to get the daemons running to collect data.
+
 .. toctree::
    :maxdepth: 2
    :caption: Agent Setup:
@@ -36,6 +40,7 @@ Agent Setup
 Miscellaneous Information
 -------------------------
 
+Technical background information on the project.
 
 .. toctree::
    :maxdepth: 2
@@ -44,11 +49,3 @@ Miscellaneous Information
    troubleshooting
    data
    glossary
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
