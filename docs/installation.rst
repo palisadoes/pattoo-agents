@@ -2,39 +2,37 @@
 Basic Installation
 ==================
 
-This section covers some key installation and setup steps
+This section covers some key steps to get you started.
 
 Installation
 ------------
 
-Follow these steps
-
+Follow these steps. 
 
 #. Install the prerequisite packages for the ``easysnmp`` python pip package. `Instructions can be found here. <https://easysnmp.readthedocs.io/en/latest/>`_
 #. Install the required packages using the ``pip_requirements`` document in the root directory
+
    .. code-block::
 
       $ sudo pip3 install -r pip_requirements.txt
 
-#. Populate the mandatory sections of the `configuration files. <CONFIGURATION.rst>`_
+#. Populate the mandatory sections of the :doc:`configuration`
 #. Follow the configuration steps for each daemon as explained in the `README.rst <README.rst>`_ file.
 
-Configuring Agents as Syst.rst Daemons
+Configuring Agents as systemd Daemons
 -------------------------------------
 
-You can setup all the ``patoo-agents`` agents as system daemons by executing the ``setup/syst.rst/bin/install_syst.rst.py`` script.
+You can also setup all the ``patoo-agents`` agents as system daemons by executing the ``setup/systemd/bin/install_systemd.py`` script.
 
 You have to specify a ``--config_dir`` defining the configuration file directory.
 
-After running the script you will be able to start/stop and enable/disable the daemons using the ``systemctl`` command.
-
-**Note** The daemons are not enabled by default.
+**Note** The daemons are not enabled or started by default. You will have to do this separately using the ``systemctl`` command after running the script.
 
 .. code-block:: bash
 
-   $ sudo setup/syst.rst/bin/install_syst.rst.py --config_dir ~/GitHub/pattoo-agents/etc
+   $ sudo setup/systemd/bin/install_systemd.py --config_dir ~/GitHub/pattoo-agents/etc
 
-   SUCCESS! You are now able to start/stop and enable/disable the following syst.rst services:
+   SUCCESS! You are now able to start/stop and enable/disable the following systemd services:
 
    pattoo-agent-os-spoked.service
    pattoo-agent-snmpd.service
