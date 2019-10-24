@@ -15,4 +15,3 @@ requests
 PyYAML
 ipaddress
 easysnmp
-sphinxcontrib-fulltoc
