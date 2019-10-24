@@ -68,7 +68,7 @@ Unable to access device {} via SNMP. Make sure device is contactable and \
 that the database\'s SNMP parameters for the device are correct. Fix, repeat \
 your command AND make sure you set ---active=True. Error: {}\
 '''.format(device_name, exception_error))
-            log.log2see(1035, log_message)
+            log.log2see(51035, log_message)
 
         except:
             # Not contactable
@@ -78,7 +78,7 @@ your command AND make sure you set ---active=True. Error: {}\
             log_message = (
                 'Unexpected SNMP error for device {}'
                 ''.format(device_name))
-            log.log2see(1036, log_message)
+            log.log2see(51036, log_message)
 
         # Return
         return _contactable
