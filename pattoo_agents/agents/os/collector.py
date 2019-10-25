@@ -13,7 +13,7 @@ import psutil
 # Pattoo libraries
 from pattoo_shared import agent
 from pattoo_shared.variables import (
-    DataVariable, DataVariablesDevice, AgentPolledData)
+    DataVariable, DeviceDataVariables, AgentPolledData)
 from pattoo_shared.constants import (
     DATA_INT, DATA_COUNT64, DATA_STRING, DATA_FLOAT)
 
@@ -36,7 +36,7 @@ def poll(agent_program):
     agentdata = AgentPolledData(agent_id, agent_program, agent_hostname)
 
     # Intialize data gathering
-    dv_host = DataVariablesDevice(agent_hostname)
+    dv_host = DeviceDataVariables(agent_hostname)
 
     # Update agent with system data
     _stats_system(dv_host)
@@ -58,7 +58,7 @@ def _stats_system(dv_host):
     """Update agent with system data.
 
     Args:
-        dv_host: DataVariablesDevice object
+        dv_host: DeviceDataVariables object
 
     Returns:
         None
@@ -135,7 +135,7 @@ def _stats_disk_swap(dv_host):
     """Update agent with disk swap data.
 
     Args:
-        dv_host: DataVariablesDevice object
+        dv_host: DeviceDataVariables object
 
     Returns:
         None
@@ -170,7 +170,7 @@ def _stats_disk_partitions(dv_host):
     """Update agent with disk partition data.
 
     Args:
-        dv_host: DataVariablesDevice object
+        dv_host: DeviceDataVariables object
 
     Returns:
         None
@@ -205,7 +205,7 @@ def _stats_disk_io(dv_host):
     """Update agent with disk io data.
 
     Args:
-        dv_host: DataVariablesDevice object
+        dv_host: DeviceDataVariables object
 
     Returns:
         None
@@ -245,7 +245,7 @@ def _stats_network(dv_host):
     """Update agent with network data.
 
     Args:
-        dv_host: DataVariablesDevice object
+        dv_host: DeviceDataVariables object
 
     Returns:
         None

@@ -11,7 +11,7 @@ from pattoo_agents.agents.snmp import configuration
 from pattoo_agents.agents.snmp import snmp
 from pattoo_shared import agent
 from pattoo_shared.constants import PATTOO_AGENT_SNMPD
-from pattoo_shared.variables import DataVariablesDevice, AgentPolledData
+from pattoo_shared.variables import DeviceDataVariables, AgentPolledData
 
 
 def poll():
@@ -53,7 +53,7 @@ def poll():
             else:
                 oids4devices[next_device] = oidvariable.oids
 
-    # Poll oids for all devices and update the DataVariablesDevice
+    # Poll oids for all devices and update the DeviceDataVariables
     dv_hosts = _snmpwalks(ip_devices, oids4devices)
     agentdata.extend(dv_hosts)
 
@@ -64,14 +64,14 @@ def poll():
 def _snmpwalks(ip_devices, oids4devices):
     """Get PATOO_SNMP agent data.
 
-    Update the DataVariablesDevice with DataVariables
+    Update the DeviceDataVariables with DataVariables
 
     Args:
         ip_devices: Dict of type SNMPVariable keyed by ip_device
         oids4devices: Dict of OID lists keyed by ip_device
 
     Returns:
-        dv_host: List of type DataVariablesDevice
+        dv_host: List of type DeviceDataVariables
 
     """
     # Initialize key variables
@@ -105,11 +105,11 @@ def _walker(snmpvariable, oids):
         oids: OIDs to poll
 
     Returns:
-        dv_host: DataVariablesDevice for the SNMPVariable device
+        dv_host: DeviceDataVariables for the SNMPVariable device
 
     """
     # Intialize data gathering
-    dv_host = DataVariablesDevice(snmpvariable.ip_device)
+    dv_host = DeviceDataVariables(snmpvariable.ip_device)
 
     # Get list of type DataVariable
     datavariables = []
