@@ -4,7 +4,7 @@
 
 # Pattoo packages
 
-PattooShared>=0.0.7
+PattooShared>=0.0.8
 
 # Miscellaneous packages
 
@@ -15,4 +15,5 @@ requests
 PyYAML
 ipaddress
 easysnmp
+pymodbus
 sphinxcontrib-fulltoc
