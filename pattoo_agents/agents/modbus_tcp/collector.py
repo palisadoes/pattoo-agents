@@ -5,14 +5,16 @@
 import multiprocessing
 import socket
 
+# PIP libraries
+from pymodbus.client.sync import ModbusTcpClient
 
 # Pattoo libraries
-from pattoo_agents.agents.snmp import configuration
-from pattoo_agents.agents.snmp import snmp
+from pattoo_agents.agents.modbus_tcp import configuration
+from pattoo_agents.agents.modbus_tcp import snmp
 from pattoo_shared import agent
-from pattoo_shared.constants import PATTOO_AGENT_SNMPD
+from pattoo_shared.constants import PATTOO_AGENT_MODBUSTCPD, DATA_INT
 from pattoo_shared.variables import (
-    DeviceDataVariables, AgentPolledData, DeviceGateway)
+    DataVariable, DeviceDataVariables, AgentPolledData, DeviceGateway)
 
 
 def poll():
@@ -28,35 +30,30 @@ def poll():
 
     """
     # Initialize key variables.
-    config = configuration.ConfigSNMP()
+    config = configuration.ConfigMODBUSTCP()
     ip_devices = {}
-    oids4devices = {}
+    registers4devices = {}
 
     # Initialize AgentPolledData
-    agent_program = PATTOO_AGENT_SNMPD
+    agent_program = PATTOO_AGENT_MODBUSTCPD
     agent_hostname = socket.getfqdn()
     agent_id = agent.get_agent_id(agent_program, agent_hostname)
     agentdata = AgentPolledData(agent_id, agent_program, agent_hostname)
     gateway = DeviceGateway(agent_hostname)
 
-    # Get SNMP OIDs to be polled (Along with authorizations and ip_devices)
-    snmpvariables = config.snmpvariables()
-    oidvariables = config.oidvariables()
-
-    # Create a dict of snmpvariables keyed by ip_device
-    for snmpvariable in snmpvariables:
-        ip_devices[snmpvariable.ip_device] = snmpvariable
+    # Get registers to be polled
+    registervariables = config.registervariables()
 
     # Create a dict of oid lists keyed by ip_device
-    for oidvariable in oidvariables:
-        for next_device in oidvariable.ip_devices:
-            if next_device in oids4devices:
-                oids4devices[next_device].extend(oidvariable.oids)
+    for registervariable in registervariables:
+        for next_device in registervariable.ip_devices:
+            if next_device in registers4devices:
+                registers4devices[next_device].extend(registervariable.oids)
             else:
-                oids4devices[next_device] = oidvariable.oids
+                registers4devices[next_device] = registervariable.oids
 
     # Poll oids for all devices and update the DeviceDataVariables
-    ddv_list = _snmpwalks(ip_devices, oids4devices)
+    ddv_list = _parallel_poller(registers4devices)
     gateway.add(ddv_list)
     agentdata.add(gateway)
 
@@ -64,14 +61,14 @@ def poll():
     return agentdata
 
 
-def _snmpwalks(ip_devices, oids4devices):
-    """Get PATOO_SNMP agent data.
+def _parallel_poller(registers4devices):
+    """Get data.
 
     Update the DeviceDataVariables with DataVariables
 
     Args:
         ip_devices: Dict of type SNMPVariable keyed by ip_device
-        oids4devices: Dict of OID lists keyed by ip_device
+        registers4devices: Dict of OID lists keyed by ip_device
 
     Returns:
         ddv_list: List of type DeviceDataVariables
@@ -82,16 +79,14 @@ def _snmpwalks(ip_devices, oids4devices):
     sub_processes_in_pool = max(1, multiprocessing.cpu_count())
 
     # Poll all devices in sequence
-    for ip_device, snmpvariable in sorted(ip_devices.items()):
-        if ip_device in oids4devices:
-            oids = oids4devices[ip_device]
-            arguments.append((snmpvariable, oids))
+    for ip_device, oids in sorted(registers4devices.items()):
+        arguments.append((ip_device, oids))
 
     # Create a pool of sub process resources
     with multiprocessing.Pool(processes=sub_processes_in_pool) as pool:
 
         # Create sub processes from the pool
-        ddv_list = pool.starmap(_walker, arguments)
+        ddv_list = pool.starmap(_serial_poller, arguments)
 
     # Wait for all the processes to end and get results
     pool.join()
@@ -100,27 +95,30 @@ def _snmpwalks(ip_devices, oids4devices):
     return ddv_list
 
 
-def _walker(snmpvariable, oids):
+def _serial_poller(ip_device, oids):
     """Poll each spoke in parallel.
 
     Args:
-        snmpvariable: SNMPVariable to poll
-        oids: OIDs to poll
+        ip_device: Device to poll
+        oids: Registers to poll
 
     Returns:
-        ddv: DeviceDataVariables for the SNMPVariable device
+        ddv: DeviceDataVariables for the ip_device
 
     """
     # Intialize data gathering
-    ddv = DeviceDataVariables(snmpvariable.ip_device)
+    ddv = DeviceDataVariables(ip_device)
 
     # Get list of type DataVariable
     datavariables = []
     for oid in oids:
-        query = snmp.SNMP(snmpvariable)
-        query_datavariables = query.walk(oid)
-        datavariables.extend(query_datavariables)
-    ddv.add(datavariables)
+        client = ModbusTcpClient(ip_device)
+        values = client.read_input_registers(oid)
+        for value in values:
+            datavariable = DataVariable(
+                value=value, data_index=0, data_label=oid, data_type=DATA_INT)
+            datavariables.append(datavariable)
+    ddv.extend(datavariables)
 
     # Return
     return ddv

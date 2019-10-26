@@ -42,7 +42,7 @@ class ConfigSNMP(Config):
 
         # Get configuration snippet
         key = PATTOO_AGENT_SNMPD
-        sub_key = 'snmp_groups'
+        sub_key = 'auth_groups'
         sub_config = configuration.search(
             key, sub_key, self._configuration, die=True)
 
@@ -84,7 +84,7 @@ class ConfigSNMP(Config):
 
         # Get configuration snippet
         key = PATTOO_AGENT_SNMPD
-        sub_key = 'oid_groups'
+        sub_key = 'polling_groups'
         sub_config = configuration.search(
             key, sub_key, self._configuration, die=True)
 
