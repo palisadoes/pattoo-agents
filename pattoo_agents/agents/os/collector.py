@@ -13,7 +13,7 @@ import psutil
 # Pattoo libraries
 from pattoo_shared import agent
 from pattoo_shared.variables import (
-    DataVariable, DeviceDataVariables, AgentPolledData)
+    DataVariable, DeviceDataVariables, DeviceGateway, AgentPolledData)
 from pattoo_shared.constants import (
     DATA_INT, DATA_COUNT64, DATA_STRING, DATA_FLOAT)
 
@@ -34,31 +34,33 @@ def poll(agent_program):
     agent_hostname = socket.getfqdn()
     agent_id = agent.get_agent_id(agent_program, agent_hostname)
     agentdata = AgentPolledData(agent_id, agent_program, agent_hostname)
+    gateway = DeviceGateway(agent_hostname)
 
     # Intialize data gathering
-    dv_host = DeviceDataVariables(agent_hostname)
+    ddv = DeviceDataVariables(agent_hostname)
 
     # Update agent with system data
-    _stats_system(dv_host)
+    _stats_system(ddv)
 
     # Update agent with disk data
-    _stats_disk_swap(dv_host)
-    _stats_disk_partitions(dv_host)
-    _stats_disk_io(dv_host)
+    _stats_disk_swap(ddv)
+    _stats_disk_partitions(ddv)
+    _stats_disk_io(ddv)
 
     # Update agent with network data
-    _stats_network(dv_host)
+    _stats_network(ddv)
 
     # Add results to the AgentPolledData object for posting
-    agentdata.append(dv_host)
+    gateway.append(ddv)
+    agentdata.append(gateway)
     return agentdata
 
 
-def _stats_system(dv_host):
+def _stats_system(ddv):
     """Update agent with system data.
 
     Args:
-        dv_host: DeviceDataVariables object
+        ddv: DeviceDataVariables object
 
     Returns:
         None
@@ -68,74 +70,74 @@ def _stats_system(dv_host):
     # Set non timeseries values
     #########################################################################
 
-    dv_host.append(DataVariable(value=platform.release(),
-                                data_label='release',
-                                data_type=DATA_STRING))
+    ddv.append(DataVariable(value=platform.release(),
+                            data_label='release',
+                            data_type=DATA_STRING))
 
-    dv_host.append(DataVariable(value=platform.system(),
-                                data_label='system',
-                                data_type=DATA_STRING))
+    ddv.append(DataVariable(value=platform.system(),
+                            data_label='system',
+                            data_type=DATA_STRING))
 
-    dv_host.append(DataVariable(value=platform.version(),
-                                data_label='version',
-                                data_type=DATA_STRING))
+    ddv.append(DataVariable(value=platform.version(),
+                            data_label='version',
+                            data_type=DATA_STRING))
 
-    dv_host.append(DataVariable(value=psutil.cpu_count(),
-                                data_label='cpu_count',
-                                data_type=DATA_INT))
+    ddv.append(DataVariable(value=psutil.cpu_count(),
+                            data_label='cpu_count',
+                            data_type=DATA_INT))
 
     #########################################################################
     # Set timeseries values (Integers)
     #########################################################################
-    dv_host.append(DataVariable(value=len(psutil.pids()),
-                                data_label='process_count',
-                                data_type=DATA_INT))
+    ddv.append(DataVariable(value=len(psutil.pids()),
+                            data_label='process_count',
+                            data_type=DATA_INT))
 
     # Load averages
     (la_01, la_05, la_15) = os.getloadavg()
 
-    dv_host.append(DataVariable(value=la_01,
-                                data_label='load_average_01min',
-                                data_type=DATA_INT))
+    ddv.append(DataVariable(value=la_01,
+                            data_label='load_average_01min',
+                            data_type=DATA_INT))
 
-    dv_host.append(DataVariable(value=la_05,
-                                data_label='load_average_05min',
-                                data_type=DATA_INT))
+    ddv.append(DataVariable(value=la_05,
+                            data_label='load_average_05min',
+                            data_type=DATA_INT))
 
-    dv_host.append(DataVariable(value=la_15,
-                                data_label='load_average_15min',
-                                data_type=DATA_INT))
+    ddv.append(DataVariable(value=la_15,
+                            data_label='load_average_15min',
+                            data_type=DATA_INT))
 
     #########################################################################
     # Set timeseries values (Named Tuples)
     #########################################################################
 
     # Percentage CPU utilization
-    dv_host.extend(_named_tuple_to_dv(
+    ddv.extend(_named_tuple_to_dv(
         psutil.cpu_times_percent(),
         data_label='cpu_times_percent', data_type=DATA_FLOAT))
 
     # Get CPU runtimes
-    dv_host.extend(_named_tuple_to_dv(
+    ddv.extend(_named_tuple_to_dv(
         psutil.cpu_times(),
         data_label='cpu_times', data_type=DATA_COUNT64))
 
     # Get CPU stats
-    dv_host.extend(_named_tuple_to_dv(
+    ddv.extend(_named_tuple_to_dv(
         psutil.cpu_stats(),
         data_label='cpu_stats', data_type=DATA_COUNT64))
 
     # Get memory utilization
-    dv_host.extend(_named_tuple_to_dv(
+    ddv.extend(_named_tuple_to_dv(
         psutil.virtual_memory(),
         data_label='memory', data_type=DATA_INT))
 
 
-def _stats_disk_swap(dv_host):
+def _stats_disk_swap(ddv):
     """Update agent with disk swap data.
 
     Args:
-        dv_host: DeviceDataVariables object
+        ddv: DeviceDataVariables object
 
     Returns:
         None
@@ -163,14 +165,14 @@ def _stats_disk_swap(dv_host):
         result.append(_dv)
 
     # Add the result to data
-    dv_host.extend(result)
+    ddv.extend(result)
 
 
-def _stats_disk_partitions(dv_host):
+def _stats_disk_partitions(ddv):
     """Update agent with disk partition data.
 
     Args:
-        dv_host: DeviceDataVariables object
+        ddv: DeviceDataVariables object
 
     Returns:
         None
@@ -181,9 +183,9 @@ def _stats_disk_partitions(dv_host):
     result = []
 
     # Get filesystem partition utilization
-    diskdv_host = psutil.disk_partitions()
-    # "diskdv_host" is named tuple describing partitions
-    for item in diskdv_host:
+    diskddv = psutil.disk_partitions()
+    # "diskddv" is named tuple describing partitions
+    for item in diskddv:
         # "source" is the partition mount point
         mountpoint = item.mountpoint
         if "docker" in str(mountpoint):
@@ -198,14 +200,14 @@ def _stats_disk_partitions(dv_host):
                 result.append(_dv)
 
     # Add the result to data
-    dv_host.extend(result)
+    ddv.extend(result)
 
 
-def _stats_disk_io(dv_host):
+def _stats_disk_io(ddv):
     """Update agent with disk io data.
 
     Args:
-        dv_host: DeviceDataVariables object
+        ddv: DeviceDataVariables object
 
     Returns:
         None
@@ -217,10 +219,10 @@ def _stats_disk_io(dv_host):
     result = []
 
     # Get disk I/O usage
-    iodv_host = psutil.disk_io_counters(perdisk=True)
+    ioddv = psutil.disk_io_counters(perdisk=True)
 
     # "source" is disk name
-    for disk, disk_named_tuple in iodv_host.items():
+    for disk, disk_named_tuple in ioddv.items():
         # No RAM pseudo disks. RAM disks OK.
         if bool(regex.match(disk)) is True:
             continue
@@ -238,14 +240,14 @@ def _stats_disk_io(dv_host):
             result.append(_dv)
 
     # Add the result to data
-    dv_host.extend(result)
+    ddv.extend(result)
 
 
-def _stats_network(dv_host):
+def _stats_network(ddv):
     """Update agent with network data.
 
     Args:
-        dv_host: DeviceDataVariables object
+        ddv: DeviceDataVariables object
 
     Returns:
         None
@@ -256,8 +258,8 @@ def _stats_network(dv_host):
     prefix = 'network'
 
     # Get network utilization
-    nicdv_host = psutil.net_io_counters(pernic=True)
-    for nic, nic_named_tuple in nicdv_host.items():
+    nicddv = psutil.net_io_counters(pernic=True)
+    for nic, nic_named_tuple in nicddv.items():
         nic_dict = nic_named_tuple._asdict()
         for suffix, value in nic_dict.items():
             data_label = '{}_{}'.format(prefix, suffix)
@@ -267,7 +269,7 @@ def _stats_network(dv_host):
             result.append(_dv)
 
     # Add the result to data
-    dv_host.extend(result)
+    ddv.extend(result)
 
 
 def _named_tuple_to_dv(
