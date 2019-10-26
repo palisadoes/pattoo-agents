@@ -54,7 +54,7 @@ class UnittestConfig(object):
                 'api_uses_https': False
             },
             'pattoo-agent-snmpd': {
-                'oid_groups': [
+                'polling_groups': [
                     {
                         'group_name': 'TEST',
                         'ip_devices': ['localhost'],
@@ -62,7 +62,7 @@ class UnittestConfig(object):
                                  '.1.3.6.1.2.1.2.2.1.16']
                     }
                 ],
-                'snmp_groups': [
+                'auth_groups': [
                     {
                         'group_name': 'TEST',
                         'snmp_authpassword': None,

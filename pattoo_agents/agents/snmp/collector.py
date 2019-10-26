@@ -120,7 +120,7 @@ def _walker(snmpvariable, oids):
         query = snmp.SNMP(snmpvariable)
         query_datavariables = query.walk(oid)
         datavariables.extend(query_datavariables)
-    ddv.extend(datavariables)
+    ddv.add(datavariables)
 
     # Return
     return ddv

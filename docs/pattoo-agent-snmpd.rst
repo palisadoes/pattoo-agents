@@ -60,7 +60,7 @@ Add the following statements to the ``config.yaml`` file to configure the  ``pat
 
    pattoo-agent-snmpd:
 
-     oid_groups:
+     polling_groups:
        - group_name: TEST
          ip_devices:
            - ip.address.of.device1
@@ -69,7 +69,7 @@ Add the following statements to the ``config.yaml`` file to configure the  ``pat
            - .1.3.6.1.2.1.2.2.1.10
            - .1.3.6.1.2.1.2.2.1.16
 
-     snmp_groups:
+     auth_groups:
        - group_name: CISCO
          snmp_authpassword: null
          snmp_authprotocol: null
@@ -100,7 +100,7 @@ This table outlines the purpose of each configuration parameter
      -
      - **Note:** Only required for devices running ``pattoo-agent-snmpd``
    * -
-     - ``oid_groups:``
+     - ``polling_groups:``
      -
      - List of groupings of ``ip_devices`` that need data from a shared set of SNMP OIDs
    * -
@@ -116,7 +116,7 @@ This table outlines the purpose of each configuration parameter
      - ``oids:``
      - List of SNMP OIDs that we need data from for the ``ip_devices``
    * -
-     - ``snmp_groups:``
+     - ``auth_groups:``
      -
      - List of groupings of ``ip_devices`` that share SNMP authentication parameters
    * -
