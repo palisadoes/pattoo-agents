@@ -17,8 +17,7 @@ if EXEC_DIRECTORY.endswith(
 else:
     print('''\
 This script is not installed in the \
-"pattoo-agents/tests/test_pattoo_agents/snmp" \
-directory. Please fix.''')
+"pattoo-agents/tests/test_pattoo_agents/snmp" directory. Please fix.''')
     sys.exit(2)
 
 # Pattoo imports
