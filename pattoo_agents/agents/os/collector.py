@@ -51,8 +51,8 @@ def poll(agent_program):
     _stats_network(ddv)
 
     # Add results to the AgentPolledData object for posting
-    gateway.append(ddv)
-    agentdata.append(gateway)
+    gateway.add(ddv)
+    agentdata.add(gateway)
     return agentdata
 
 
@@ -70,65 +70,65 @@ def _stats_system(ddv):
     # Set non timeseries values
     #########################################################################
 
-    ddv.append(DataVariable(value=platform.release(),
-                            data_label='release',
-                            data_type=DATA_STRING))
+    ddv.add(DataVariable(value=platform.release(),
+                         data_label='release',
+                         data_type=DATA_STRING))
 
-    ddv.append(DataVariable(value=platform.system(),
-                            data_label='system',
-                            data_type=DATA_STRING))
+    ddv.add(DataVariable(value=platform.system(),
+                         data_label='system',
+                         data_type=DATA_STRING))
 
-    ddv.append(DataVariable(value=platform.version(),
-                            data_label='version',
-                            data_type=DATA_STRING))
+    ddv.add(DataVariable(value=platform.version(),
+                         data_label='version',
+                         data_type=DATA_STRING))
 
-    ddv.append(DataVariable(value=psutil.cpu_count(),
-                            data_label='cpu_count',
-                            data_type=DATA_INT))
+    ddv.add(DataVariable(value=psutil.cpu_count(),
+                         data_label='cpu_count',
+                         data_type=DATA_INT))
 
     #########################################################################
     # Set timeseries values (Integers)
     #########################################################################
-    ddv.append(DataVariable(value=len(psutil.pids()),
-                            data_label='process_count',
-                            data_type=DATA_INT))
+    ddv.add(DataVariable(value=len(psutil.pids()),
+                         data_label='process_count',
+                         data_type=DATA_INT))
 
     # Load averages
     (la_01, la_05, la_15) = os.getloadavg()
 
-    ddv.append(DataVariable(value=la_01,
-                            data_label='load_average_01min',
-                            data_type=DATA_INT))
+    ddv.add(DataVariable(value=la_01,
+                         data_label='load_average_01min',
+                         data_type=DATA_INT))
 
-    ddv.append(DataVariable(value=la_05,
-                            data_label='load_average_05min',
-                            data_type=DATA_INT))
+    ddv.add(DataVariable(value=la_05,
+                         data_label='load_average_05min',
+                         data_type=DATA_INT))
 
-    ddv.append(DataVariable(value=la_15,
-                            data_label='load_average_15min',
-                            data_type=DATA_INT))
+    ddv.add(DataVariable(value=la_15,
+                         data_label='load_average_15min',
+                         data_type=DATA_INT))
 
     #########################################################################
     # Set timeseries values (Named Tuples)
     #########################################################################
 
     # Percentage CPU utilization
-    ddv.extend(_named_tuple_to_dv(
+    ddv.add(_named_tuple_to_dv(
         psutil.cpu_times_percent(),
         data_label='cpu_times_percent', data_type=DATA_FLOAT))
 
     # Get CPU runtimes
-    ddv.extend(_named_tuple_to_dv(
+    ddv.add(_named_tuple_to_dv(
         psutil.cpu_times(),
         data_label='cpu_times', data_type=DATA_COUNT64))
 
     # Get CPU stats
-    ddv.extend(_named_tuple_to_dv(
+    ddv.add(_named_tuple_to_dv(
         psutil.cpu_stats(),
         data_label='cpu_stats', data_type=DATA_COUNT64))
 
     # Get memory utilization
-    ddv.extend(_named_tuple_to_dv(
+    ddv.add(_named_tuple_to_dv(
         psutil.virtual_memory(),
         data_label='memory', data_type=DATA_INT))
 
@@ -165,7 +165,7 @@ def _stats_disk_swap(ddv):
         result.append(_dv)
 
     # Add the result to data
-    ddv.extend(result)
+    ddv.add(result)
 
 
 def _stats_disk_partitions(ddv):
@@ -200,7 +200,7 @@ def _stats_disk_partitions(ddv):
                 result.append(_dv)
 
     # Add the result to data
-    ddv.extend(result)
+    ddv.add(result)
 
 
 def _stats_disk_io(ddv):
@@ -240,7 +240,7 @@ def _stats_disk_io(ddv):
             result.append(_dv)
 
     # Add the result to data
-    ddv.extend(result)
+    ddv.add(result)
 
 
 def _stats_network(ddv):
@@ -269,7 +269,7 @@ def _stats_network(ddv):
             result.append(_dv)
 
     # Add the result to data
-    ddv.extend(result)
+    ddv.add(result)
 
 
 def _named_tuple_to_dv(

@@ -57,8 +57,8 @@ def poll():
 
     # Poll oids for all devices and update the DeviceDataVariables
     ddv_list = _snmpwalks(ip_devices, oids4devices)
-    gateway.extend(ddv_list)
-    agentdata.append(gateway)
+    gateway.add(ddv_list)
+    agentdata.add(gateway)
 
     # Return data
     return agentdata
