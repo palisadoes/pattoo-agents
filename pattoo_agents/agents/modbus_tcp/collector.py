@@ -10,7 +10,6 @@ from pymodbus.client.sync import ModbusTcpClient
 
 # Pattoo libraries
 from pattoo_agents.agents.modbus_tcp import configuration
-from pattoo_agents.agents.modbus_tcp import snmp
 from pattoo_shared import agent
 from pattoo_shared.constants import PATTOO_AGENT_MODBUSTCPD, DATA_INT
 from pattoo_shared.variables import (
@@ -31,7 +30,6 @@ def poll():
     """
     # Initialize key variables.
     config = configuration.ConfigMODBUSTCP()
-    ip_devices = {}
     registers4devices = {}
 
     # Initialize AgentPolledData
@@ -44,15 +42,16 @@ def poll():
     # Get registers to be polled
     registervariables = config.registervariables()
 
-    # Create a dict of oid lists keyed by ip_device
+    # Create a dict of register lists keyed by ip_device
     for registervariable in registervariables:
         for next_device in registervariable.ip_devices:
             if next_device in registers4devices:
-                registers4devices[next_device].extend(registervariable.oids)
+                registers4devices[next_device].extend(
+                    registervariable.registers)
             else:
-                registers4devices[next_device] = registervariable.oids
+                registers4devices[next_device] = registervariable.registers
 
-    # Poll oids for all devices and update the DeviceDataVariables
+    # Poll registers for all devices and update the DeviceDataVariables
     ddv_list = _parallel_poller(registers4devices)
     gateway.add(ddv_list)
     agentdata.add(gateway)
@@ -79,8 +78,8 @@ def _parallel_poller(registers4devices):
     sub_processes_in_pool = max(1, multiprocessing.cpu_count())
 
     # Poll all devices in sequence
-    for ip_device, oids in sorted(registers4devices.items()):
-        arguments.append((ip_device, oids))
+    for ip_device, registers in sorted(registers4devices.items()):
+        arguments.append((ip_device, registers))
 
     # Create a pool of sub process resources
     with multiprocessing.Pool(processes=sub_processes_in_pool) as pool:
@@ -95,12 +94,12 @@ def _parallel_poller(registers4devices):
     return ddv_list
 
 
-def _serial_poller(ip_device, oids):
+def _serial_poller(ip_device, registers):
     """Poll each spoke in parallel.
 
     Args:
         ip_device: Device to poll
-        oids: Registers to poll
+        registers: Registers to poll
 
     Returns:
         ddv: DeviceDataVariables for the ip_device
@@ -111,14 +110,16 @@ def _serial_poller(ip_device, oids):
 
     # Get list of type DataVariable
     datavariables = []
-    for oid in oids:
+    for register in registers:
         client = ModbusTcpClient(ip_device)
-        values = client.read_input_registers(oid)
+        response = client.read_input_registers(register)
+        values = response.registers
         for value in values:
             datavariable = DataVariable(
-                value=value, data_index=0, data_label=oid, data_type=DATA_INT)
+                value=value, data_index=0,
+                data_label=register, data_type=DATA_INT)
             datavariables.append(datavariable)
-    ddv.extend(datavariables)
+    ddv.add(datavariables)
 
     # Return
     return ddv
