@@ -1,5 +1,8 @@
 """Module for classes that format variables."""
 
+# Import pattoo libraries
+from pattoo_agents.agents.snmp import oid as class_oid
+
 
 class SNMPAuth(object):
     """Variable representation for data for SNMP polling."""
@@ -105,7 +108,7 @@ class SNMPVariable(object):
             self.snmpauth = snmpauth
         if isinstance(ip_device, str) is True:
             self.ip_device = ip_device
-        self.active = False not in [bool(self.snmpauth), bool(self.ip_device)]
+        self.valid = False not in [bool(self.snmpauth), bool(self.ip_device)]
 
     def __repr__(self):
         """Return a representation of the attributes of the class.
@@ -119,11 +122,11 @@ class SNMPVariable(object):
         """
         # Return repr
         return (
-            '<{0} snmpauth={1}, ip_device={2}, active={3}>'
+            '<{0} snmpauth={1}, ip_device={2},.valid={3}>'
             ''.format(
                 self.__class__.__name__,
                 repr(self.snmpauth), repr(self.ip_device),
-                repr(self.active)
+                repr(self.valid)
             )
         )
 
@@ -155,11 +158,11 @@ class SNMPVariableList(object):
         for ip_device in _ip_devices:
             snmpvariable = SNMPVariable(
                 snmpauth=snmpauth, ip_device=ip_device)
-            if snmpvariable.active is True:
+            if snmpvariable.valid is True:
                 self.snmpvariables.append(snmpvariable)
 
-        # Determine if active
-        self.active = bool(self.snmpvariables)
+        # Determine if.valid
+        self.valid = bool(self.snmpvariables)
 
     def __repr__(self):
         """Return a representation of the attributes of the class.
@@ -195,6 +198,9 @@ class OIDVariable(object):
             None
 
         """
+        # Initialize key variables
+        oids_valid = True
+
         # Initialize ip_devices
         if isinstance(ip_device, str) is True:
             self.ip_device = ip_device
@@ -205,12 +211,21 @@ class OIDVariable(object):
         if isinstance(oids, str) is True:
             self.oids = [oids]
         elif isinstance(oids, list) is True:
-            self.oids = sorted(oids)
+            self.oids = oids
         else:
             self.oids = []
+        self.oids.sort()
 
-        # Set active
-        self.active = False not in [bool(self.oids), bool(self.ip_device)]
+        # Validate OIDs
+        for oid in self.oids:
+            tester = class_oid.OIDstring(oid)
+            if tester.valid_format() is False:
+                oids_valid = False
+                break
+
+        # Set.valid
+        self.valid = False not in [
+            bool(self.oids), bool(self.ip_device), bool(oids_valid)]
 
     def __repr__(self):
         """Return a representation of the attributes of the class.
@@ -224,9 +239,9 @@ class OIDVariable(object):
         """
         # Return repr
         return (
-            '<{0} active={3}, ip_device={2}, oids={1}>'
+            '<{0}.valid={3}, ip_device={2}, oids={1}>'
             ''.format(
                 self.__class__.__name__,
-                repr(self.oids), repr(self.ip_device), repr(self.active)
+                repr(self.oids), repr(self.ip_device), repr(self.valid)
             )
         )

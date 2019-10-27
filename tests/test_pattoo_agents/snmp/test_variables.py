@@ -140,17 +140,17 @@ class TestSNMPVariable(unittest.TestCase):
         self.assertEqual(snmpvariable.snmpauth, sav)
         self.assertTrue(isinstance(snmpvariable.snmpauth, SNMPAuth))
         self.assertEqual(snmpvariable.ip_device, ip_device)
-        self.assertTrue(snmpvariable.active)
+        self.assertTrue(snmpvariable.valid)
 
         snmpvariable = SNMPVariable()
-        self.assertFalse(snmpvariable.active)
+        self.assertFalse(snmpvariable.valid)
 
     def test___repr__(self):
         """Testing function __repr__."""
         # Test defaults
         snmpvariable = SNMPVariable()
         expected = ('''\
-<SNMPVariable snmpauth=None, ip_device=None, active=False>''')
+<SNMPVariable snmpauth=None, ip_device=None,.valid=False>''')
         result = snmpvariable.__repr__()
         self.assertEqual(expected, result)
 
@@ -161,7 +161,7 @@ class TestSNMPVariable(unittest.TestCase):
         expected = ('''\
 <SNMPVariable snmpauth=<SNMPAuth version=2, community='public', port=161, \
 secname=None, authprotocol=None authpassword=None, privpassword=None, \
-privprotocol=None>, ip_device='localhost', active=True>''')
+privprotocol=None>, ip_device='localhost',.valid=True>''')
         result = snmpvariable.__repr__()
         self.assertEqual(expected, result)
 
@@ -204,7 +204,7 @@ class TestSNMPVariableList(unittest.TestCase):
 <SNMPVariableList snmpvariables=[<SNMPVariable snmpauth=<SNMPAuth version=2, \
 community='public', port=161, secname=None, authprotocol=None \
 authpassword=None, privpassword=None, privprotocol=None>, \
-ip_device='localhost', active=True>]>''')
+ip_device='localhost',.valid=True>]>''')
         result = svl.__repr__()
         self.assertEqual(expected, result)
 
@@ -220,13 +220,13 @@ class TestOIDVariable(unittest.TestCase):
         """Testing function __init__."""
         # Test defaults
         _variable = OIDVariable()
-        self.assertFalse(_variable.active)
+        self.assertFalse(_variable.valid)
 
         # Test non-defaults
         oids = '.1.1.1.1.1'
         ip_device = 'localhost'
         _variable = OIDVariable(oids=oids, ip_device=ip_device)
-        self.assertTrue(_variable.active)
+        self.assertTrue(_variable.valid)
         self.assertEqual(_variable.oids, [oids])
         self.assertEqual(_variable.ip_device, ip_device)
 
@@ -234,7 +234,7 @@ class TestOIDVariable(unittest.TestCase):
         """Testing function __repr__."""
         # Test default
         _variable = OIDVariable()
-        expected = ('''<OIDVariable active=False, ip_device=None, oids=[]>''')
+        expected = ('''<OIDVariable.valid=False, ip_device=None, oids=[]>''')
         result = _variable.__repr__()
         self.assertEqual(expected, result)
 
@@ -243,7 +243,7 @@ class TestOIDVariable(unittest.TestCase):
         ip_device = 'localhost'
         _variable = OIDVariable(oids=oids, ip_device=ip_device)
         expected = ('''\
-<OIDVariable active=True, ip_device='localhost', oids=['.1.1.1.1.1']>''')
+<OIDVariable.valid=True, ip_device='localhost', oids=['.1.1.1.1.1']>''')
         result = _variable.__repr__()
         self.assertEqual(expected, result)
 

@@ -57,11 +57,11 @@ class TestConfigModbusTCP(unittest.TestCase):
         self.assertEqual(len(result), 2)
         for drv in result:
             self.assertTrue(isinstance(drv, DeviceRegisterVariables))
-            self.assertTrue(drv.active)
+            self.assertTrue(drv.valid)
             self.assertEqual(drv.device, expected_ip_device)
             for _rv in drv.data:
                 self.assertTrue(isinstance(_rv, RegisterVariable))
-                self.assertTrue(_rv.active)
+                self.assertTrue(_rv.valid)
             register_variables.extend(drv.data)
 
         # Evaluate each RegisterVariable

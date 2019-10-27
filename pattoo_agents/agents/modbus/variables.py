@@ -21,8 +21,8 @@ class RegisterVariable(object):
         self.count = count
         self.unit = unit
 
-        # Set object as being active
-        self.active = False not in [
+        # Set object as being.valid
+        self.valid = False not in [
             isinstance(address, int), isinstance(count, int),
             bool(address), bool(count),
             (unit is None or isinstance(unit, int)) and (
@@ -41,9 +41,9 @@ class RegisterVariable(object):
         """
         # Return repr
         return ('''\
-<{} active={}, address={}, count={}, unit={}>\
+<{}.valid={}, address={}, count={}, unit={}>\
 '''.format(self.__class__.__name__,
-           repr(self.active), repr(self.address),
+           repr(self.valid), repr(self.address),
            repr(self.count), repr(self.unit)))
 
 
@@ -105,13 +105,13 @@ class DeviceRegisterVariables(object):
 
         Variables:
             self.data: List of RegisterVariables retrieved from the device
-            self.active: True if the object is populated with RegisterVariables
+            self.valid: True if the object is populated with RegisterVariables
 
         """
         # Initialize key variables
         self.data = []
         self.device = device
-        self.active = False
+        self.valid = False
 
     def __repr__(self):
         """Return a representation of the attributes of the class.
@@ -125,10 +125,10 @@ class DeviceRegisterVariables(object):
         """
         # Create a printable variation of the value
         result = (
-            '<{0} device={1} active={2}, data={3}'
+            '<{0} device={1}.valid={2}, data={3}'
             ''.format(
                 self.__class__.__name__,
-                repr(self.device), repr(self.active), repr(self.data)
+                repr(self.device), repr(self.valid), repr(self.data)
             )
         )
         return result
@@ -152,5 +152,5 @@ class DeviceRegisterVariables(object):
             if isinstance(item, RegisterVariable) is True:
                 self.data.append(item)
 
-                # Set object as being active
-                self.active = False not in [bool(self.data), bool(self.device)]
+                # Set object as being.valid
+                self.valid = False not in [bool(self.data), bool(self.device)]

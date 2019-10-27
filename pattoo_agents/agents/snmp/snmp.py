@@ -66,7 +66,7 @@ class SNMP(object):
             log_message = ('''\
 Unable to access device {} via SNMP. Make sure device is contactable and \
 that the database\'s SNMP parameters for the device are correct. Fix, repeat \
-your command AND make sure you set ---active=True. Error: {}\
+your command AND make sure you set --.valid=True. Error: {}\
 '''.format(device_name, exception_error))
             log.log2see(51035, log_message)
 

@@ -108,7 +108,7 @@ def _serial_poller(drv):
         # Ignore invalid data
         if isinstance(_rv, RegisterVariable) is False:
             continue
-        if _rv.active is False:
+        if _rv.valid is False:
             continue
 
         # Poll    
