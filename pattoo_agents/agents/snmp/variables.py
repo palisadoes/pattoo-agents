@@ -198,6 +198,8 @@ class OIDVariable(object):
         # Initialize ip_devices
         if isinstance(ip_device, str) is True:
             self.ip_device = ip_device
+        else:
+            self.ip_device = None
 
         # Initialize oids
         if isinstance(oids, str) is True:
