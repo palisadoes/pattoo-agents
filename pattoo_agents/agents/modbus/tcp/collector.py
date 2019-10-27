@@ -12,7 +12,7 @@ from pymodbus.client.sync import ModbusTcpClient
 # Pattoo libraries
 from pattoo_agents.agents.modbus.tcp import configuration
 from pattoo_agents.agents.modbus.variables import (
-    InputRegisterVariable, HoldingRegisterVariable)
+    InputRegisterVariable, HoldingRegisterVariable, RegisterVariable)
 from pattoo_shared import agent
 from pattoo_shared.constants import PATTOO_AGENT_MODBUSTCPD, DATA_INT
 from pattoo_shared.variables import (
@@ -32,7 +32,7 @@ def poll():
 
     """
     # Initialize key variables.
-    config = configuration.ConfigMODBUSTCP()
+    config = configuration.ConfigModbusTCP()
     arguments = []
 
     # Initialize AgentPolledData
@@ -105,6 +105,13 @@ def _serial_poller(drv):
     # Get list of type DataVariable
     datavariables = []
     for _rv in drv.data:
+        # Ignore invalid data
+        if isinstance(_rv, RegisterVariable) is False:
+            continue
+        if _rv.active is False:
+            continue
+
+        # Poll    
         client = ModbusTcpClient(ip_device)
         if isinstance(_rv, InputRegisterVariable):
             response = client.read_input_registers(_rv.address)

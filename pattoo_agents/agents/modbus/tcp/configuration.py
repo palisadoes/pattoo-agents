@@ -8,7 +8,7 @@ from pattoo_agents.agents.modbus.variables import (
     InputRegisterVariable, HoldingRegisterVariable, DeviceRegisterVariables)
 
 
-class ConfigMODBUSTCP(Config):
+class ConfigModbusTCP(Config):
     """Class gathers all configuration information."""
 
     def __init__(self):

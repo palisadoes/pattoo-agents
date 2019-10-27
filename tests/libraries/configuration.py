@@ -77,6 +77,16 @@ class UnittestConfig(object):
                     }
                 ]
             },
+            'pattoo-agent-modbustcpd': {
+                'polling_groups': [
+                    {
+                        'group_name': 'TEST',
+                        'ip_devices': ['unittest.modbus.tcp.device.net'],
+                        'input_registers': [387, 388],
+                        'holding_registers': [123, 456],
+                    }
+                ],
+            },
             'pattoo-agent-os-spoked': {
                 'listen_address': '127.0.0.1',
                 'ip_bind_port': 5000
