@@ -205,7 +205,7 @@ class OIDVariable(object):
         if isinstance(oids, str) is True:
             self.oids = [oids]
         elif isinstance(oids, list) is True:
-            self.oids = oids
+            self.oids = sorted(oids)
         else:
             self.oids = []
 

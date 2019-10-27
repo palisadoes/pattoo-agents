@@ -174,7 +174,7 @@ def _validate_oids(config_dict):
     data = []
 
     # Ignore incompatible configuration
-    if isinstance(config_dict, dict) is False:
+    if isinstance(config_dict, list) is False:
         return []
 
     # Process the stuff
