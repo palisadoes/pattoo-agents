@@ -10,9 +10,9 @@ import sys
 from pymodbus.client.sync import ModbusTcpClient
 
 # Pattoo libraries
-from pattoo_agents.agents.modbus_tcp import configuration
-from .variables import (
-    InputRegisterVariable, HoldingRegisterVariable, DeviceRegisterVariables)
+from pattoo_agents.agents.modbus.tcp import configuration
+from pattoo_agents.agents.modbus.variables import (
+    InputRegisterVariable, HoldingRegisterVariable)
 from pattoo_shared import agent
 from pattoo_shared.constants import PATTOO_AGENT_MODBUSTCPD, DATA_INT
 from pattoo_shared.variables import (

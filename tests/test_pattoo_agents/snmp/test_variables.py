@@ -223,26 +223,26 @@ class TestOIDVariable(unittest.TestCase):
 
         # Test non-defaults
         oids = '.1.1.1.1.1'
-        ip_devices = 'localhost'
-        _variable = OIDVariable(oids=oids, ip_devices=ip_devices)
+        ip_device = 'localhost'
+        _variable = OIDVariable(oids=oids, ip_device=ip_device)
         self.assertTrue(_variable.active)
         self.assertEqual(_variable.oids, [oids])
-        self.assertEqual(_variable.ip_devices, [ip_devices])
+        self.assertEqual(_variable.ip_device, ip_device)
 
     def test___repr__(self):
         """Testing function __repr__."""
         # Test default
         _variable = OIDVariable()
-        expected = ('''<OIDVariable active=False, oids=[], ip_devices=[]>''')
+        expected = ('''<OIDVariable active=False, ip_device=[], oids=[]>''')
         result = _variable.__repr__()
         self.assertEqual(expected, result)
 
         # Test non-defaults
         oids = '.1.1.1.1.1'
-        ip_devices = 'localhost'
-        _variable = OIDVariable(oids=oids, ip_devices=ip_devices)
+        ip_device = 'localhost'
+        _variable = OIDVariable(oids=oids, ip_device=ip_device)
         expected = ('''\
-<OIDVariable active=True, oids=['.1.1.1.1.1'], ip_devices=['localhost']>''')
+<OIDVariable active=True, ip_devices='localhost', oids=['.1.1.1.1.1']>''')
         result = _variable.__repr__()
         self.assertEqual(expected, result)
 

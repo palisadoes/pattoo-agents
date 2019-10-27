@@ -91,11 +91,18 @@ class ConfigSNMP(Config):
         # Create snmp objects
         groups = _validate_oids(sub_config)
         for group in groups:
-            oidvariable = OIDVariable(
-                oids=group['oids'],
-                ip_devices=group['ip_devices']
-            )
-            result.append(oidvariable)
+            # Ignore bad values
+            if isinstance(group, dict) is False:
+                continue
+
+            # Process data
+            if 'ip_devices' and 'oids' in group:
+                for ip_device in group['ip_devices']:
+                    oidvariable = OIDVariable(
+                        oids=group['oids'],
+                        ip_device=ip_device
+                    )
+                    result.append(oidvariable)
         return result
 
 
@@ -165,6 +172,12 @@ def _validate_oids(config_dict):
 
     # Start populating information
     data = []
+
+    # Ignore incompatible configuration
+    if isinstance(config_dict, dict) is False:
+        return []
+
+    # Process the stuff
     for read_dict in config_dict:
         # Next entry if this is not a dict
         if isinstance(read_dict, dict) is False:
@@ -172,15 +185,11 @@ def _validate_oids(config_dict):
 
         # Assign data
         new_dict = deepcopy(seed_dict)
-        for key in read_dict.keys():
+        for key, value in sorted(read_dict.items()):
+            if key not in seed_dict.keys():
+                continue
             if isinstance(read_dict[key], list) is True:
-                new_dict[key] = read_dict[key]
-
-        # Validate IP addresses and OIDs
-        if isinstance(new_dict['ip_devices'], list) is False:
-            continue
-        if isinstance(new_dict['oids'], list) is False:
-            continue
+                new_dict[key] = value
 
         # Append data to list
         data.append(new_dict)

@@ -71,12 +71,15 @@ class TestConfigSNMP(unittest.TestCase):
         self.assertEqual(len(result), 1)
 
         # Test the only SNMPVariable in the result
-        oidvariable = result[0]
-        self.assertEqual(isinstance(oidvariable, OIDVariable), True)
+        oidvariables = result[0]
+        self.assertEqual(isinstance(oidvariables, list), True)
+        self.assertEqual(len(oidvariables), 1)
+        for oidvariable in oidvariables:
+            self.assertEqual(isinstance(oidvariable, OIDVariable), True)
         self.assertEqual(
-            oidvariable.oids,
+            oidvariables[0].oids,
             ['.1.3.6.1.2.1.2.2.1.10', '.1.3.6.1.2.1.2.2.1.16'])
-        self.assertEqual(oidvariable.ip_devices, ['localhost'])
+        self.assertEqual(oidvariables.ip_device, ['localhost'])
 
     def test__validate_snmp(self):
         """Testing function _validate_snmp."""
