@@ -116,7 +116,7 @@ def _walker(snmpvariable, oidvariables):
 
     # Get list of type DataVariable
     datavariables = []
-    for oid in oidvariables.oids:
+    for oid in oidvariables:
         query = snmp.SNMP(snmpvariable)
         query_datavariables = query.walk(oid)
         datavariables.extend(query_datavariables)
