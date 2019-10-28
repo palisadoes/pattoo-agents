@@ -1,5 +1,8 @@
 """Module for classes that format variables."""
 
+# Import pattoo libraries
+from pattoo_agents.agents.snmp import oid as class_oid
+
 
 class SNMPAuth(object):
     """Variable representation for data for SNMP polling."""
@@ -105,7 +108,7 @@ class SNMPVariable(object):
             self.snmpauth = snmpauth
         if isinstance(ip_device, str) is True:
             self.ip_device = ip_device
-        self.active = False not in [bool(self.snmpauth), bool(self.ip_device)]
+        self.valid = False not in [bool(self.snmpauth), bool(self.ip_device)]
 
     def __repr__(self):
         """Return a representation of the attributes of the class.
@@ -119,11 +122,11 @@ class SNMPVariable(object):
         """
         # Return repr
         return (
-            '<{0} snmpauth={1}, ip_device={2}, active={3}>'
+            '<{0} snmpauth={1}, ip_device={2},.valid={3}>'
             ''.format(
                 self.__class__.__name__,
                 repr(self.snmpauth), repr(self.ip_device),
-                repr(self.active)
+                repr(self.valid)
             )
         )
 
@@ -155,8 +158,11 @@ class SNMPVariableList(object):
         for ip_device in _ip_devices:
             snmpvariable = SNMPVariable(
                 snmpauth=snmpauth, ip_device=ip_device)
-            if snmpvariable.active is True:
+            if snmpvariable.valid is True:
                 self.snmpvariables.append(snmpvariable)
+
+        # Determine if.valid
+        self.valid = bool(self.snmpvariables)
 
     def __repr__(self):
         """Return a representation of the attributes of the class.
@@ -181,7 +187,7 @@ class SNMPVariableList(object):
 class OIDVariable(object):
     """Variable representation for OID data for SNMP polling."""
 
-    def __init__(self, oids=None, ip_devices=None):
+    def __init__(self, ip_device=None, oids=None):
         """Initialize the class.
 
         Args:
@@ -192,13 +198,14 @@ class OIDVariable(object):
             None
 
         """
+        # Initialize key variables
+        oids_valid = True
+
         # Initialize ip_devices
-        if isinstance(ip_devices, str) is True:
-            self.ip_devices = [ip_devices]
-        elif isinstance(ip_devices, list) is True:
-            self.ip_devices = ip_devices
+        if isinstance(ip_device, str) is True:
+            self.ip_device = ip_device
         else:
-            self.ip_devices = []
+            self.ip_device = None
 
         # Initialize oids
         if isinstance(oids, str) is True:
@@ -207,9 +214,18 @@ class OIDVariable(object):
             self.oids = oids
         else:
             self.oids = []
+        self.oids.sort()
 
-        # Set active
-        self.active = False not in [bool(self.oids), bool(self.ip_devices)]
+        # Validate OIDs
+        for oid in self.oids:
+            tester = class_oid.OIDstring(oid)
+            if tester.valid_format() is False:
+                oids_valid = False
+                break
+
+        # Set.valid
+        self.valid = False not in [
+            bool(self.oids), bool(self.ip_device), bool(oids_valid)]
 
     def __repr__(self):
         """Return a representation of the attributes of the class.
@@ -223,42 +239,9 @@ class OIDVariable(object):
         """
         # Return repr
         return (
-            '<{0} active={3}, oids={1}, ip_devices={2}>'
+            '<{0}.valid={3}, ip_device={2}, oids={1}>'
             ''.format(
                 self.__class__.__name__,
-                repr(self.oids), repr(self.ip_devices), repr(self.active)
+                repr(self.oids), repr(self.ip_device), repr(self.valid)
             )
         )
-
-
-def _strip_non_printable(value):
-    """Strip non printable characters.
-
-    Removes any non-printable characters and adds an indicator to the string
-    when binary characters are found.
-
-    Args:
-        value: the value that you wish to strip
-
-    Returns:
-        printable_value: Printable string
-
-    """
-    # Initialize key variables
-    printable_value = ''
-
-    if isinstance(value, str) is False:
-        printable_value = value
-    else:
-        # Filter all non-printable characters
-        # (note that we must use join to account for the fact that Python 3
-        # returns a generator)
-        printable_value = ''.join(
-            [x for x in value if x.isprintable() is True])
-        if printable_value != value:
-            if bool(printable_value) is True:
-                printable_value = '{} '.format(printable_value)
-            printable_value = '{}(contains binary)'.format(printable_value)
-
-    # Return
-    return printable_value

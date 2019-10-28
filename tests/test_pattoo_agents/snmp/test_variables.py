@@ -6,19 +6,20 @@ import unittest
 import os
 
 # Try to create a working PYTHONPATH
-EXEC_DIRECTORY = os.path.dirname(os.path.realpath(__file__))
-ROOT_DIRECTORY = os.path.abspath(os.path.join(
+EXEC_DIR = os.path.dirname(os.path.realpath(__file__))
+ROOT_DIR = os.path.abspath(os.path.join(
     os.path.abspath(os.path.join(
         os.path.abspath(os.path.join(
-            EXEC_DIRECTORY, os.pardir)), os.pardir)), os.pardir))
-if EXEC_DIRECTORY.endswith(
+            EXEC_DIR, os.pardir)), os.pardir)), os.pardir))
+if EXEC_DIR.endswith(
         '/pattoo-agents/tests/test_pattoo_agents/snmp') is True:
-    sys.path.append(ROOT_DIRECTORY)
+    # We need to prepend the path in case PattooShared has been installed
+    # elsewhere on the system using PIP. This could corrupt expected results
+    sys.path.insert(0, ROOT_DIR)
 else:
     print('''\
 This script is not installed in the \
-"pattoo-agents/tests/test_pattoo_agents/snmp" \
-directory. Please fix.''')
+"pattoo-agents/tests/test_pattoo_agents/snmp" directory. Please fix.''')
     sys.exit(2)
 
 # Pattoo imports
@@ -139,17 +140,17 @@ class TestSNMPVariable(unittest.TestCase):
         self.assertEqual(snmpvariable.snmpauth, sav)
         self.assertTrue(isinstance(snmpvariable.snmpauth, SNMPAuth))
         self.assertEqual(snmpvariable.ip_device, ip_device)
-        self.assertTrue(snmpvariable.active)
+        self.assertTrue(snmpvariable.valid)
 
         snmpvariable = SNMPVariable()
-        self.assertFalse(snmpvariable.active)
+        self.assertFalse(snmpvariable.valid)
 
     def test___repr__(self):
         """Testing function __repr__."""
         # Test defaults
         snmpvariable = SNMPVariable()
         expected = ('''\
-<SNMPVariable snmpauth=None, ip_device=None, active=False>''')
+<SNMPVariable snmpauth=None, ip_device=None,.valid=False>''')
         result = snmpvariable.__repr__()
         self.assertEqual(expected, result)
 
@@ -160,7 +161,7 @@ class TestSNMPVariable(unittest.TestCase):
         expected = ('''\
 <SNMPVariable snmpauth=<SNMPAuth version=2, community='public', port=161, \
 secname=None, authprotocol=None authpassword=None, privpassword=None, \
-privprotocol=None>, ip_device='localhost', active=True>''')
+privprotocol=None>, ip_device='localhost',.valid=True>''')
         result = snmpvariable.__repr__()
         self.assertEqual(expected, result)
 
@@ -203,7 +204,7 @@ class TestSNMPVariableList(unittest.TestCase):
 <SNMPVariableList snmpvariables=[<SNMPVariable snmpauth=<SNMPAuth version=2, \
 community='public', port=161, secname=None, authprotocol=None \
 authpassword=None, privpassword=None, privprotocol=None>, \
-ip_device='localhost', active=True>]>''')
+ip_device='localhost',.valid=True>]>''')
         result = svl.__repr__()
         self.assertEqual(expected, result)
 
@@ -219,30 +220,30 @@ class TestOIDVariable(unittest.TestCase):
         """Testing function __init__."""
         # Test defaults
         _variable = OIDVariable()
-        self.assertFalse(_variable.active)
+        self.assertFalse(_variable.valid)
 
         # Test non-defaults
         oids = '.1.1.1.1.1'
-        ip_devices = 'localhost'
-        _variable = OIDVariable(oids=oids, ip_devices=ip_devices)
-        self.assertTrue(_variable.active)
+        ip_device = 'localhost'
+        _variable = OIDVariable(oids=oids, ip_device=ip_device)
+        self.assertTrue(_variable.valid)
         self.assertEqual(_variable.oids, [oids])
-        self.assertEqual(_variable.ip_devices, [ip_devices])
+        self.assertEqual(_variable.ip_device, ip_device)
 
     def test___repr__(self):
         """Testing function __repr__."""
         # Test default
         _variable = OIDVariable()
-        expected = ('''<OIDVariable active=False, oids=[], ip_devices=[]>''')
+        expected = ('''<OIDVariable.valid=False, ip_device=None, oids=[]>''')
         result = _variable.__repr__()
         self.assertEqual(expected, result)
 
         # Test non-defaults
         oids = '.1.1.1.1.1'
-        ip_devices = 'localhost'
-        _variable = OIDVariable(oids=oids, ip_devices=ip_devices)
+        ip_device = 'localhost'
+        _variable = OIDVariable(oids=oids, ip_device=ip_device)
         expected = ('''\
-<OIDVariable active=True, oids=['.1.1.1.1.1'], ip_devices=['localhost']>''')
+<OIDVariable.valid=True, ip_device='localhost', oids=['.1.1.1.1.1']>''')
         result = _variable.__repr__()
         self.assertEqual(expected, result)
 

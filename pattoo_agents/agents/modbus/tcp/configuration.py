@@ -1,19 +1,14 @@
 #!/usr/bin/env python3
 """Classe to manage SNMP agent configurations."""
-
-# Standard imports
-import collections
-from pprint import pprint
-
 # Import project libraries
 from pattoo_shared import configuration
 from pattoo_shared.configuration import Config
 from pattoo_shared.constants import PATTOO_AGENT_MODBUSTCPD
-from .variables import (
+from pattoo_agents.agents.modbus.variables import (
     InputRegisterVariable, HoldingRegisterVariable, DeviceRegisterVariables)
 
 
-class ConfigMODBUSTCP(Config):
+class ConfigModbusTCP(Config):
     """Class gathers all configuration information."""
 
     def __init__(self):

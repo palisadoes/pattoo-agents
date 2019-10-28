@@ -29,8 +29,8 @@ def poll():
     """
     # Initialize key variables.
     config = configuration.ConfigSNMP()
-    ip_devices = {}
-    oids4devices = {}
+    ip_snmpvariables = {}
+    ip_oids = {}
 
     # Initialize AgentPolledData
     agent_program = PATTOO_AGENT_SNMPD
@@ -40,23 +40,28 @@ def poll():
     gateway = DeviceGateway(agent_hostname)
 
     # Get SNMP OIDs to be polled (Along with authorizations and ip_devices)
-    snmpvariables = config.snmpvariables()
-    oidvariables = config.oidvariables()
+    cfg_snmpvariables = config.snmpvariables()
+    cfg_oidvariables = config.oidvariables()
 
     # Create a dict of snmpvariables keyed by ip_device
-    for snmpvariable in snmpvariables:
-        ip_devices[snmpvariable.ip_device] = snmpvariable
+    for snmpvariable in cfg_snmpvariables:
+        ip_snmpvariables[snmpvariable.ip_device] = snmpvariable
 
     # Create a dict of oid lists keyed by ip_device
-    for oidvariable in oidvariables:
-        for next_device in oidvariable.ip_devices:
-            if next_device in oids4devices:
-                oids4devices[next_device].extend(oidvariable.oids)
-            else:
-                oids4devices[next_device] = oidvariable.oids
+    for oidvariable in cfg_oidvariables:
+        # Ignore invalid data
+        if oidvariable.valid is False:
+            continue
+
+        # Process
+        next_device = oidvariable.ip_device
+        if next_device in ip_oids:
+            ip_oids[next_device].extend(oidvariable.oids)
+        else:
+            ip_oids[next_device] = oidvariable.oids
 
     # Poll oids for all devices and update the DeviceDataVariables
-    ddv_list = _snmpwalks(ip_devices, oids4devices)
+    ddv_list = _snmpwalks(ip_snmpvariables, ip_oids)
     gateway.add(ddv_list)
     agentdata.add(gateway)
 
@@ -64,14 +69,14 @@ def poll():
     return agentdata
 
 
-def _snmpwalks(ip_devices, oids4devices):
+def _snmpwalks(ip_snmpvariables, ip_oids):
     """Get PATOO_SNMP agent data.
 
     Update the DeviceDataVariables with DataVariables
 
     Args:
-        ip_devices: Dict of type SNMPVariable keyed by ip_device
-        oids4devices: Dict of OID lists keyed by ip_device
+        ip_snmpvariables: Dict of type SNMPVariable keyed by ip_device
+        ip_oids: Dict keyed by ip_device containing lists of OIDs to poll
 
     Returns:
         ddv_list: List of type DeviceDataVariables
@@ -82,9 +87,9 @@ def _snmpwalks(ip_devices, oids4devices):
     sub_processes_in_pool = max(1, multiprocessing.cpu_count())
 
     # Poll all devices in sequence
-    for ip_device, snmpvariable in sorted(ip_devices.items()):
-        if ip_device in oids4devices:
-            oids = oids4devices[ip_device]
+    for ip_device, snmpvariable in sorted(ip_snmpvariables.items()):
+        if ip_device in ip_oids:
+            oids = ip_oids[ip_device]
             arguments.append((snmpvariable, oids))
 
     # Create a pool of sub process resources
@@ -105,7 +110,7 @@ def _walker(snmpvariable, oids):
 
     Args:
         snmpvariable: SNMPVariable to poll
-        oids: OIDs to poll
+        oids: List of OIDs to poll
 
     Returns:
         ddv: DeviceDataVariables for the SNMPVariable device

@@ -77,6 +77,16 @@ class UnittestConfig(object):
                     }
                 ]
             },
+            'pattoo-agent-modbustcpd': {
+                'polling_groups': [
+                    {
+                        'group_name': 'TEST',
+                        'ip_devices': ['unittest.modbus.tcp.device.net'],
+                        'input_registers': [387, 388],
+                        'holding_registers': [123, 456],
+                    }
+                ],
+            },
             'pattoo-agent-os-spoked': {
                 'listen_address': '127.0.0.1',
                 'ip_bind_port': 5000
@@ -162,9 +172,7 @@ so:
 
 $ export PATTOO_CONFIGDIR={}
 
-Then run this command again, followed by.
-
-$ ./_do_all_tests.py
+Then run this command again.
 '''.format(config_directory))
 
     # Make sure the PATTOO_CONFIGDIR environment variable is set
