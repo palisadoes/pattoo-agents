@@ -4,12 +4,15 @@
 # Standard libraries
 import multiprocessing
 import socket
+import sys
 
 # PIP libraries
 from pymodbus.client.sync import ModbusTcpClient
 
 # Pattoo libraries
 from pattoo_agents.agents.modbus_tcp import configuration
+from .variables import (
+    InputRegisterVariable, HoldingRegisterVariable, DeviceRegisterVariables)
 from pattoo_shared import agent
 from pattoo_shared.constants import PATTOO_AGENT_MODBUSTCPD, DATA_INT
 from pattoo_shared.variables import (
@@ -30,7 +33,7 @@ def poll():
     """
     # Initialize key variables.
     config = configuration.ConfigMODBUSTCP()
-    registers4devices = {}
+    arguments = []
 
     # Initialize AgentPolledData
     agent_program = PATTOO_AGENT_MODBUSTCPD
@@ -40,19 +43,14 @@ def poll():
     gateway = DeviceGateway(agent_hostname)
 
     # Get registers to be polled
-    registervariables = config.registervariables()
+    drvs = config.registervariables()
 
     # Create a dict of register lists keyed by ip_device
-    for registervariable in registervariables:
-        for next_device in registervariable.ip_devices:
-            if next_device in registers4devices:
-                registers4devices[next_device].extend(
-                    registervariable.registers)
-            else:
-                registers4devices[next_device] = registervariable.registers
+    for drv in drvs:
+        arguments.append((drv,))
 
     # Poll registers for all devices and update the DeviceDataVariables
-    ddv_list = _parallel_poller(registers4devices)
+    ddv_list = _parallel_poller(arguments)
     gateway.add(ddv_list)
     agentdata.add(gateway)
 
@@ -60,26 +58,20 @@ def poll():
     return agentdata
 
 
-def _parallel_poller(registers4devices):
+def _parallel_poller(arguments):
     """Get data.
 
     Update the DeviceDataVariables with DataVariables
 
     Args:
-        ip_devices: Dict of type SNMPVariable keyed by ip_device
-        registers4devices: Dict of OID lists keyed by ip_device
+        arguments: List of arguments for _serial_poller
 
     Returns:
         ddv_list: List of type DeviceDataVariables
 
     """
     # Initialize key variables
-    arguments = []
     sub_processes_in_pool = max(1, multiprocessing.cpu_count())
-
-    # Poll all devices in sequence
-    for ip_device, registers in sorted(registers4devices.items()):
-        arguments.append((ip_device, registers))
 
     # Create a pool of sub process resources
     with multiprocessing.Pool(processes=sub_processes_in_pool) as pool:
@@ -94,32 +86,38 @@ def _parallel_poller(registers4devices):
     return ddv_list
 
 
-def _serial_poller(ip_device, registers):
+def _serial_poller(drv):
     """Poll each spoke in parallel.
 
     Args:
-        ip_device: Device to poll
-        registers: Registers to poll
+        drv: Device to poll
+        input_registers: Input registers to poll
+        holding_registers: Holding registers to poll
 
     Returns:
         ddv: DeviceDataVariables for the ip_device
 
     """
     # Intialize data gathering
+    ip_device = drv.device
     ddv = DeviceDataVariables(ip_device)
 
     # Get list of type DataVariable
     datavariables = []
-    for register in registers:
+    for _rv in drv.data:
         client = ModbusTcpClient(ip_device)
-        response = client.read_input_registers(register)
+        if isinstance(_rv, InputRegisterVariable):
+            response = client.read_input_registers(_rv.address)
+        elif isinstance(_rv, HoldingRegisterVariable):
+            response = client.read_holding_registers(_rv.address)
         values = response.registers
-        for value in values:
+        for data_index, value in enumerate(values):
             datavariable = DataVariable(
-                value=value, data_index=0,
-                data_label=register, data_type=DATA_INT)
+                value=value, data_index='{}_{}'.format(data_index, _rv.unit),
+                data_label=_rv.address, data_type=DATA_INT)
             datavariables.append(datavariable)
     ddv.add(datavariables)
+    print('--V--', ddv)
 
     # Return
     return ddv

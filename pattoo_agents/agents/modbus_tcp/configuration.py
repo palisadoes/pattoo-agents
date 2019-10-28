@@ -2,13 +2,15 @@
 """Classe to manage SNMP agent configurations."""
 
 # Standard imports
-from copy import deepcopy
+import collections
+from pprint import pprint
 
 # Import project libraries
 from pattoo_shared import configuration
 from pattoo_shared.configuration import Config
 from pattoo_shared.constants import PATTOO_AGENT_MODBUSTCPD
-from .variables import RegisterVariable
+from .variables import (
+    InputRegisterVariable, HoldingRegisterVariable, DeviceRegisterVariables)
 
 
 class ConfigMODBUSTCP(Config):
@@ -43,56 +45,53 @@ class ConfigMODBUSTCP(Config):
         # Get configuration snippet
         key = PATTOO_AGENT_MODBUSTCPD
         sub_key = 'polling_groups'
-        sub_config = configuration.search(
+        groups = configuration.search(
             key, sub_key, self._configuration, die=True)
 
+        # Create Tuple instance to populate
+        result = []
+
         # Create snmp objects
-        groups = _validate_registers(sub_config)
         for group in groups:
-            registervariable = RegisterVariable(
-                registers=group['input_registers'],
-                ip_devices=group['ip_devices']
-            )
-            result.append(registervariable)
+            result.extend(_create_drv(group, 'input_registers'))
+            result.extend(_create_drv(group, 'holding_registers'))
         return result
 
 
-def _validate_registers(config_dict):
-    """Get list of dicts of SNMP information in configuration file.
+def _create_drv(data, register_type):
+    """Create a list of DeviceRegisterVariables for polling.
 
     Args:
-        config_dict: Configuration dict
+        data: Configuration dict
 
     Returns:
-        snmp_data: List of SNMP data dicts found in configuration file.
+        result: list of DeviceRegisterVariables
 
     """
     # Initialize key variables
-    seed_dict = {}
-    seed_dict['ip_devices'] = []
-    seed_dict['input_registers'] = []
+    result = []
 
-    # Start populating information
-    data = []
-    for read_dict in config_dict:
-        # Next entry if this is not a dict
-        if isinstance(read_dict, dict) is False:
-            continue
+    # Only return valid value
+    if isinstance(data, dict) is True:
+        # Screen data for keys and correct type
+        if (register_type not in 'input_registers') and (
+                register_type not in 'holding_registers'):
+            return []
+        if isinstance(data['ip_devices'], list) is False and isinstance(
+                data[register_type], list) is False:
+            return []
 
-        # Assign data
-        new_dict = deepcopy(seed_dict)
-        for key in read_dict.keys():
-            if isinstance(read_dict[key], list) is True:
-                new_dict[key] = read_dict[key]
-
-        # Validate IP addresses and OIDs
-        if isinstance(new_dict['ip_devices'], list) is False:
-            continue
-        if isinstance(new_dict['input_registers'], list) is False:
-            continue
-
-        # Append data to list
-        data.append(new_dict)
+        # Process
+        for ip_device in data['ip_devices']:
+            variables = []
+            for register in data[register_type]:
+                if register_type == 'holding_registers':
+                    variables.append(HoldingRegisterVariable(register))
+                else:
+                    variables.append(InputRegisterVariable(register))
+            drv = DeviceRegisterVariables(ip_device)
+            drv.add(variables)
+            result.append(drv)
 
     # Return
-    return data
+    return result
