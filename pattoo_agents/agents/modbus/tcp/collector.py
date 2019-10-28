@@ -154,8 +154,8 @@ unit {}'''.format(ip_device, _rv.register, _rv.count, _rv.unit))
             for data_index, value in enumerate(values):
                 datavariable = DataVariable(
                     value=value,
-                    data_index='{}_{}'.format(data_index, _rv.unit),
-                    data_label=_rv.address,
+                    data_index='unit {}'.format(str(_rv.unit).zfill(3)),
+                    data_label=_rv.address + data_index,
                     data_type=DATA_INT)
                 datavariables.append(datavariable)
     ddv.add(datavariables)

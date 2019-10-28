@@ -48,8 +48,9 @@ class ConfigModbusTCP(Config):
 
         # Create snmp objects
         for group in groups:
-            result.extend(_create_drv(group, 'input_registers'))
-            result.extend(_create_drv(group, 'holding_registers'))
+            for register in ['input_registers', 'holding_registers']:
+                if register in group:
+                    result.extend(_create_drv(group, register))
         return result
 
 
