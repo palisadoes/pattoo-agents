@@ -4,7 +4,7 @@
 class RegisterVariable(object):
     """Variable representation for Register data for Modbus polling."""
 
-    def __init__(self, address=None, count=1, unit=None):
+    def __init__(self, address=None, count=1, unit=0):
         """Initialize the class.
 
         Args:
@@ -16,18 +16,38 @@ class RegisterVariable(object):
             None
 
         """
-        # Initialize ip_devices
-        self.address = address
+        # Set object as being.valid
+        valid = False not in [
+            isinstance(address, int),
+            bool(address),
+            address is not False,
+            address is not True,
+            address is not None,
+            isinstance(count, int),
+            count is not False,
+            count is not True,
+            count is not None,
+            isinstance(unit, int) is True,
+            unit is not False,
+            unit is not True,
+            unit is not None
+            ]
+        # This part is separate as we need to do some mathematical functions
+        # that are based on the validity of the previous tests
+        if valid is True:
+            self.valid = False not in [
+                valid,
+                0 <= unit <= 246,
+                0 < count < 2008,
+                address > 0
+                ]
+        else:
+            self.valid = False
+
+        # Assign values
         self.count = count
         self.unit = unit
-
-        # Set object as being.valid
-        self.valid = False not in [
-            isinstance(address, int), isinstance(count, int),
-            bool(address), bool(count),
-            (unit is None or isinstance(unit, int)) and (
-                unit is not False) and (unit is not True)
-            ]
+        self.address = address
 
     def __repr__(self):
         """Return a representation of the attributes of the class.
@@ -50,7 +70,7 @@ class RegisterVariable(object):
 class InputRegisterVariable(RegisterVariable):
     """Variable representation for Register data for Modbus polling."""
 
-    def __init__(self, address=None, count=1, unit=None):
+    def __init__(self, address=None, count=1, unit=0):
         """Initialize the class.
 
         Args:
@@ -70,7 +90,7 @@ class InputRegisterVariable(RegisterVariable):
 class HoldingRegisterVariable(RegisterVariable):
     """Variable representation for Register data for Modbus polling."""
 
-    def __init__(self, address=None, count=1, unit=None):
+    def __init__(self, address=None, count=1, unit=0):
         """Initialize the class.
 
         Args:

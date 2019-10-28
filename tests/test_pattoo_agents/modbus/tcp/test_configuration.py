@@ -61,6 +61,7 @@ class TestConfigModbusTCP(unittest.TestCase):
             self.assertEqual(drv.device, expected_ip_device)
             for _rv in drv.data:
                 self.assertTrue(isinstance(_rv, RegisterVariable))
+                print(_rv)
                 self.assertTrue(_rv.valid)
             register_variables.extend(drv.data)
 
@@ -70,22 +71,22 @@ class TestConfigModbusTCP(unittest.TestCase):
             if index == 0:
                 self.assertEqual(_rv.address, 387)
                 self.assertEqual(_rv.count, 1)
-                self.assertEqual(_rv.unit, None)
+                self.assertEqual(_rv.unit, 0)
                 self.assertTrue(isinstance(_rv, InputRegisterVariable))
             elif index == 1:
                 self.assertEqual(_rv.address, 388)
                 self.assertEqual(_rv.count, 1)
-                self.assertEqual(_rv.unit, None)
+                self.assertEqual(_rv.unit, 0)
                 self.assertTrue(isinstance(_rv, InputRegisterVariable))
             elif index == 2:
                 self.assertEqual(_rv.address, 123)
                 self.assertEqual(_rv.count, 1)
-                self.assertEqual(_rv.unit, None)
+                self.assertEqual(_rv.unit, 0)
                 self.assertTrue(isinstance(_rv, HoldingRegisterVariable))
             else:
                 self.assertEqual(_rv.address, 456)
                 self.assertEqual(_rv.count, 1)
-                self.assertEqual(_rv.unit, None)
+                self.assertEqual(_rv.unit, 0)
                 self.assertTrue(isinstance(_rv, HoldingRegisterVariable))
 
     def test__create_drv(self):
