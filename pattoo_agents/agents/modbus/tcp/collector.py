@@ -155,7 +155,7 @@ unit {}'''.format(ip_device, _rv.register, _rv.count, _rv.unit))
                 datavariable = DataVariable(
                     value=value,
                     data_index='unit {}'.format(str(_rv.unit).zfill(3)),
-                    data_label=_rv.address + data_index,
+                    data_label=_rv.register + data_index,
                     data_type=DATA_INT)
                 datavariables.append(datavariable)
     ddv.add(datavariables)
@@ -206,9 +206,9 @@ Modbus gateways. Sent when slave fails to respond'''
     # Intialize data gathering
     if isinstance(response, ExceptionResponse):
         # Provide more context if required.
-        if response.exception in exception_codes:
+        if response.exception_code in exception_codes:
             description = ' Description: {}'.format(
-                exception_codes[response.exception])
+                exception_codes[response.exception_code])
         else:
             description = ''
 

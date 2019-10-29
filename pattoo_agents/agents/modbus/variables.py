@@ -4,11 +4,11 @@
 class RegisterVariable(object):
     """Variable representation for Register data for Modbus polling."""
 
-    def __init__(self, address=None, count=1, unit=0):
+    def __init__(self, register=None, count=1, unit=0):
         """Initialize the class.
 
         Args:
-            address: Register address
+            register: Register number
             count: The number of registers to read
             unit: The slave unit this request is targeting
 
@@ -16,13 +16,16 @@ class RegisterVariable(object):
             None
 
         """
+        # Initialize key variables
+        self.address = None
+
         # Set object as being.valid
         valid = False not in [
-            isinstance(address, int),
-            bool(address),
-            address is not False,
-            address is not True,
-            address is not None,
+            isinstance(register, int),
+            bool(register),
+            register is not False,
+            register is not True,
+            register is not None,
             isinstance(count, int),
             count is not False,
             count is not True,
@@ -38,8 +41,7 @@ class RegisterVariable(object):
             self.valid = False not in [
                 valid,
                 0 <= unit <= 246,
-                0 < count < 2008,
-                address > 0
+                0 < count < 2008
                 ]
         else:
             self.valid = False
@@ -47,7 +49,7 @@ class RegisterVariable(object):
         # Assign values
         self.count = count
         self.unit = unit
-        self.address = address
+        self.register = register
 
     def __repr__(self):
         """Return a representation of the attributes of the class.
@@ -61,20 +63,20 @@ class RegisterVariable(object):
         """
         # Return repr
         return ('''\
-<{}.valid={}, address={}, count={}, unit={}>\
+<{}.valid={}, register={}, count={}, unit={}>\
 '''.format(self.__class__.__name__,
-           repr(self.valid), repr(self.address),
+           repr(self.valid), repr(self.register),
            repr(self.count), repr(self.unit)))
 
 
 class InputRegisterVariable(RegisterVariable):
     """Variable representation for Register data for Modbus polling."""
 
-    def __init__(self, address=None, count=1, unit=0):
+    def __init__(self, register=None, count=1, unit=0):
         """Initialize the class.
 
         Args:
-            address: Register address
+            register: Register register
             count: The number of registers to read
             unit: The slave unit this request is targeting
 
@@ -84,17 +86,26 @@ class InputRegisterVariable(RegisterVariable):
         """
         # Initialize variables
         RegisterVariable.__init__(
-            self, address=address, count=count, unit=unit)
+            self, register=register, count=count, unit=unit)
 
+        # Set modbus physical address to contact
+        if self.valid is True:
+            if 30001 <= register <= 39999:
+                self.address = register - 30001
+            elif 300001 <= register <= 365536:
+                self.address = register - 300001
+            else:
+                self.valid = False
+                
 
 class HoldingRegisterVariable(RegisterVariable):
     """Variable representation for Register data for Modbus polling."""
 
-    def __init__(self, address=None, count=1, unit=0):
+    def __init__(self, register=None, count=1, unit=0):
         """Initialize the class.
 
         Args:
-            address: Register address
+            register: Register register
             count: The number of registers to read
             unit: The slave unit this request is targeting
 
@@ -104,7 +115,16 @@ class HoldingRegisterVariable(RegisterVariable):
         """
         # Initialize variables
         RegisterVariable.__init__(
-            self, address=address, count=count, unit=unit)
+            self, register=register, count=count, unit=unit)
+
+        # Set modbus physical address to contact
+        if self.valid is True:
+            if 40001 <= register <= 49999:
+                self.address = register - 40001
+            elif 400001 <= register <= 465546:
+                self.address = register - 400001
+            else:
+                self.valid = False
 
 
 class DeviceRegisterVariables(object):

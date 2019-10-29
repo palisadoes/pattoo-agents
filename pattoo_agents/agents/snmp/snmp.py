@@ -171,7 +171,7 @@ your command AND make sure you set --.valid=True. Error: {}\
         return validity
 
     def walk(
-            self, oid_to_get, check_reachability=False,
+            self, oid_to_get, check_reachability=True,
             check_existence=False, context_name=''):
         """Do an SNMPwalk.
 
@@ -198,7 +198,7 @@ your command AND make sure you set --.valid=True. Error: {}\
         return result
 
     def get(
-            self, oid_to_get, check_reachability=False,
+            self, oid_to_get, check_reachability=True,
             check_existence=False, context_name=''):
         """Do an SNMPget.
 
@@ -229,7 +229,7 @@ your command AND make sure you set --.valid=True. Error: {}\
         return result
 
     def query(
-            self, oid_to_get, get=False, check_reachability=False,
+            self, oid_to_get, get=False, check_reachability=True,
             check_existence=False, context_name=''):
         """Do an SNMP query.
 

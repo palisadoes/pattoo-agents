@@ -82,8 +82,8 @@ class UnittestConfig(object):
                     {
                         'group_name': 'TEST',
                         'ip_devices': ['unittest.modbus.tcp.device.net'],
-                        'input_registers': [387, 388],
-                        'holding_registers': [123, 456],
+                        'input_registers': [30388, 30389],
+                        'holding_registers': [40124, 40457],
                     }
                 ],
             },
