@@ -39,9 +39,10 @@ class TestRegisterVariable(unittest.TestCase):
     def test___init__(self):
         """Testing method / function __init__."""
         # Test with invalid count
-        _rv = RegisterVariable(address=1, count=2, unit=3)
+        _rv = RegisterVariable(register=1, count=2, unit=3)
         self.assertTrue(isinstance(_rv, RegisterVariable))
-        self.assertEqual(_rv.address, 1)
+        self.assertEqual(_rv.register, 1)
+        self.assertEqual(_rv.address, None)
         self.assertEqual(_rv.count, 2)
         self.assertEqual(_rv.unit, 3)
         self.assertTrue(_rv.valid)
@@ -49,40 +50,44 @@ class TestRegisterVariable(unittest.TestCase):
         # Test with no arguments
         _rv = RegisterVariable()
         self.assertTrue(isinstance(_rv, RegisterVariable))
-        self.assertIsNone(_rv.address)
+        self.assertIsNone(_rv.register)
+        self.assertEqual(_rv.address, None)
         self.assertEqual(_rv.count, 1)
         self.assertEqual(_rv.unit, 0)
         self.assertFalse(_rv.valid)
 
         # Test with invalid count
-        address = 1
+        register = 30050
         unit = 0
         for count in [5000, False, None, True, 'test', -1]:
-            _rv = RegisterVariable(address=address, count=count, unit=unit)
+            _rv = RegisterVariable(register=register, count=count, unit=unit)
             self.assertTrue(isinstance(_rv, RegisterVariable))
-            self.assertEqual(_rv.address, address)
+            self.assertEqual(_rv.register, register)
+            self.assertEqual(_rv.address, None)
             self.assertEqual(_rv.count, count)
             self.assertEqual(_rv.unit, unit)
             self.assertFalse(_rv.valid)
 
         # Test with invalid unit
-        address = 1
+        register = 30050
         count = 0
         for unit in [5000, False, None, True, 'test', -1]:
-            _rv = RegisterVariable(address=address, count=count, unit=unit)
+            _rv = RegisterVariable(register=register, count=count, unit=unit)
             self.assertTrue(isinstance(_rv, RegisterVariable))
-            self.assertEqual(_rv.address, address)
+            self.assertEqual(_rv.register, register)
+            self.assertEqual(_rv.address, None)
             self.assertEqual(_rv.count, count)
             self.assertEqual(_rv.unit, unit)
             self.assertFalse(_rv.valid)
 
-        # Test with invalid Address
+        # Test with invalid register
         count = 1
         unit = 0
-        for address in [False, None, True, 'test', -1]:
-            _rv = RegisterVariable(address=address, count=count, unit=unit)
+        for register in [False, None, True, 'test']:
+            _rv = RegisterVariable(register=register, count=count, unit=unit)
             self.assertTrue(isinstance(_rv, RegisterVariable))
-            self.assertEqual(_rv.address, address)
+            self.assertEqual(_rv.register, register)
+            self.assertEqual(_rv.address, None)
             self.assertEqual(_rv.count, count)
             self.assertEqual(_rv.unit, unit)
             self.assertFalse(_rv.valid)
@@ -93,12 +98,12 @@ class TestRegisterVariable(unittest.TestCase):
         _rv = RegisterVariable()
         result = _rv.__repr__()
         expected = '''\
-<RegisterVariable.valid=False, address=None, count=1, unit=0>'''
+<RegisterVariable.valid=False, register=None, count=1, unit=0>'''
         self.assertEqual(result, expected)
 
-        _rv = RegisterVariable(address=1, count=2, unit=3)
+        _rv = RegisterVariable(register=1, count=2, unit=3)
         result = _rv.__repr__()
-        expected = '<RegisterVariable.valid=True, address=1, count=2, unit=3>'
+        expected = '<RegisterVariable.valid=True, register=1, count=2, unit=3>'
         self.assertEqual(result, expected)
 
 
@@ -111,11 +116,24 @@ class TestInputRegisterVariable(unittest.TestCase):
 
     def test___init__(self):
         """Testing method / function __init__."""
-        # Test with invalid count
-        _rv = InputRegisterVariable(address=1, count=2, unit=3)
+        # Test with valid values
+        register = 30050
+        _rv = InputRegisterVariable(register=register, count=2, unit=3)
         self.assertTrue(isinstance(_rv, InputRegisterVariable))
         self.assertTrue(isinstance(_rv, RegisterVariable))
-        self.assertEqual(_rv.address, 1)
+        self.assertEqual(_rv.register, register)
+        self.assertEqual(_rv.address, 49)
+        self.assertEqual(_rv.count, 2)
+        self.assertEqual(_rv.unit, 3)
+        self.assertTrue(_rv.valid)
+
+        # Test with valid values (64 bit)
+        register = 300050
+        _rv = InputRegisterVariable(register=register, count=2, unit=3)
+        self.assertTrue(isinstance(_rv, InputRegisterVariable))
+        self.assertTrue(isinstance(_rv, RegisterVariable))
+        self.assertEqual(_rv.register, register)
+        self.assertEqual(_rv.address, 49)
         self.assertEqual(_rv.count, 2)
         self.assertEqual(_rv.unit, 3)
         self.assertTrue(_rv.valid)
@@ -124,46 +142,50 @@ class TestInputRegisterVariable(unittest.TestCase):
         _rv = InputRegisterVariable()
         self.assertTrue(isinstance(_rv, InputRegisterVariable))
         self.assertTrue(isinstance(_rv, RegisterVariable))
+        self.assertIsNone(_rv.register)
         self.assertIsNone(_rv.address)
         self.assertEqual(_rv.count, 1)
         self.assertEqual(_rv.unit, 0)
         self.assertFalse(_rv.valid)
 
         # Test with invalid count
-        address = 1
+        register = 30050
         unit = 0
         for count in [5000, False, None, True, 'test', -1]:
             _rv = InputRegisterVariable(
-                address=address, count=count, unit=unit)
+                register=register, count=count, unit=unit)
             self.assertTrue(isinstance(_rv, InputRegisterVariable))
             self.assertTrue(isinstance(_rv, RegisterVariable))
-            self.assertEqual(_rv.address, address)
+            self.assertEqual(_rv.register, register)
+            self.assertEqual(_rv.address, None)
             self.assertEqual(_rv.count, count)
             self.assertEqual(_rv.unit, unit)
             self.assertFalse(_rv.valid)
 
         # Test with invalid unit
-        address = 1
+        register = 30050
         count = 0
         for unit in [5000, False, None, True, 'test', -1]:
             _rv = InputRegisterVariable(
-                address=address, count=count, unit=unit)
+                register=register, count=count, unit=unit)
             self.assertTrue(isinstance(_rv, InputRegisterVariable))
             self.assertTrue(isinstance(_rv, RegisterVariable))
-            self.assertEqual(_rv.address, address)
+            self.assertEqual(_rv.register, register)
+            self.assertEqual(_rv.address, None)
             self.assertEqual(_rv.count, count)
             self.assertEqual(_rv.unit, unit)
             self.assertFalse(_rv.valid)
 
-        # Test with invalid Address
+        # Test with invalid register
         count = 1
         unit = 0
-        for address in [False, None, True, 'test', -1]:
+        for register in [False, None, True, 'test', -1]:
             _rv = InputRegisterVariable(
-                address=address, count=count, unit=unit)
+                register=register, count=count, unit=unit)
             self.assertTrue(isinstance(_rv, InputRegisterVariable))
             self.assertTrue(isinstance(_rv, RegisterVariable))
-            self.assertEqual(_rv.address, address)
+            self.assertEqual(_rv.register, register)
+            self.assertEqual(_rv.address, None)
             self.assertEqual(_rv.count, count)
             self.assertEqual(_rv.unit, unit)
             self.assertFalse(_rv.valid)
@@ -178,11 +200,24 @@ class TestHoldingRegisterVariable(unittest.TestCase):
 
     def test___init__(self):
         """Testing method / function __init__."""
-        # Test with invalid count
-        _rv = HoldingRegisterVariable(address=1, count=2, unit=3)
+        # Test with valid values
+        register = 40050
+        _rv = HoldingRegisterVariable(register=register, count=2, unit=3)
         self.assertTrue(isinstance(_rv, HoldingRegisterVariable))
         self.assertTrue(isinstance(_rv, RegisterVariable))
-        self.assertEqual(_rv.address, 1)
+        self.assertEqual(_rv.register, register)
+        self.assertEqual(_rv.address, 49)
+        self.assertEqual(_rv.count, 2)
+        self.assertEqual(_rv.unit, 3)
+        self.assertTrue(_rv.valid)
+
+        # Test with valid values (64 bit)
+        register = 400050
+        _rv = HoldingRegisterVariable(register=register, count=2, unit=3)
+        self.assertTrue(isinstance(_rv, HoldingRegisterVariable))
+        self.assertTrue(isinstance(_rv, RegisterVariable))
+        self.assertEqual(_rv.register, register)
+        self.assertEqual(_rv.address, 49)
         self.assertEqual(_rv.count, 2)
         self.assertEqual(_rv.unit, 3)
         self.assertTrue(_rv.valid)
@@ -191,46 +226,50 @@ class TestHoldingRegisterVariable(unittest.TestCase):
         _rv = HoldingRegisterVariable()
         self.assertTrue(isinstance(_rv, HoldingRegisterVariable))
         self.assertTrue(isinstance(_rv, RegisterVariable))
-        self.assertIsNone(_rv.address)
+        self.assertIsNone(_rv.register)
+        self.assertEqual(_rv.address, None)
         self.assertEqual(_rv.count, 1)
         self.assertEqual(_rv.unit, 0)
         self.assertFalse(_rv.valid)
 
         # Test with invalid count
-        address = 1
+        register = 40050
         unit = 0
         for count in [5000, False, None, True, 'test', -1]:
             _rv = HoldingRegisterVariable(
-                address=address, count=count, unit=unit)
+                register=register, count=count, unit=unit)
             self.assertTrue(isinstance(_rv, HoldingRegisterVariable))
             self.assertTrue(isinstance(_rv, RegisterVariable))
-            self.assertEqual(_rv.address, address)
+            self.assertEqual(_rv.register, register)
+            self.assertEqual(_rv.address, None)
             self.assertEqual(_rv.count, count)
             self.assertEqual(_rv.unit, unit)
             self.assertFalse(_rv.valid)
 
         # Test with invalid unit
-        address = 1
+        register = 40050
         count = 0
         for unit in [5000, False, None, True, 'test', -1]:
             _rv = HoldingRegisterVariable(
-                address=address, count=count, unit=unit)
+                register=register, count=count, unit=unit)
             self.assertTrue(isinstance(_rv, HoldingRegisterVariable))
             self.assertTrue(isinstance(_rv, RegisterVariable))
-            self.assertEqual(_rv.address, address)
+            self.assertEqual(_rv.register, register)
+            self.assertEqual(_rv.address, None)
             self.assertEqual(_rv.count, count)
             self.assertEqual(_rv.unit, unit)
             self.assertFalse(_rv.valid)
 
-        # Test with invalid Address
+        # Test with invalid register
         count = 1
         unit = 0
-        for address in [False, None, True, 'test', -1]:
+        for register in [False, None, True, 'test', -1]:
             _rv = HoldingRegisterVariable(
-                address=address, count=count, unit=unit)
+                register=register, count=count, unit=unit)
             self.assertTrue(isinstance(_rv, HoldingRegisterVariable))
             self.assertTrue(isinstance(_rv, RegisterVariable))
-            self.assertEqual(_rv.address, address)
+            self.assertEqual(_rv.register, register)
+            self.assertEqual(_rv.address, None)
             self.assertEqual(_rv.count, count)
             self.assertEqual(_rv.unit, unit)
             self.assertFalse(_rv.valid)
@@ -268,11 +307,11 @@ class TestDeviceRegisterVariables(unittest.TestCase):
         self.assertEqual(drv.data, [])
 
         # Setup DataVariable
-        address = 1
+        register = 30050
         count = 2
         unit = 3
         variable = HoldingRegisterVariable(
-            address=address, count=count, unit=unit)
+            register=register, count=count, unit=unit)
 
         # Test add
         drv.add(None)
@@ -285,10 +324,10 @@ class TestDeviceRegisterVariables(unittest.TestCase):
 
         # Test the values in the variable
         _variable = drv.data[0]
-        self.assertEqual(_variable.address, address)
+        self.assertEqual(_variable.register, register)
         self.assertEqual(_variable.count, count)
         self.assertEqual(_variable.unit, unit)
-        
+
 
 if __name__ == '__main__':
     # Make sure the environment is OK to run unittests

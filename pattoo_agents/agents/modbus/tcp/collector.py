@@ -155,7 +155,7 @@ unit {}'''.format(ip_device, _rv.register, _rv.count, _rv.unit))
                 datavariable = DataVariable(
                     value=value,
                     data_index='unit {}'.format(str(_rv.unit).zfill(3)),
-                    data_label=_rv.address + data_index,
+                    data_label=_rv.register + data_index,
                     data_type=DATA_INT)
                 datavariables.append(datavariable)
     ddv.add(datavariables)
