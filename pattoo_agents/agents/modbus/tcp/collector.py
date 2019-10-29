@@ -206,9 +206,9 @@ Modbus gateways. Sent when slave fails to respond'''
     # Intialize data gathering
     if isinstance(response, ExceptionResponse):
         # Provide more context if required.
-        if response.exception in exception_codes:
+        if response.exception_code in exception_codes:
             description = ' Description: {}'.format(
-                exception_codes[response.exception])
+                exception_codes[response.exception_code])
         else:
             description = ''
 
