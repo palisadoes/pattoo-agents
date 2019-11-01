@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
 """Classe to manage SNMP agent configurations."""
+
+# Standard imports
+import itertools
+
 # Import project libraries
 from pattoo_shared import configuration
 from pattoo_shared.configuration import Config
@@ -80,14 +84,57 @@ def _create_drv(data, register_type):
         # Process
         for ip_device in data['ip_devices']:
             variables = []
-            for register in data[register_type]:
+            register_counts = _create_register_counts(data[register_type])
+            for register, count in register_counts:
                 if register_type == 'holding_registers':
-                    variables.append(HoldingRegisterVariable(register))
+                    variables.append(HoldingRegisterVariable(register, count))
                 else:
-                    variables.append(InputRegisterVariable(register))
+                    variables.append(InputRegisterVariable(register, count))
             drv = DeviceRegisterVariables(ip_device)
             drv.add(variables)
             result.append(drv)
 
     # Return
     return result
+
+
+def _create_register_counts(listing):
+    """Convert a list of integers into ranges.
+
+    Args:
+        listing: List of integers to group
+
+    Returns:
+        result: List of tuples [(start, length of range), ...]
+
+    """
+    # Process data
+    result = []
+    ranges = list(_ranger(listing))
+    for (start, stop) in ranges:
+        result.append((start, stop - start + 1))
+    result.sort()
+    return result
+
+
+def _ranger(listing):
+    """Convert a list of integers into ranges.
+
+    Args:
+        listing: List of integers to group
+
+    Yields:
+        List of tuples [(start, stop of range), ...]
+
+    """
+    # Remove duplicates
+    listing = list(set(listing))
+
+    # Sort data beforehand to ensure grouping works.
+    listing.sort()
+
+    # Group data.
+    for _, second in itertools.groupby(
+            enumerate(listing), lambda pair: pair[1] - pair[0]):
+        second = list(second)
+        yield second[0][1], second[-1][1]

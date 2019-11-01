@@ -61,24 +61,18 @@ class TestConfigModbusTCP(unittest.TestCase):
             self.assertEqual(drv.device, expected_ip_device)
             for _rv in drv.data:
                 self.assertTrue(isinstance(_rv, RegisterVariable))
-                print(_rv)
                 self.assertTrue(_rv.valid)
             register_variables.extend(drv.data)
 
         # Evaluate each RegisterVariable
-        self.assertEqual(len(register_variables), 4)
+        self.assertEqual(len(register_variables), 3)
         for index, _rv in enumerate(register_variables):
             if index == 0:
                 self.assertEqual(_rv.address, 387)
-                self.assertEqual(_rv.count, 1)
+                self.assertEqual(_rv.count, 2)
                 self.assertEqual(_rv.unit, 0)
                 self.assertTrue(isinstance(_rv, InputRegisterVariable))
             elif index == 1:
-                self.assertEqual(_rv.address, 388)
-                self.assertEqual(_rv.count, 1)
-                self.assertEqual(_rv.unit, 0)
-                self.assertTrue(isinstance(_rv, InputRegisterVariable))
-            elif index == 2:
                 self.assertEqual(_rv.address, 123)
                 self.assertEqual(_rv.count, 1)
                 self.assertEqual(_rv.unit, 0)
