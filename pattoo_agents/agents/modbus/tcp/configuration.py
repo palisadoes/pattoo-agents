@@ -59,49 +59,6 @@ class ConfigModbusTCP(Config):
         return result
 
 
-def _get_unit(data):
-    """Get the unit to be polled in the polling_group.
-
-    Args:
-        data: Configuration dict for the polling_group
-
-    Returns:
-        result: unit value
-
-    """
-    # Ignore invalid non-dicts
-    if isinstance(data, dict) is False:
-        result = 0
-        return result
-
-    # Default value
-    if 'unit' not in data:
-        result = 0
-        return result
-
-    # Non integer values got to default
-    unit = data['unit']
-    valid = False not in [
-        lib_data.is_numeric(unit),
-        isinstance(unit, str) is True,
-        unit is not False,
-        unit is not True,
-        unit is not None
-        ]
-    if valid is False:
-        result = 0
-        return result
-
-    # Convert float values to integer values
-    if isinstance(unit, float) is True:
-        result = int(unit)
-    else:
-        result = unit
-
-    # Return
-    return result
-
-
 def _create_drv(data, register_type):
     """Create a list of DeviceRegisterVariables for polling.
 
@@ -187,3 +144,46 @@ def _ranger(listing):
             enumerate(listing), lambda pair: pair[1] - pair[0]):
         second = list(second)
         yield second[0][1], second[-1][1]
+
+
+def _get_unit(data):
+    """Get the unit to be polled in the polling_group.
+
+    Args:
+        data: Configuration dict for the polling_group
+
+    Returns:
+        result: unit value
+
+    """
+    # Ignore invalid non-dicts
+    if isinstance(data, dict) is False:
+        result = 0
+        return result
+
+    # Default value
+    if 'unit' not in data:
+        result = 0
+        return result
+
+    # Non integer values got to default
+    unit = data['unit']
+    valid = False in [
+        lib_data.is_numeric(unit) is False,
+        isinstance(unit, str) is True,
+        unit is False,
+        unit is True,
+        unit is None
+        ]
+    if valid is False:
+        result = 0
+        return result
+
+    # Convert float values to integer values
+    if isinstance(unit, float) is True:
+        result = int(unit)
+    else:
+        result = unit
+
+    # Return
+    return result
