@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
-"""Pattoo WSGI script.
+"""Pattoo multi-user operating system reporter daemon.
 
-Serves as a Gunicorn WSGI entry point for pattoo-os
+Serves system data to remote clients over HTTP.
+
+Uses a Gunicorn WSGI entry point to serve data.
 
 """
+
 
 # Standard libraries
 from __future__ import print_function
