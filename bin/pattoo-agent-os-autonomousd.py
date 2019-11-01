@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Pattoo reporter daemon.
+"""Pattoo multi-user operating system reporter daemon.
 
 Posts system data to remote host over HTTP.
 
