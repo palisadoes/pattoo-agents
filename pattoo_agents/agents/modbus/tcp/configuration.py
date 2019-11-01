@@ -6,6 +6,7 @@ import itertools
 
 # Import project libraries
 from pattoo_shared import configuration
+from pattoo_shared import data as lib_data
 from pattoo_shared.configuration import Config
 from pattoo_shared.constants import PATTOO_AGENT_MODBUSTCPD
 from pattoo_agents.agents.modbus.variables import (
@@ -58,6 +59,49 @@ class ConfigModbusTCP(Config):
         return result
 
 
+def _get_unit(data):
+    """Get the unit to be polled in the polling_group.
+
+    Args:
+        data: Configuration dict for the polling_group
+
+    Returns:
+        result: unit value
+
+    """
+    # Ignore invalid non-dicts
+    if isinstance(data, dict) is False:
+        result = 0
+        return result
+
+    # Default value
+    if 'unit' not in data:
+        result = 0
+        return result
+
+    # Non integer values got to default
+    unit = data['unit']
+    valid = False not in [
+        lib_data.is_numeric(unit),
+        isinstance(unit, str) is True,
+        unit is not False,
+        unit is not True,
+        unit is not None
+        ]
+    if valid is False:
+        result = 0
+        return result
+
+    # Convert float values to integer values
+    if isinstance(unit, float) is True:
+        result = int(unit)
+    else:
+        result = unit
+
+    # Return
+    return result
+
+
 def _create_drv(data, register_type):
     """Create a list of DeviceRegisterVariables for polling.
 
@@ -81,15 +125,20 @@ def _create_drv(data, register_type):
                 data[register_type], list) is False:
             return []
 
+        # Get the modbus unit value
+        unit = _get_unit(data)
+
         # Process
         for ip_device in data['ip_devices']:
             variables = []
             register_counts = _create_register_counts(data[register_type])
             for register, count in register_counts:
                 if register_type == 'holding_registers':
-                    variables.append(HoldingRegisterVariable(register, count))
+                    variables.append(HoldingRegisterVariable(
+                        register=register, count=count, unit=unit))
                 else:
-                    variables.append(InputRegisterVariable(register, count))
+                    variables.append(InputRegisterVariable(
+                        register=register, count=count, unit=unit))
             drv = DeviceRegisterVariables(ip_device)
             drv.add(variables)
             result.append(drv)
