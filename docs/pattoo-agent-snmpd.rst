@@ -56,12 +56,15 @@ pattoo-agent-snmpd Section
 
 Add the following statements to the ``config.yaml`` file to configure the  ``pattoo-agent-snmpd`` daemon. An explanation follows.
 
+**NOTE:** The indentations in the YAML configuration are important. Make sure indentations line up. Dashes '-' indicate one item in a list of items.
+
 .. code-block:: yaml
 
    pattoo-agent-snmpd:
 
      polling_groups:
-       - group_name: TEST
+
+       - group_name: TEST 1
          ip_devices:
            - ip.address.of.device1
            - ip.address.of.device2
@@ -69,7 +72,16 @@ Add the following statements to the ``config.yaml`` file to configure the  ``pat
            - .1.3.6.1.2.1.2.2.1.10
            - .1.3.6.1.2.1.2.2.1.16
 
+       - group_name: TEST 2
+         ip_devices:
+           - ip.address.of.device3
+           - ip.address.of.device4
+         oids:
+           - .1.3.6.1.2.1.2.2.1.12
+           - .1.3.6.1.2.1.2.2.1.13
+
      auth_groups:
+
        - group_name: CISCO
          snmp_authpassword: null
          snmp_authprotocol: null
@@ -82,6 +94,20 @@ Add the following statements to the ``config.yaml`` file to configure the  ``pat
          ip_devices:
            - ip.address.of.device1
            - ip.address.of.device2
+
+       - group_name: Juniper
+         snmp_authpassword: null
+         snmp_authprotocol: null
+         snmp_community: notpublic
+         snmp_port: 161
+         snmp_privpassword: null
+         snmp_privprotocol: null
+         snmp_secname: null
+         snmp_version: 2
+         ip_devices:
+           - ip.address.of.device3
+           - ip.address.of.device4
+
 
 Configuration Explanation
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -102,7 +128,7 @@ This table outlines the purpose of each configuration parameter
    * -
      - ``polling_groups:``
      -
-     - List of groupings of ``ip_devices`` that need data from a shared set of SNMP OIDs
+     - List of groupings of ``ip_devices`` that need data from a shared set of SNMP OIDs.  Make this the first entry in the configuration sub-section. Make sure it starts with a dash '-' which indicates the beginning of a new grouping.
    * -
      -
      - ``group_name:``
@@ -122,7 +148,7 @@ This table outlines the purpose of each configuration parameter
    * -
      -
      - ``group_name:``
-     - Unique name for a group of ``ip_devices`` that share the same SNMP parameters
+     - Unique name for a group of ``ip_devices`` that share the same SNMP parameters.  Make this the first entry in the configuration sub-section. Make sure it starts with a dash '-' which indicates the beginning of a new grouping.
    * -
      -
      - ``snmp_authpassword:``

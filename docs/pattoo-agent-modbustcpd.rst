@@ -2,7 +2,7 @@
 Pattoo ModbusTCP Agent
 ======================
 
-``pattoo-agent-modbustcpd`` provides performance data on any SNMP enabled system it can poll. The data gathered is posted in ``json`` format using HTTP to a remote server.
+``pattoo-agent-modbustcpd`` provides performance data on any ModbusTCP enabled system it can poll. The data gathered is posted in ``json`` format using HTTP to a remote server.
 
 The ``json`` data is formatted for easy ingestion by `the Pattoo Server <https://pattoo.readthedocs.io/>`_
 
@@ -56,20 +56,34 @@ pattoo-agent-modbustcpd Section
 
 Add the following statements to the ``config.yaml`` file to configure the  ``pattoo-agent-modbustcpd`` daemon. An explanation follows.
 
+**NOTE:** The indentations in the YAML configuration are important. Make sure indentations line up. Dashes '-' indicate one item in a list of items.
+
 .. code-block:: yaml
 
   pattoo-agent-modbustcpd:
 
     polling_groups:
-      - group_name: TEST
+
+      - group_name: TEST 1
         ip_devices:
-          - test.modbus.tcp.device.net
+          - test1.modbus.tcp.device.net
         input_registers:
-          - 387
-          - 388
+          - 30123
+          - 30789
         holding_registers:
-          - 123
-          - 456
+          - 40123
+          - 40456
+        unit: 0
+
+      - group_name: TEST 2
+        ip_devices:
+          - test2.modbus.tcp.device.net
+        input_registers:
+          - 30387
+          - 30388
+        holding_registers:
+          - 40123
+          - 40456
         unit: 0
 
 
@@ -92,15 +106,15 @@ This table outlines the purpose of each configuration parameter
    * -
      - ``polling_groups:``
      -
-     - List of groupings of ``ip_devices`` that need data from a shared set of SNMP OIDs
+     - List of groupings of ``ip_devices`` that need data from a shared set of Modbus registers
    * -
      -
      - ``group_name:``
-     - Unique name for a group of ``ip_devices`` that share the same SNMP parameters
+     - Unique name for a group of ``ip_devices`` that share the same Modbus parameters. Make this the first entry in the configuration sub-section. Make sure it starts with a dash '-' which indicates the beginning of a new grouping.
    * -
      -
      - ``ip_devices:``
-     - List of ``ip_devices`` to poll for OID data
+     - List of ``ip_devices`` to poll for data
    * -
      -
      - ``input_registers:``
