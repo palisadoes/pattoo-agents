@@ -93,6 +93,8 @@ pattoo-agent-os-hubd Section
 
 Add the following statements to the ``config.yaml`` file to configure the  ``pattoo-agent-os-hubd`` daemon. An explanation follows.
 
+**NOTE:** The indentations in the YAML configuration are important. Make sure indentations line up. Dashes '-' indicate one item in a list of items.
+
 .. code-block:: yaml
 
    pattoo-agent-os-hubd:
@@ -136,6 +138,8 @@ pattoo-agent-os-spoked Section
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Add the following statements to the ``config.yaml`` file to configure the  ``pattoo-agent-os-spoked`` daemon. An explanation follows.
+
+**NOTE:** The indentations in the YAML configuration are important. Make sure indentations line up. Dashes '-' indicate one item in a list of items.
 
 .. code-block:: yaml
 
