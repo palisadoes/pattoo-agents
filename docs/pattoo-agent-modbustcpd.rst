@@ -1,6 +1,6 @@
 
-Pattoo SNMP Agents
-==================
+Pattoo ModbusTCP Agent
+======================
 
 ``pattoo-agent-modbustcpd`` provides performance data on any SNMP enabled system it can poll. The data gathered is posted in ``json`` format using HTTP to a remote server.
 
@@ -58,19 +58,20 @@ Add the following statements to the ``config.yaml`` file to configure the  ``pat
 
 .. code-block:: yaml
 
-pattoo-agent-modbustcpd:
+  pattoo-agent-modbustcpd:
 
-  polling_groups:
-    - group_name: TEST
-      ip_devices:
-        - test.modbus.tcp.device.net
-      input_registers:
-        - 387
-        - 388
-      holding_registers:
-        - 123
-        - 456
-      unit: 0
+    polling_groups:
+      - group_name: TEST
+        ip_devices:
+          - test.modbus.tcp.device.net
+        input_registers:
+          - 387
+          - 388
+        holding_registers:
+          - 123
+          - 456
+        unit: 0
+
 
 Configuration Explanation
 ~~~~~~~~~~~~~~~~~~~~~~~~~
