@@ -25,9 +25,9 @@ This script is not installed in the \
 
 # Import Colovore libraries
 from pattoo_shared.variables import DataVariable
-from pattoo_agents.agents.snmp.variables import (
+from pattoo_agents.snmp.variables import (
     SNMPAuth, SNMPVariable, SNMPVariableList)
-from pattoo_agents.agents.snmp.snmp import SNMP
+from pattoo_agents.snmp.snmp import SNMP
 from tests.libraries.configuration import UnittestConfig
 
 

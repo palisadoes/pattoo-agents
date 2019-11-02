@@ -25,7 +25,7 @@ This script is not installed in the \
     sys.exit(2)
 
 # Pattoo imports
-from pattoo_agents.agents.snmp import oid as class_oid
+from pattoo_agents.snmp import oid as class_oid
 from tests.libraries.configuration import UnittestConfig
 
 

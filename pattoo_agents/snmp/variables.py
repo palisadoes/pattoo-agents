@@ -1,7 +1,7 @@
 """Module for classes that format variables."""
 
 # Import pattoo libraries
-from pattoo_agents.agents.snmp import oid as class_oid
+from pattoo_agents.snmp import oid as class_oid
 
 
 class SNMPAuth(object):

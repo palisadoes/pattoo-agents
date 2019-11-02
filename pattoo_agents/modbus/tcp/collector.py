@@ -11,8 +11,8 @@ from pymodbus.pdu import ExceptionResponse
 from pymodbus.exceptions import ModbusIOException, ConnectionException
 
 # Pattoo libraries
-from pattoo_agents.agents.modbus.tcp import configuration
-from pattoo_agents.agents.modbus.variables import (
+from pattoo_agents.modbus.tcp import configuration
+from pattoo_agents.modbus.variables import (
     InputRegisterVariable, HoldingRegisterVariable, RegisterVariable)
 from pattoo_shared import agent
 from pattoo_shared import log

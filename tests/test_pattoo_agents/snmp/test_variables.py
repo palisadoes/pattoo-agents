@@ -23,7 +23,7 @@ This script is not installed in the \
     sys.exit(2)
 
 # Pattoo imports
-from pattoo_agents.agents.snmp.variables import (
+from pattoo_agents.snmp.variables import (
     SNMPVariable, SNMPVariableList, OIDVariable, SNMPAuth)
 from tests.libraries.configuration import UnittestConfig
 
