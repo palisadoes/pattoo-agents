@@ -16,4 +16,3 @@ PyYAML
 ipaddress
 easysnmp
 pymodbus
-sphinxcontrib-fulltoc
