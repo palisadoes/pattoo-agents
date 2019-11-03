@@ -11,8 +11,8 @@ from pattoo_shared import log
 from pattoo_shared.variables import DataVariable
 from pattoo_shared.constants import (
     DATA_INT, DATA_COUNT64, DATA_COUNT, DATA_STRING, DATA_NONE)
-from pattoo_agents.agents.snmp import oid as class_oid
-from pattoo_agents.agents.snmp.variables import SNMPVariable
+from pattoo_agents.snmp import oid as class_oid
+from pattoo_agents.snmp.variables import SNMPVariable
 
 
 class SNMP(object):

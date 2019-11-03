@@ -27,7 +27,7 @@ from pattoo_shared.configuration import Config
 from pattoo_shared.constants import PATTOO_AGENT_OS_AUTONOMOUSD
 from pattoo_shared.agent import Agent, AgentCLI
 from pattoo_shared.phttp import Post
-from pattoo_agents.agents.os import collector
+from pattoo_agents.os import collector
 
 
 class PollingAgent(Agent):

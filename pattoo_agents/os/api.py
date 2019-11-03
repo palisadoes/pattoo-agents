@@ -5,7 +5,7 @@
 from flask import Flask, jsonify
 
 # Pattoo imports
-from pattoo_agents.agents.os import collector
+from pattoo_agents.os import collector
 from pattoo_shared.constants import (
     PATTOO_AGENT_OS_SPOKED_API_PREFIX, PATTOO_AGENT_OS_SPOKED)
 from pattoo_shared.converter import ConvertAgentPolledData

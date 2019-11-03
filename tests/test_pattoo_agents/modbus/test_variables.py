@@ -23,7 +23,7 @@ This script is not installed in the \
     sys.exit(2)
 
 # Pattoo imports
-from pattoo_agents.agents.modbus.variables import (
+from pattoo_agents.modbus.variables import (
     RegisterVariable, InputRegisterVariable,
     HoldingRegisterVariable, DeviceRegisterVariables, )
 from tests.libraries.configuration import UnittestConfig

@@ -9,7 +9,7 @@ from pattoo_shared import configuration
 from pattoo_shared import data as lib_data
 from pattoo_shared.configuration import Config
 from pattoo_shared.constants import PATTOO_AGENT_MODBUSTCPD
-from pattoo_agents.agents.modbus.variables import (
+from pattoo_agents.modbus.variables import (
     InputRegisterVariable, HoldingRegisterVariable, DeviceRegisterVariables)
 
 

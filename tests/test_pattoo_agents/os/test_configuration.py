@@ -23,7 +23,7 @@ This script is not installed in the \
     sys.exit(2)
 
 # Pattoo imports
-from pattoo_agents.agents.os import configuration
+from pattoo_agents.os import configuration
 from tests.libraries.configuration import UnittestConfig
 
 
