@@ -131,7 +131,7 @@ def _walker(snmpvariable, polltargets):
         for _dv in query_datavariables:
             # Do multiplication
             if data.is_data_type_numeric(_dv.data_type) is True:
-                value = _dv.value * polltarget.multiplier
+                value = float(_dv.value) * polltarget.multiplier
             else:
                 value = _dv.value
 

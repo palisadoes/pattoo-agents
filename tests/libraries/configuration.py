@@ -86,8 +86,12 @@ class UnittestConfig(object):
                         'group_name': 'TEST',
                         'ip_devices': ['unittest.modbus.tcp.device.net'],
                         'unit': 3,
-                        'input_registers': [30388, 30389],
-                        'holding_registers': [40124, 40457],
+                        'input_registers': [
+                            {'address': 30388, 'multiplier': 2},
+                            {'address': 30389, 'multiplier': 2}],
+                        'holding_registers': [
+                            {'address': 40124, 'multiplier': 2},
+                            {'address': 40457, 'multiplier': 2}]
                     }
                 ],
             },
