@@ -69,16 +69,20 @@ Add the following statements to the ``config.yaml`` file to configure the  ``pat
            - ip.address.of.device1
            - ip.address.of.device2
          oids:
-           - .1.3.6.1.2.1.2.2.1.10
-           - .1.3.6.1.2.1.2.2.1.16
+           - address: .1.3.6.1.2.1.2.2.1.10
+             multiplier: 8
+           - address: .1.3.6.1.2.1.2.2.1.16
+             multiplier: 8
 
        - group_name: TEST 2
          ip_devices:
            - ip.address.of.device3
            - ip.address.of.device4
          oids:
-           - .1.3.6.1.2.1.2.2.1.12
-           - .1.3.6.1.2.1.2.2.1.13
+           - address: .1.3.6.1.2.1.2.2.1.10
+             multiplier: 8
+           - address: .1.3.6.1.2.1.2.2.1.16
+             multiplier: 8
 
      auth_groups:
 
@@ -140,7 +144,7 @@ This table outlines the purpose of each configuration parameter
    * -
      -
      - ``oids:``
-     - List of SNMP OIDs that we need data from for the ``ip_devices``
+     - OIDs to poll for data from for the ``ip_devices``. Each ``address`` must be an OID. The ``multiplier`` is the value by which the polled data result must be multiplied. This is useful in converting byte values to bits. The default ``multiplier`` is 1.
    * -
      - ``auth_groups:``
      -

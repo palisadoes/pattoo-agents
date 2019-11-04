@@ -68,11 +68,15 @@ Add the following statements to the ``config.yaml`` file to configure the  ``pat
         ip_devices:
           - test1.modbus.tcp.device.net
         input_registers:
-          - 30123
+          - address: 30123
+            multiplier: 1
           - 30789
+            multiplier: 1
         holding_registers:
-          - 40123
-          - 40456
+          - address: 40123
+            multiplier: 1
+          - address: 40456
+            multiplier: 1
         unit: 0
 
       - group_name: TEST 2
@@ -118,11 +122,11 @@ This table outlines the purpose of each configuration parameter
    * -
      -
      - ``input_registers:``
-     - List of Modbus input registers that we need data from for the ``ip_devices``
+     - List of Modbus input registers that we need data from for the ``ip_devices``. Each ``address`` must be an OID. The ``multiplier`` is the value by which the polled data result must be multiplied. The default ``multiplier`` is 1.
    * -
      -
      - ``holding_registers:``
-     - List of Modbus holding registers that we need data from for the ``ip_devices``
+     - List of Modbus holding registers that we need data from for the ``ip_devices``. Each ``address`` must be an OID. The ``multiplier`` is the value by which the polled data result must be multiplied. The default ``multiplier`` is 1.
    * -
      - ``unit:``
      -
