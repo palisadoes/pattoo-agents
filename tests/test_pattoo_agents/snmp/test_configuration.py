@@ -80,6 +80,7 @@ class TestConfigSNMP(unittest.TestCase):
         for index, value in enumerate(item.data):
             self.assertEqual(isinstance(value, PollingTarget), True)
             self.assertEqual(value.address, oids[index])
+            self.assertEqual(value.multiplier, 8)
 
     def test__validate_snmp(self):
         """Testing function _validate_snmp."""
