@@ -58,8 +58,11 @@ class UnittestConfig(object):
                     {
                         'group_name': 'TEST',
                         'ip_devices': ['localhost'],
-                        'oids': ['.1.3.6.1.2.1.2.2.1.10',
-                                 '.1.3.6.1.2.1.2.2.1.16']
+                        'oids': [
+                            {'address': '.1.3.6.1.2.1.2.2.1.10',
+                             'multiplier': 8},
+                            {'address': '.1.3.6.1.2.1.2.2.1.16',
+                             'multiplier': 8}]
                     }
                 ],
                 'auth_groups': [
