@@ -87,11 +87,11 @@ class UnittestConfig(object):
                         'ip_devices': ['unittest.modbus.tcp.device.net'],
                         'unit': 3,
                         'input_registers': [
-                            {'address': 30388, 'multiplier': 2},
-                            {'address': 30389, 'multiplier': 2}],
+                            {'address': 30388, 'multiplier': 7},
+                            {'address': 30389, 'multiplier': 7}],
                         'holding_registers': [
-                            {'address': 40124, 'multiplier': 2},
-                            {'address': 40457, 'multiplier': 2}]
+                            {'address': 40124, 'multiplier': 9},
+                            {'address': 40457, 'multiplier': 9}]
                     }
                 ],
             },

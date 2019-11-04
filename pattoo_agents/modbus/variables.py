@@ -25,7 +25,7 @@ class RegisterVariable(object):
         # Apply the multiplier
         if bool(multiplier) is False:
             self.multiplier = 1
-        elif data.is_data_type_numeric(multiplier) is True:
+        elif data.is_numeric(multiplier) is True:
             self.multiplier = float(multiplier)
         else:
             self.multiplier = 1
@@ -98,7 +98,8 @@ class InputRegisterVariable(RegisterVariable):
         """
         # Initialize variables
         RegisterVariable.__init__(
-            self, register=register, count=count, unit=unit)
+            self, register=register, count=count,
+            unit=unit, multiplier=multiplier)
 
         # Set modbus physical address to contact
         if self.valid is True:
@@ -128,7 +129,8 @@ class HoldingRegisterVariable(RegisterVariable):
         """
         # Initialize variables
         RegisterVariable.__init__(
-            self, register=register, count=count, unit=unit)
+            self, register=register, count=count,
+            unit=unit, multiplier=multiplier)
 
         # Set modbus physical address to contact
         if self.valid is True:

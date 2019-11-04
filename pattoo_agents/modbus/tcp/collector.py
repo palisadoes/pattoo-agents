@@ -151,7 +151,11 @@ unit {}'''.format(ip_device, _rv.register, _rv.count, _rv.unit))
             _log_modbus(ip_device, _rv, response)
         else:
             values = response.registers
-            for data_index, value in enumerate(values):
+            for data_index, _value in enumerate(values):
+                # Do multiplication
+                value = _value * _rv.multiplier
+
+                # Create DataVariable and append
                 datavariable = DataVariable(
                     value=value,
                     data_index='unit {}'.format(str(_rv.unit).zfill(3)),
