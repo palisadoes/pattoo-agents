@@ -2,6 +2,7 @@
 
 # Import pattoo libraries
 from pattoo_agents.snmp import oid as class_oid
+from pattoo_shared.variables import PollingTarget
 
 
 class SNMPAuth(object):
@@ -180,68 +181,5 @@ class SNMPVariableList(object):
             ''.format(
                 self.__class__.__name__,
                 repr(self.snmpvariables)
-            )
-        )
-
-
-class OIDVariable(object):
-    """Variable representation for OID data for SNMP polling."""
-
-    def __init__(self, ip_device=None, oids=None):
-        """Initialize the class.
-
-        Args:
-            oids: SNMP oids
-            ip_devices: Devices that require data from oids
-
-        Returns:
-            None
-
-        """
-        # Initialize key variables
-        oids_valid = True
-
-        # Initialize ip_devices
-        if isinstance(ip_device, str) is True:
-            self.ip_device = ip_device
-        else:
-            self.ip_device = None
-
-        # Initialize oids
-        if isinstance(oids, str) is True:
-            self.oids = [oids]
-        elif isinstance(oids, list) is True:
-            self.oids = oids
-        else:
-            self.oids = []
-        self.oids.sort()
-
-        # Validate OIDs
-        for oid in self.oids:
-            tester = class_oid.OIDstring(oid)
-            if tester.valid_format() is False:
-                oids_valid = False
-                break
-
-        # Set.valid
-        self.valid = False not in [
-            bool(self.oids), bool(self.ip_device), bool(oids_valid)]
-
-    def __repr__(self):
-        """Return a representation of the attributes of the class.
-
-        Args:
-            None
-
-        Returns:
-            result: String representation.
-
-        """
-        # Return repr
-        return (
-            '<{0}.valid={3}, ip_device={2}, oids={1}>'
-            ''.format(
-                self.__class__.__name__,
-                repr(self.oids), repr(self.ip_device), repr(self.valid)
             )
         )

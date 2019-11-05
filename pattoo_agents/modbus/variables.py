@@ -1,16 +1,19 @@
 """Module for classes that format variables."""
 
+from pattoo_shared import data
+
 
 class RegisterVariable(object):
     """Variable representation for Register data for Modbus polling."""
 
-    def __init__(self, register=None, count=1, unit=0):
+    def __init__(self, register=None, count=1, unit=0, multiplier=1):
         """Initialize the class.
 
         Args:
             register: Register number
             count: The number of registers to read
             unit: The slave unit this request is targeting
+            multiplier: Value to multiply register results by
 
         Returns:
             None
@@ -18,6 +21,14 @@ class RegisterVariable(object):
         """
         # Initialize key variables
         self.address = None
+
+        # Apply the multiplier
+        if bool(multiplier) is False:
+            self.multiplier = 1
+        elif data.is_numeric(multiplier) is True:
+            self.multiplier = float(multiplier)
+        else:
+            self.multiplier = 1
 
         # Set object as being.valid
         valid = False not in [
@@ -72,13 +83,14 @@ class RegisterVariable(object):
 class InputRegisterVariable(RegisterVariable):
     """Variable representation for Register data for Modbus polling."""
 
-    def __init__(self, register=None, count=1, unit=0):
+    def __init__(self, register=None, count=1, unit=0, multiplier=1):
         """Initialize the class.
 
         Args:
             register: Register register
             count: The number of registers to read
             unit: The slave unit this request is targeting
+            multiplier: Value to multiply register results by
 
         Returns:
             None
@@ -86,7 +98,8 @@ class InputRegisterVariable(RegisterVariable):
         """
         # Initialize variables
         RegisterVariable.__init__(
-            self, register=register, count=count, unit=unit)
+            self, register=register, count=count,
+            unit=unit, multiplier=multiplier)
 
         # Set modbus physical address to contact
         if self.valid is True:
@@ -96,18 +109,19 @@ class InputRegisterVariable(RegisterVariable):
                 self.address = register - 300001
             else:
                 self.valid = False
-                
+
 
 class HoldingRegisterVariable(RegisterVariable):
     """Variable representation for Register data for Modbus polling."""
 
-    def __init__(self, register=None, count=1, unit=0):
+    def __init__(self, register=None, count=1, unit=0, multiplier=1):
         """Initialize the class.
 
         Args:
             register: Register register
             count: The number of registers to read
             unit: The slave unit this request is targeting
+            multiplier: Value to multiply register results by
 
         Returns:
             None
@@ -115,7 +129,8 @@ class HoldingRegisterVariable(RegisterVariable):
         """
         # Initialize variables
         RegisterVariable.__init__(
-            self, register=register, count=count, unit=unit)
+            self, register=register, count=count,
+            unit=unit, multiplier=multiplier)
 
         # Set modbus physical address to contact
         if self.valid is True:

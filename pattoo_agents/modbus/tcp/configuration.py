@@ -7,6 +7,7 @@ import itertools
 # Import project libraries
 from pattoo_shared import configuration
 from pattoo_shared import data as lib_data
+from pattoo_shared.variables import DevicePollingTargets
 from pattoo_shared.configuration import Config
 from pattoo_shared.constants import PATTOO_AGENT_MODBUSTCPD
 from pattoo_agents.modbus.variables import (
@@ -55,52 +56,99 @@ class ConfigModbusTCP(Config):
         for group in groups:
             for register in ['input_registers', 'holding_registers']:
                 if register in group:
-                    result.extend(_create_drv(group, register))
+                    drvs = self._create_drv(group, register)
+                    result.extend(drvs)
+        return result
+
+    def _create_drv(self, data, register_type):
+        """Create a list of DeviceRegisterVariables for polling.
+
+        Args:
+            data: Configuration dict
+
+        Returns:
+            result: list of DeviceRegisterVariables
+
+        """
+        # Initialize key variables
+        result = []
+        dpts = []
+
+        # Only return valid value
+        if isinstance(data, dict) is True:
+            # Screen data for keys and correct type
+            if register_type not in ['input_registers', 'holding_registers']:
+                return []
+            if isinstance(data['ip_devices'], list) is False and isinstance(
+                    data[register_type], list) is False:
+                return []
+
+            # Get the modbus unit value
+            unit = _get_unit(data)
+
+            # Create polling targets
+            for ip_device in data['ip_devices']:
+                poll_targets = self._polling_targets(data[register_type])
+                dpt = DevicePollingTargets(ip_device)
+                dpt.add(poll_targets)
+                dpts.append(dpt)
+
+            # Unpack the DevicePollingTargets
+            for dpt in dpts:
+                ip_device = dpt.device
+                m_dict = {}
+                variables = []
+
+                # Extract data from DevicePollingTargets
+                for item in dpt.data:
+                    multiplier = item.multiplier
+                    if multiplier not in m_dict:
+                        m_dict[multiplier] = [item.address]
+                    else:
+                        m_dict[multiplier].append(item.address)
+
+                # Create RegisterVariable objects
+                for multiplier, registers in sorted(m_dict.items()):
+                    register_counts = _create_register_counts(registers)
+                    for register, count in register_counts:
+                        variables.append(
+                            _create_register_variable(
+                                register_type,
+                                register=register, count=count,
+                                unit=unit, multiplier=multiplier))
+
+                # Create DeviceRegisterVariables object
+                drv = DeviceRegisterVariables(ip_device)
+                drv.add(variables)
+                result.append(drv)
+
+        # Return
         return result
 
 
-def _create_drv(data, register_type):
-    """Create a list of DeviceRegisterVariables for polling.
+def _create_register_variable(
+        register_type, register=None, count=None, unit=None, multiplier=None):
+    """Create a Modbus register variable.
 
     Args:
-        data: Configuration dict
+        listing: List of integers to group
 
     Returns:
-        result: list of DeviceRegisterVariables
+        result: RegisterVariable
 
     """
     # Initialize key variables
-    result = []
+    result = None
 
-    # Only return valid value
-    if isinstance(data, dict) is True:
-        # Screen data for keys and correct type
-        if (register_type not in 'input_registers') and (
-                register_type not in 'holding_registers'):
-            return []
-        if isinstance(data['ip_devices'], list) is False and isinstance(
-                data[register_type], list) is False:
-            return []
-
-        # Get the modbus unit value
-        unit = _get_unit(data)
-
-        # Process
-        for ip_device in data['ip_devices']:
-            variables = []
-            register_counts = _create_register_counts(data[register_type])
-            for register, count in register_counts:
-                if register_type == 'holding_registers':
-                    variables.append(HoldingRegisterVariable(
-                        register=register, count=count, unit=unit))
-                else:
-                    variables.append(InputRegisterVariable(
-                        register=register, count=count, unit=unit))
-            drv = DeviceRegisterVariables(ip_device)
-            drv.add(variables)
-            result.append(drv)
-
-    # Return
+    # Process
+    if register_type == 'holding_registers':
+        result = HoldingRegisterVariable(
+            register=register, count=count,
+            unit=unit, multiplier=multiplier)
+    else:
+        result = InputRegisterVariable(
+            register=register, count=count,
+            unit=unit, multiplier=multiplier)
     return result
 
 

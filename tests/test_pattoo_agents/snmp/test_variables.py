@@ -24,7 +24,7 @@ This script is not installed in the \
 
 # Pattoo imports
 from pattoo_agents.snmp.variables import (
-    SNMPVariable, SNMPVariableList, OIDVariable, SNMPAuth)
+    SNMPVariable, SNMPVariableList, SNMPAuth)
 from tests.libraries.configuration import UnittestConfig
 
 
@@ -206,45 +206,6 @@ community='public', port=161, secname=None, authprotocol=None \
 authpassword=None, privpassword=None, privprotocol=None>, \
 ip_device='localhost',.valid=True>]>''')
         result = svl.__repr__()
-        self.assertEqual(expected, result)
-
-
-class TestOIDVariable(unittest.TestCase):
-    """Checks all OIDVariable methods."""
-
-    #########################################################################
-    # General object setup
-    #########################################################################
-
-    def test___init__(self):
-        """Testing function __init__."""
-        # Test defaults
-        _variable = OIDVariable()
-        self.assertFalse(_variable.valid)
-
-        # Test non-defaults
-        oids = '.1.1.1.1.1'
-        ip_device = 'localhost'
-        _variable = OIDVariable(oids=oids, ip_device=ip_device)
-        self.assertTrue(_variable.valid)
-        self.assertEqual(_variable.oids, [oids])
-        self.assertEqual(_variable.ip_device, ip_device)
-
-    def test___repr__(self):
-        """Testing function __repr__."""
-        # Test default
-        _variable = OIDVariable()
-        expected = ('''<OIDVariable.valid=False, ip_device=None, oids=[]>''')
-        result = _variable.__repr__()
-        self.assertEqual(expected, result)
-
-        # Test non-defaults
-        oids = '.1.1.1.1.1'
-        ip_device = 'localhost'
-        _variable = OIDVariable(oids=oids, ip_device=ip_device)
-        expected = ('''\
-<OIDVariable.valid=True, ip_device='localhost', oids=['.1.1.1.1.1']>''')
-        result = _variable.__repr__()
         self.assertEqual(expected, result)
 
 

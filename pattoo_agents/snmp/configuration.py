@@ -8,7 +8,8 @@ from copy import deepcopy
 from pattoo_shared import configuration
 from pattoo_shared.configuration import Config
 from pattoo_shared.constants import PATTOO_AGENT_SNMPD
-from .variables import SNMPAuth, SNMPVariableList, OIDVariable
+from pattoo_shared.variables import DevicePollingTargets
+from .variables import SNMPAuth, SNMPVariableList
 
 
 class ConfigSNMP(Config):
@@ -69,14 +70,14 @@ class ConfigSNMP(Config):
         # Return
         return result
 
-    def oidvariables(self):
+    def device_polling_targets(self):
         """Get list of dicts of SNMP information in configuration file.
 
         Args:
             group: Group name to filter results by
 
         Returns:
-            result: List of OIDVariable items
+            result: List of DevicePollingTargets objects
 
         """
         # Initialize key variables
@@ -98,11 +99,10 @@ class ConfigSNMP(Config):
             # Process data
             if 'ip_devices' and 'oids' in group:
                 for ip_device in group['ip_devices']:
-                    oidvariable = OIDVariable(
-                        oids=group['oids'],
-                        ip_device=ip_device
-                    )
-                    result.append(oidvariable)
+                    poll_targets = self._polling_targets(group['oids'])
+                    dpt = DevicePollingTargets(ip_device)
+                    dpt.add(poll_targets)
+                    result.append(dpt)
         return result
 
 

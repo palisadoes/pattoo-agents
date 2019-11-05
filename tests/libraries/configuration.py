@@ -58,8 +58,11 @@ class UnittestConfig(object):
                     {
                         'group_name': 'TEST',
                         'ip_devices': ['localhost'],
-                        'oids': ['.1.3.6.1.2.1.2.2.1.10',
-                                 '.1.3.6.1.2.1.2.2.1.16']
+                        'oids': [
+                            {'address': '.1.3.6.1.2.1.2.2.1.10',
+                             'multiplier': 8},
+                            {'address': '.1.3.6.1.2.1.2.2.1.16',
+                             'multiplier': 8}]
                     }
                 ],
                 'auth_groups': [
@@ -83,8 +86,12 @@ class UnittestConfig(object):
                         'group_name': 'TEST',
                         'ip_devices': ['unittest.modbus.tcp.device.net'],
                         'unit': 3,
-                        'input_registers': [30388, 30389],
-                        'holding_registers': [40124, 40457],
+                        'input_registers': [
+                            {'address': 30388, 'multiplier': 7},
+                            {'address': 30389, 'multiplier': 7}],
+                        'holding_registers': [
+                            {'address': 40124, 'multiplier': 9},
+                            {'address': 40457, 'multiplier': 9}]
                     }
                 ],
             },
