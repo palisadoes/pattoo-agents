@@ -16,3 +16,4 @@ PyYAML
 ipaddress
 easysnmp
 pymodbus
+BAC0
