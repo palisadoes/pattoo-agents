@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Pattoo library for collecting SNMP data."""
+"""Pattoo library for collecting Modbus data."""
 
 # Standard libraries
 import multiprocessing
@@ -22,9 +22,9 @@ from pattoo_shared.variables import (
 
 
 def poll():
-    """Get PATOO_SNMP agent data.
+    """Get Modbus agent data.
 
-    Performance data from SNMP enabled devices.
+    Performance data from Modbus enabled devices.
 
     Args:
         None

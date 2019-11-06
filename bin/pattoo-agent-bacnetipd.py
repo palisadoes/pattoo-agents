@@ -11,6 +11,9 @@ from time import sleep
 import sys
 import os
 
+# PIP imports
+import BAC0
+
 # Try to create a working PYTHONPATH
 _BIN_DIRECTORY = os.path.dirname(os.path.realpath(__file__))
 _ROOT_DIRECTORY = os.path.abspath(os.path.join(_BIN_DIRECTORY, os.pardir))
@@ -23,11 +26,12 @@ else:
     sys.exit(2)
 
 # Pattoo libraries
-from pattoo_shared.configuration import Config
-from pattoo_shared.constants import PATTOO_AGENT_SNMPD
+from pattoo_shared.constants import PATTOO_AGENT_BACNETIPD
+from pattoo_shared import log
 from pattoo_shared.phttp import Post
 from pattoo_shared.agent import Agent, AgentCLI
-from pattoo_agents.snmp import collector
+from pattoo_agents.bacnet.ip.configuration import ConfigBACnetIP as Config
+from pattoo_agents.bacnet.ip import collector
 
 
 class PollingAgent(Agent):
@@ -47,7 +51,7 @@ class PollingAgent(Agent):
         Agent.__init__(self, parent)
 
         # Initialize key variables
-        self._agent_name_constant = PATTOO_AGENT_SNMPD
+        self._agent_name_constant = PATTOO_AGENT_BACNETIPD
 
     def name(self):
         """Return agent name.
@@ -74,13 +78,25 @@ class PollingAgent(Agent):
 
         """
         # Initialize key variables
+        ttl = 3
         config = Config()
         interval = config.polling_interval()
+        agent_ip_address = config.agent_ip_address()
+
+        # Start BACnet daemon
+        ip_with_subnet_mask = '{}/32'.format(agent_ip_address)
+        try:
+            bacnet = BAC0.connect(ip=ip_with_subnet_mask, bbmdTTL=ttl)
+        except:
+            log_message = ('''\
+Cannot start BACnet daemon on IP address {}. Please check configuration or \
+other daemons that could be using BACnet'''.format(agent_ip_address))
+            log.log2die(51007, log_message)
 
         # Post data to the remote server
         while True:
             # Get system data
-            agentdata = collector.poll()
+            agentdata = collector.poll(bacnet)
 
             # Post to remote server
             server = Post(agentdata)
@@ -107,7 +123,7 @@ def main():
 
     """
     # Get configuration
-    agent_poller = PollingAgent(PATTOO_AGENT_SNMPD)
+    agent_poller = PollingAgent(PATTOO_AGENT_BACNETIPD)
 
     # Do control
     cli = AgentCLI()

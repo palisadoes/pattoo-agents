@@ -82,6 +82,7 @@ class ConfigSNMP(Config):
         """
         # Initialize key variables
         result = []
+        datapoint_key = 'oids'
 
         # Get configuration snippet
         key = PATTOO_AGENT_SNMPD
@@ -97,9 +98,9 @@ class ConfigSNMP(Config):
                 continue
 
             # Process data
-            if 'ip_devices' and 'oids' in group:
+            if 'ip_devices' and datapoint_key in group:
                 for ip_device in group['ip_devices']:
-                    poll_targets = self._polling_targets(group['oids'])
+                    poll_targets = self._polling_targets(group[datapoint_key])
                     dpt = DevicePollingTargets(ip_device)
                     dpt.add(poll_targets)
                     result.append(dpt)

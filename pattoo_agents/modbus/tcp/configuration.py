@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Classe to manage SNMP agent configurations."""
+"""Classe to manage ModbusTCP agent configurations."""
 
 # Standard imports
 import itertools
@@ -31,7 +31,7 @@ class ConfigModbusTCP(Config):
         Config.__init__(self)
 
     def registervariables(self):
-        """Get list of dicts of SNMP information in configuration file.
+        """Get list polling target information in configuration file..
 
         Args:
             group: Group name to filter results by
