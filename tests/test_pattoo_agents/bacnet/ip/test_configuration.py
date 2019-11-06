@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Test the class_oid module."""
+"""Test the class_point module."""
 
 import sys
 import unittest
@@ -44,33 +44,11 @@ class TestConfigSNMP(unittest.TestCase):
         """Testing function __init__."""
         pass
 
-    def test_snmpvariables(self):
-        """Testing function snmpvariables."""
-        # Initialize key variables
-        result = self.config.snmpvariables()
-
-        # Test
-        self.assertEqual(isinstance(result, list), True)
-        self.assertEqual(len(result), 1)
-
-        # Test the only SNMPVariable in the result
-        snmpvariable = result[0]
-        self.assertEqual(isinstance(snmpvariable, SNMPVariable), True)
-        authvariable = snmpvariable.snmpauth
-        self.assertEqual(authvariable.community, 'public')
-        self.assertEqual(authvariable.port, 161)
-        self.assertEqual(authvariable.version, 2)
-        self.assertEqual(authvariable.authpassword, None)
-        self.assertEqual(authvariable.authprotocol, None)
-        self.assertEqual(authvariable.privpassword, None)
-        self.assertEqual(authvariable.privprotocol, None)
-        self.assertEqual(authvariable.secname, None)
-
     def test_device_polling_targets(self):
-        """Testing function oidvariables."""
+        """Testing function pointvariables."""
         # Initialize key variables.
         result = self.config.device_polling_targets()
-        oids = ['.1.3.6.1.2.1.2.2.1.10', '.1.3.6.1.2.1.2.2.1.16']
+        points = [123, 345]
 
         # Test
         self.assertEqual(isinstance(result, list), True)
@@ -79,19 +57,10 @@ class TestConfigSNMP(unittest.TestCase):
         # Test each dpt
         item = result[0]
         self.assertEqual(isinstance(item, DevicePollingTargets), True)
-        self.assertEqual(item.device, 'localhost')
+        self.assertEqual(item.device, 'localhost-bacnet')
         for index, value in enumerate(item.data):
             self.assertEqual(isinstance(value, PollingTarget), True)
-            self.assertEqual(value.address, oids[index])
-            self.assertEqual(value.multiplier, 8)
-
-    def test__validate_snmp(self):
-        """Testing function _validate_snmp."""
-        pass
-
-    def test__validate_oids(self):
-        """Testing function _validate_oids."""
-        pass
+            self.assertEqual(value.address, points[index])
 
 
 if __name__ == '__main__':

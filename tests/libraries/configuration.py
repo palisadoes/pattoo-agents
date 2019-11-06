@@ -57,7 +57,7 @@ class UnittestConfig(object):
                 'polling_groups': [
                     {
                         'group_name': 'TEST',
-                        'ip_devices': ['localhost'],
+                        'ip_devices': ['localhost-bacnet'],
                         'points': [
                             {'address': 123},
                             {'address': 345}
