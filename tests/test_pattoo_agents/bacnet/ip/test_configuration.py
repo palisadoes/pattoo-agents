@@ -27,22 +27,27 @@ This script is not installed in the \
 
 # Pattoo imports
 from pattoo_shared.variables import PollingTarget, DevicePollingTargets
-from pattoo_agents.snmp import configuration
-from pattoo_agents.snmp.variables import SNMPVariable
+from pattoo_agents.bacnet.ip import configuration
 from tests.libraries.configuration import UnittestConfig
 
 
-class TestConfigSNMP(unittest.TestCase):
-    """Checks all ConfigSNMP methods."""
+class TestConfigBACnetIP(unittest.TestCase):
+    """Checks all ConfigBACnetIP methods."""
 
     ##########################################################################
     # Initialize variable class
     ##########################################################################
-    config = configuration.ConfigSNMP()
+    config = configuration.ConfigBACnetIP()
 
     def test___init__(self):
         """Testing function __init__."""
         pass
+
+    def test_agent_ip_address(self):
+        """Testing method / function agent_ip_address."""
+        # Initialize variables
+        result = self.config.agent_ip_address()
+        self.assertEqual(result, 'localhost_agent_ip_address')
 
     def test_device_polling_targets(self):
         """Testing function pointvariables."""

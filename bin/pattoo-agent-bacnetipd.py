@@ -91,7 +91,7 @@ class PollingAgent(Agent):
             log_message = ('''\
 Cannot start BACnet daemon on IP address {}. Please check configuration or \
 other daemons that could be using BACnet'''.format(agent_ip_address))
-            log.log2die(21007, log_message)
+            log.log2die(51007, log_message)
 
         # Post data to the remote server
         while True:

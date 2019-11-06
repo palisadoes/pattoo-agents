@@ -140,18 +140,18 @@ class _PollBACnetIP(object):
             except NoResponseFromController:
                 log_message = (
                     'No BACnet response from {}. Timeout.'.format(ip_device))
-                log.log2info(21004, log_message)
+                log.log2info(51004, log_message)
                 continue
             except UnknownObjectError:
                 log_message = ('''\
 Unknown BACnet object {} requested from device {}.\
 '''.format(object2poll, ip_device))
-                log.log2info(21005, log_message)
+                log.log2info(51005, log_message)
                 continue
             except:
                 log_message = (
                     'Unknown BACnet error polling {}.'.format(ip_device))
-                log.log2info(21006, log_message)
+                log.log2info(51006, log_message)
                 continue
 
             # Do multiplication

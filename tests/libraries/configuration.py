@@ -54,6 +54,7 @@ class UnittestConfig(object):
                 'api_uses_https': False
             },
             'pattoo-agent-bacnetipd': {
+                'agent_ip_address': 'localhost_agent_ip_address',
                 'polling_groups': [
                     {
                         'group_name': 'TEST',
