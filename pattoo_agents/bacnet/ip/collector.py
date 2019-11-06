@@ -3,7 +3,10 @@
 
 # Standard libraries
 import socket
-from pprint import pprint
+
+# PIP libraries
+from BAC0.core.io.IOExceptions import (
+    UnknownObjectError, NoResponseFromController)
 
 # Pattoo libraries
 from pattoo_agents.bacnet.ip import configuration
@@ -101,61 +104,74 @@ class _PollBACnetIP(object):
             arguments.append((ip_device, dpts))
 
         for ip_device, dpts in arguments:
-            result = _serial_poller(ip_device, dpts, self._bacnet)
+            result = self._serial_poller(ip_device, dpts)
             if result.valid is True:
                 ddv_list.append(result)
 
         # Return
         return ddv_list
 
+    def _serial_poller(self, ip_device, polltargets):
+        """Poll each spoke in parallel.
 
-def _serial_poller(ip_device, polltargets, bacnet):
-    """Poll each spoke in parallel.
+        Args:
+            ip_device: Device to poll
+            polltargets: List of PollingTarget objects to poll
+            bacnet: BAC0 connect object
 
-    Args:
-        ip_device: Device to poll
-        polltargets: List of PollingTarget objects to poll
-        bacnet: BAC0 connect object
+        Returns:
+            ddv: DeviceDataVariables for the SNMPVariable device
 
-    Returns:
-        ddv: DeviceDataVariables for the SNMPVariable device
+        """
+        # Intialize data gathering
+        ddv = DeviceDataVariables(ip_device)
+        object2poll = 'analogValue'
 
-    """
-    # Intialize data gathering
-    ddv = DeviceDataVariables(ip_device)
+        # Get list of type DataVariable
+        datavariables = []
+        for polltarget in polltargets:
+            # Get polling results
+            poller_string = (
+                '{} {} {} presentValue'.format(
+                    object2poll, ip_device, polltarget.address))
 
-    # Get list of type DataVariable
-    datavariables = []
-    for polltarget in polltargets:
-        # Get polling results
-        poller_string = (
-            '{} analogValue {} presentValue'.format(
-                ip_device, polltarget.address))
-        value = bacnet.read(poller_string)
+            try:
+                value = self._bacnet.read(poller_string)
+            except NoResponseFromController:
+                log_message = (
+                    'No BACnet response from {}. Timeout.'.format(ip_device))
+                log.log2info(21004, log_message)
+                continue
+            except UnknownObjectError:
+                log_message = ('''\
+Unknown BACnet object {} requested from device {}.\
+'''.format(object2poll, ip_device))
+                log.log2info(21005, log_message)
+                continue
+            except:
+                log_message = (
+                    'Unknown BACnet error polling {}.'.format(ip_device))
+                log.log2info(21006, log_message)
+                continue
 
-        # Do multiplication
-        if data.is_numeric(value) is True:
-            value = float(value) * polltarget.multiplier
-            data_type = DATA_FLOAT
-        else:
-            data_type = DATA_STRING
+            # Do multiplication
+            if data.is_numeric(value) is True:
+                value = float(value) * polltarget.multiplier
+                data_type = DATA_FLOAT
+            else:
+                data_type = DATA_STRING
 
-        # Setup the data label
-        data_label = (
-            'analogValue point {} device {}'.format(
-                polltarget.address, ip_device))
+            # Setup the data label
+            data_label = (
+                'analogValue point {} device {}'.format(
+                    polltarget.address, ip_device))
 
-        # Update datavariables
-        datavariable = DataVariable(
-            value=value, data_label=data_label,
-            data_index=0, data_type=data_type)
-        datavariables.append(datavariable)
+            # Update datavariables
+            datavariable = DataVariable(
+                value=value, data_label=data_label,
+                data_index=0, data_type=data_type)
+            datavariables.append(datavariable)
 
-    # Return
-    ddv.add(datavariables)
-    print('boo')
-    return ddv
-
-
-def _tester(x, y):
-    return []
+        # Return
+        ddv.add(datavariables)
+        return ddv

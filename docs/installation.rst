@@ -16,7 +16,7 @@ Follow these steps.
 #. Enter the directory with the `pattoo` files.
 #. Install the required packages using the ``pip_requirements`` document in the root directory
 
-   .. code-block::
+   .. code-block:: bash
 
       $ sudo pip3 install -r pip_requirements.txt
 

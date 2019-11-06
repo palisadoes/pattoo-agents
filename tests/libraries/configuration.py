@@ -53,6 +53,18 @@ class UnittestConfig(object):
                 'api_ip_bind_port': 6060,
                 'api_uses_https': False
             },
+            'pattoo-agent-bacnetipd': {
+                'polling_groups': [
+                    {
+                        'group_name': 'TEST',
+                        'ip_devices': ['localhost'],
+                        'points': [
+                            {'address': 123},
+                            {'address': 345}
+                        ]
+                    }
+                ],
+            },
             'pattoo-agent-snmpd': {
                 'polling_groups': [
                     {
