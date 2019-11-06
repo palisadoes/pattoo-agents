@@ -2,7 +2,6 @@
 """Pattoo library for collecting BACnetIP data."""
 
 # Standard libraries
-import multiprocessing
 import socket
 from pprint import pprint
 
@@ -10,12 +9,11 @@ from pprint import pprint
 from pattoo_agents.bacnet.ip import configuration
 from pattoo_shared import agent
 from pattoo_shared import data
+from pattoo_shared import log
 from pattoo_shared.constants import (
     PATTOO_AGENT_BACNETIPD, DATA_FLOAT, DATA_STRING)
 from pattoo_shared.variables import (
     DataVariable, DeviceDataVariables, AgentPolledData, DeviceGateway)
-
-_BACNET = None
 
 
 def poll(bacnet):
@@ -61,8 +59,7 @@ class _PollBACnetIP(object):
 
         """
         # Initialize key variables.
-        global _BACNET
-        _BACNET = bacnet
+        self._bacnet = bacnet
 
         config = configuration.ConfigBACnetIP()
         self._ip_polltargets = {}
@@ -97,40 +94,34 @@ class _PollBACnetIP(object):
         """
         # Initialize key variables
         arguments = []
-        sub_processes_in_pool = max(1, multiprocessing.cpu_count())
+        ddv_list = []
 
         # Poll all devices in sequence
         for ip_device, dpts in sorted(self._ip_polltargets.items()):
             arguments.append((ip_device, dpts))
 
-        # Create a pool of sub process resources
-        with multiprocessing.Pool(processes=sub_processes_in_pool) as pool:
-
-            # Create sub processes from the pool
-            ddv_list = pool.starmap(_tester, arguments)
-
-        # Wait for all the processes to end and get results
-        pool.join()
+        for ip_device, dpts in arguments:
+            result = _serial_poller(ip_device, dpts, self._bacnet)
+            if result.valid is True:
+                ddv_list.append(result)
 
         # Return
         return ddv_list
 
 
-def _serial_poller(ip_device, polltargets):
+def _serial_poller(ip_device, polltargets, bacnet):
     """Poll each spoke in parallel.
 
     Args:
         ip_device: Device to poll
         polltargets: List of PollingTarget objects to poll
+        bacnet: BAC0 connect object
 
     Returns:
         ddv: DeviceDataVariables for the SNMPVariable device
 
     """
-    return []
-    
     # Intialize data gathering
-    global _BACNET
     ddv = DeviceDataVariables(ip_device)
 
     # Get list of type DataVariable
@@ -140,10 +131,7 @@ def _serial_poller(ip_device, polltargets):
         poller_string = (
             '{} analogValue {} presentValue'.format(
                 ip_device, polltarget.address))
-        data_label = (
-            'analogValue point {} device {}'.format(
-                polltarget.address, ip_device))
-        value = _BACNET.read(poller_string)
+        value = bacnet.read(poller_string)
 
         # Do multiplication
         if data.is_numeric(value) is True:
@@ -151,6 +139,11 @@ def _serial_poller(ip_device, polltargets):
             data_type = DATA_FLOAT
         else:
             data_type = DATA_STRING
+
+        # Setup the data label
+        data_label = (
+            'analogValue point {} device {}'.format(
+                polltarget.address, ip_device))
 
         # Update datavariables
         datavariable = DataVariable(
@@ -160,6 +153,7 @@ def _serial_poller(ip_device, polltargets):
 
     # Return
     ddv.add(datavariables)
+    print('boo')
     return ddv
 
 
