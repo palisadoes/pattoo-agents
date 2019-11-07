@@ -31,11 +31,16 @@ def poll(bacnet):
         agentdata: AgentPolledData object for all data gathered by the agent
 
     """
+    # Initialize key variables.
+    config = configuration.ConfigBACnetIP()
+    polling_interval = config.polling_interval()
+
     # Initialize AgentPolledData
     agent_program = PATTOO_AGENT_BACNETIPD
     agent_hostname = socket.getfqdn()
     agent_id = agent.get_agent_id(agent_program, agent_hostname)
-    agentdata = AgentPolledData(agent_id, agent_program, agent_hostname)
+    agentdata = AgentPolledData(
+        agent_id, agent_program, agent_hostname, polling_interval)
     gateway = DeviceGateway(agent_hostname)
 
     # Poll oids for all devices and update the DeviceDataVariables

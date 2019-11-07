@@ -30,6 +30,7 @@ def poll():
     """
     # Initialize key variables.
     config = configuration.ConfigSNMP()
+    polling_interval = config.polling_interval()
     ip_snmpvariables = {}
     ip_polltargets = {}
 
@@ -37,7 +38,8 @@ def poll():
     agent_program = PATTOO_AGENT_SNMPD
     agent_hostname = socket.getfqdn()
     agent_id = agent.get_agent_id(agent_program, agent_hostname)
-    agentdata = AgentPolledData(agent_id, agent_program, agent_hostname)
+    agentdata = AgentPolledData(
+        agent_id, agent_program, agent_hostname, polling_interval)
     gateway = DeviceGateway(agent_hostname)
 
     # Get SNMP OIDs to be polled (Along with authorizations and ip_devices)

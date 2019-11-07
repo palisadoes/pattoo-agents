@@ -35,13 +35,15 @@ def poll():
     """
     # Initialize key variables.
     config = configuration.ConfigModbusTCP()
+    polling_interval = config.polling_interval()
     arguments = []
 
     # Initialize AgentPolledData
     agent_program = PATTOO_AGENT_MODBUSTCPD
     agent_hostname = socket.getfqdn()
     agent_id = agent.get_agent_id(agent_program, agent_hostname)
-    agentdata = AgentPolledData(agent_id, agent_program, agent_hostname)
+    agentdata = AgentPolledData(
+        agent_id, agent_program, agent_hostname, polling_interval)
     gateway = DeviceGateway(agent_hostname)
 
     # Get registers to be polled
