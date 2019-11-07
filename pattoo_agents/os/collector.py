@@ -12,6 +12,7 @@ import psutil
 
 # Pattoo libraries
 from pattoo_shared import agent
+from pattoo_shared.configuration import Config
 from pattoo_shared.variables import (
     DataVariable, DeviceDataVariables, DeviceGateway, AgentPolledData)
 from pattoo_shared.constants import (
@@ -30,10 +31,15 @@ def poll(agent_program):
         None
 
     """
+    # Initialize key variables.
+    config = Config()
+    polling_interval = config.polling_interval()
+
     # Initialize AgentPolledData
     agent_hostname = socket.getfqdn()
     agent_id = agent.get_agent_id(agent_program, agent_hostname)
-    agentdata = AgentPolledData(agent_id, agent_program, agent_hostname)
+    agentdata = AgentPolledData(
+        agent_id, agent_program, agent_hostname, polling_interval)
     gateway = DeviceGateway(agent_hostname)
 
     # Intialize data gathering
