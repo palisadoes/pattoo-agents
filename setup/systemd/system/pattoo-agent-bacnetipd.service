@@ -1,0 +1,14 @@
+[Unit]
+Description=pattoo-agent-bacnetipd daemon
+Wants=network.target
+After=network.target
+
+[Service]
+Environment="PATTOO_CONFIGDIR=x"
+Environment="BIN_DIR=x"
+ExecStart=$BIN_DIR/pattoo-agent-bacnetipd --start
+ExecStop=$BIN_DIR/pattoo-agent-bacnetipd --stop
+ExecReload=$BIN_DIR/pattoo-agent-bacnetipd --restart
+
+[Install]
+WantedBy=multi-user.target

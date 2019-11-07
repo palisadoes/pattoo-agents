@@ -26,11 +26,11 @@ ROOT_DIR = os.path.abspath(os.path.join(os.path.abspath(
     os.path.join(os.path.abspath(os.path.join(os.path.abspath(
         os.path.join(
             _EXEC_DIR, os.pardir)), os.pardir)), os.pardir)), os.pardir))
-if _EXEC_DIR.endswith('/pattoo-agents/setup/systemd/bin') is True:
+if _EXEC_DIR.endswith('/pattoo/setup/systemd/bin') is True:
     sys.path.append(ROOT_DIR)
 else:
     print('''\
-This script is not installed in the "pattoo-agents/setup/systemd/bin" \
+This script is not installed in the "pattoo/setup/systemd/bin" \
 directory. Please fix.''')
     sys.exit(2)
 
@@ -217,7 +217,7 @@ def main():
     parser.add_argument(
         '-f', '--config_dir',
         help=('''\
-Directory where the pattoo-agents configuration files will be located'''),
+Directory where the pattoo configuration files will be located'''),
         required=True)
     args = parser.parse_args()
     config_dir = os.path.expanduser(args.config_dir)
