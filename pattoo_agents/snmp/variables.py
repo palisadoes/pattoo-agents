@@ -123,7 +123,7 @@ class SNMPVariable(object):
         """
         # Return repr
         return (
-            '<{0} snmpauth={1}, ip_device={2},.valid={3}>'
+            '<{0} snmpauth={1}, ip_device={2}, valid={3}>'
             ''.format(
                 self.__class__.__name__,
                 repr(self.snmpauth), repr(self.ip_device),

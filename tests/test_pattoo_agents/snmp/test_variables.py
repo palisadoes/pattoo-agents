@@ -150,7 +150,7 @@ class TestSNMPVariable(unittest.TestCase):
         # Test defaults
         snmpvariable = SNMPVariable()
         expected = ('''\
-<SNMPVariable snmpauth=None, ip_device=None,.valid=False>''')
+<SNMPVariable snmpauth=None, ip_device=None, valid=False>''')
         result = snmpvariable.__repr__()
         self.assertEqual(expected, result)
 
@@ -161,7 +161,7 @@ class TestSNMPVariable(unittest.TestCase):
         expected = ('''\
 <SNMPVariable snmpauth=<SNMPAuth version=2, community='public', port=161, \
 secname=None, authprotocol=None authpassword=None, privpassword=None, \
-privprotocol=None>, ip_device='localhost',.valid=True>''')
+privprotocol=None>, ip_device='localhost', valid=True>''')
         result = snmpvariable.__repr__()
         self.assertEqual(expected, result)
 
@@ -204,7 +204,7 @@ class TestSNMPVariableList(unittest.TestCase):
 <SNMPVariableList snmpvariables=[<SNMPVariable snmpauth=<SNMPAuth version=2, \
 community='public', port=161, secname=None, authprotocol=None \
 authpassword=None, privpassword=None, privprotocol=None>, \
-ip_device='localhost',.valid=True>]>''')
+ip_device='localhost', valid=True>]>''')
         result = svl.__repr__()
         self.assertEqual(expected, result)
 
