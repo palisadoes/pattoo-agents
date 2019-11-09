@@ -119,11 +119,12 @@ def _serial_poller(drv):
         client = ModbusTcpClient(ip_device)
         if isinstance(_rv, InputRegisterVariable):
             try:
-                response = client.read_input_registers(_rv.address)
-            except ConnectionException:
+                response = client.read_input_registers(
+                    _rv.address, count=_rv.count, unit=_rv.unit)
+            except ConnectionException as _err:
                 log_message = ('''\
 Cannot connect to device {} to retrieve input register {}, count {}, \
-unit {}'''.format(ip_device, _rv.register, _rv.count, _rv.unit))
+unit {}: {}'''.format(ip_device, _rv.register, _rv.count, _rv.unit, str(err)))
                 log.log2info(51028, log_message)
                 continue
             except:
