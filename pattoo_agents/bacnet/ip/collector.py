@@ -138,7 +138,7 @@ class _PollBACnetIP(object):
             # Get polling results
             poller_string = (
                 '{} {} {} presentValue'.format(
-                    object2poll, ip_device, polltarget.address))
+                    ip_device, object2poll, polltarget.address))
 
             try:
                 value = self._bacnet.read(poller_string)
@@ -153,10 +153,15 @@ Unknown BACnet object {} requested from device {}.\
 '''.format(object2poll, ip_device))
                 log.log2info(51005, log_message)
                 continue
+            except Exception as reason:
+                log_message = ('BACnet error polling {}. Reason: {}'.format(
+                    ip_device, str(reason)))
+                log.log2info(51006, log_message)
+                continue
             except:
                 log_message = (
                     'Unknown BACnet error polling {}.'.format(ip_device))
-                log.log2info(51006, log_message)
+                log.log2info(51007, log_message)
                 continue
 
             # Do multiplication
