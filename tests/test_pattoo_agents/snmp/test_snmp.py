@@ -24,7 +24,7 @@ This script is not installed in the \
 
 
 # Import Colovore libraries
-from pattoo_shared.variables import DataVariable
+from pattoo_shared.variables import DataPoint
 from pattoo_agents.snmp.variables import (
     SNMPAuth, SNMPVariable, SNMPVariableList)
 from pattoo_agents.snmp.snmp import SNMP
@@ -45,33 +45,33 @@ class MockSNMP(object):
 
         # IfDesc
         self.data['.1.3.6.1.2.1.2.2.1.2'] = [
-            DataVariable(value='lo', data_label='.1.3.6.1.2.1.2.2.1.2',
+            DataPoint(value='lo', data_label='.1.3.6.1.2.1.2.2.1.2',
                          data_index='1', data_type=2),
-            DataVariable(value='eth0', data_label='.1.3.6.1.2.1.2.2.1.2',
+            DataPoint(value='eth0', data_label='.1.3.6.1.2.1.2.2.1.2',
                          data_index='2', data_type=2),
-            DataVariable(value='wlan0', data_label='.1.3.6.1.2.1.2.2.1.2',
+            DataPoint(value='wlan0', data_label='.1.3.6.1.2.1.2.2.1.2',
                          data_index='3', data_type=2)]
 
         # sysObjectID
         self.data['.1.3.6.1.2.1.1.2.0'] = [
-            DataVariable(value='.1.3.6.1.1234', data_label='.1.3.6.1.2.1.1.2',
+            DataPoint(value='.1.3.6.1.1234', data_label='.1.3.6.1.2.1.1.2',
                          data_index='0', data_type=2)]
 
         # ifInOctets
         self.data['.1.3.6.1.2.1.2.2.1.10'] = [
-            DataVariable(value=83554391, data_label='.1.3.6.1.2.1.2.2.1.10',
+            DataPoint(value=83554391, data_label='.1.3.6.1.2.1.2.2.1.10',
                          data_index='1', data_type=32),
-            DataVariable(value=1099211361, data_label='.1.3.6.1.2.1.2.2.1.10',
+            DataPoint(value=1099211361, data_label='.1.3.6.1.2.1.2.2.1.10',
                          data_index='2', data_type=32),
-            DataVariable(value=0, data_label='.1.3.6.1.2.1.2.2.1.10',
+            DataPoint(value=0, data_label='.1.3.6.1.2.1.2.2.1.10',
                          data_index='3', data_type=32)]
         # ifOutOctets
         self.data['.1.3.6.1.2.1.2.2.1.16'] = [
-            DataVariable(value=83596845, data_label='.1.3.6.1.2.1.2.2.1.16',
+            DataPoint(value=83596845, data_label='.1.3.6.1.2.1.2.2.1.16',
                          data_index='1', data_type=32),
-            DataVariable(value=2788372879, data_label='.1.3.6.1.2.1.2.2.1.16',
+            DataPoint(value=2788372879, data_label='.1.3.6.1.2.1.2.2.1.16',
                          data_index='2', data_type=32),
-            DataVariable(value=0, data_label='.1.3.6.1.2.1.2.2.1.16',
+            DataPoint(value=0, data_label='.1.3.6.1.2.1.2.2.1.16',
                          data_index='3', data_type=32)]
 
     def contactable(self):
@@ -95,7 +95,7 @@ class MockSNMP(object):
             item: OID branch to walk
 
         Returns:
-            result: List of DataVariable objects
+            result: List of DataPoint objects
 
         """
         # Return
@@ -112,7 +112,7 @@ class MockSNMP(object):
             item: OID branch to get
 
         Returns:
-            result: List of DataVariable objects
+            result: List of DataPoint objects
 
         """
         # Return

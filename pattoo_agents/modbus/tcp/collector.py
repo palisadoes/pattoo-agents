@@ -18,7 +18,7 @@ from pattoo_shared import agent
 from pattoo_shared import log
 from pattoo_shared.constants import PATTOO_AGENT_MODBUSTCPD, DATA_INT
 from pattoo_shared.variables import (
-    DataVariable, DeviceDataVariables, AgentPolledData, DeviceGateway)
+    DataPoint, DeviceDataPoints, AgentPolledData, DeviceGateway)
 
 
 def poll():
@@ -53,7 +53,7 @@ def poll():
     for drv in drvs:
         arguments.append((drv,))
 
-    # Poll registers for all devices and update the DeviceDataVariables
+    # Poll registers for all devices and update the DeviceDataPoints
     ddv_list = _parallel_poller(arguments)
     gateway.add(ddv_list)
     agentdata.add(gateway)
@@ -65,13 +65,13 @@ def poll():
 def _parallel_poller(arguments):
     """Get data.
 
-    Update the DeviceDataVariables with DataVariables
+    Update the DeviceDataPoints with DataPoints
 
     Args:
         arguments: List of arguments for _serial_poller
 
     Returns:
-        ddv_list: List of type DeviceDataVariables
+        ddv_list: List of type DeviceDataPoints
 
     """
     # Initialize key variables
@@ -99,15 +99,15 @@ def _serial_poller(drv):
         holding_registers: Holding registers to poll
 
     Returns:
-        ddv: DeviceDataVariables for the ip_device
+        ddv: DeviceDataPoints for the ip_device
 
     """
     # Intialize data gathering
     ip_device = drv.device
-    ddv = DeviceDataVariables(ip_device)
+    ddv = DeviceDataPoints(ip_device)
 
-    # Get list of type DataVariable
-    datavariables = []
+    # Get list of type DataPoint
+    datapoints = []
     for _rv in drv.data:
         # Ignore invalid data
         if isinstance(_rv, RegisterVariable) is False:
@@ -158,14 +158,14 @@ unit {}'''.format(ip_device, _rv.register, _rv.count, _rv.unit))
                 # Do multiplication
                 value = _value * _rv.multiplier
 
-                # Create DataVariable and append
-                datavariable = DataVariable(
+                # Create DataPoint and append
+                datapoint = DataPoint(
                     value=value,
                     data_index='unit {}'.format(str(_rv.unit).zfill(3)),
                     data_label=_rv.register + data_index,
                     data_type=DATA_INT)
-                datavariables.append(datavariable)
-    ddv.add(datavariables)
+                datapoints.append(datapoint)
+    ddv.add(datapoints)
 
     # Return
     return ddv

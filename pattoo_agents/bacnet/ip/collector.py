@@ -16,7 +16,7 @@ from pattoo_shared import log
 from pattoo_shared.constants import (
     PATTOO_AGENT_BACNETIPD, DATA_FLOAT, DATA_STRING)
 from pattoo_shared.variables import (
-    DataVariable, DeviceDataVariables, AgentPolledData, DeviceGateway)
+    DataPoint, DeviceDataPoints, AgentPolledData, DeviceGateway)
 
 
 def poll(bacnet):
@@ -43,7 +43,7 @@ def poll(bacnet):
         agent_id, agent_program, agent_hostname, polling_interval)
     gateway = DeviceGateway(agent_hostname)
 
-    # Poll oids for all devices and update the DeviceDataVariables
+    # Poll oids for all devices and update the DeviceDataPoints
     poller = _PollBACnetIP(bacnet)
     ddv_list = poller.data()
     gateway.add(ddv_list)
@@ -91,13 +91,13 @@ class _PollBACnetIP(object):
     def data(self):
         """Get agent data.
 
-        Update the DeviceDataVariables with DataVariables
+        Update the DeviceDataPoints with DataPoints
 
         Args:
             None
 
         Returns:
-            ddv_list: List of type DeviceDataVariables
+            ddv_list: List of type DeviceDataPoints
 
         """
         # Initialize key variables
@@ -125,15 +125,15 @@ class _PollBACnetIP(object):
             bacnet: BAC0 connect object
 
         Returns:
-            ddv: DeviceDataVariables for the SNMPVariable device
+            ddv: DeviceDataPoints for the SNMPVariable device
 
         """
         # Intialize data gathering
-        ddv = DeviceDataVariables(ip_device)
+        ddv = DeviceDataPoints(ip_device)
         object2poll = 'analogValue'
 
-        # Get list of type DataVariable
-        datavariables = []
+        # Get list of type DataPoint
+        datapoints = []
         for polltarget in polltargets:
             # Get polling results
             poller_string = (
@@ -176,12 +176,12 @@ Unknown BACnet object {} requested from device {}.\
                 'analogValue point {} device {}'.format(
                     polltarget.address, ip_device))
 
-            # Update datavariables
-            datavariable = DataVariable(
+            # Update datapoints
+            datapoint = DataPoint(
                 value=value, data_label=data_label,
                 data_index=0, data_type=data_type)
-            datavariables.append(datavariable)
+            datapoints.append(datapoint)
 
         # Return
-        ddv.add(datavariables)
+        ddv.add(datapoints)
         return ddv
