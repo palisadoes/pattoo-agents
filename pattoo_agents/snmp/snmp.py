@@ -8,7 +8,7 @@ from easysnmp import exceptions
 
 # Import Pattoo libraries
 from pattoo_shared import log
-from pattoo_shared.variables import DataVariable
+from pattoo_shared.variables import DataPoint
 from pattoo_shared.constants import (
     DATA_INT, DATA_COUNT64, DATA_COUNT, DATA_STRING, DATA_NONE)
 from pattoo_agents.snmp import oid as class_oid
@@ -557,19 +557,19 @@ def _process_error(
 
 
 def _convert_results(inbound):
-    """Convert results from easysnmp.variables.SNMPVariable to DataVariable.
+    """Convert results from easysnmp.variables.SNMPVariable to DataPoint.
 
     Args:
         inbound: SNMP query result as list of easysnmp.variables.SNMPVariable
 
     Returns:
-        outbound: DataVariable formatted equivalent
+        outbound: DataPoint formatted equivalent
 
     """
     # Initialize key variables
     outbound = []
 
-    # Format the results to DataVariable format
+    # Format the results to DataPoint format
     for item in inbound:
         # Initialize loop variables
         converted = None
@@ -630,15 +630,15 @@ def _convert_results(inbound):
             # rfc1902.TimeTicks
             converted = int(item.value)
 
-        # Convert result to DataVariable
-        datavariable = DataVariable(
+        # Convert result to DataPoint
+        datapoint = DataPoint(
             value=converted,
             data_label=item.oid,
             data_index=item.oid_index,
             data_type=data_type
         )
         # Append to outbound result
-        outbound.append(datavariable)
+        outbound.append(datapoint)
 
     # Return
     return outbound

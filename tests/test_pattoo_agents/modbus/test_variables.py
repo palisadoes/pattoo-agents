@@ -306,7 +306,7 @@ class TestDeviceRegisterVariables(unittest.TestCase):
         self.assertFalse(drv.valid)
         self.assertEqual(drv.data, [])
 
-        # Setup DataVariable
+        # Setup DataPoint
         register = 30050
         count = 2
         unit = 3

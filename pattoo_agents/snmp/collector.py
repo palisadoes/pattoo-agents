@@ -13,7 +13,7 @@ from pattoo_shared import agent
 from pattoo_shared import data
 from pattoo_shared.constants import PATTOO_AGENT_SNMPD
 from pattoo_shared.variables import (
-    DataVariable, DeviceDataVariables, AgentPolledData, DeviceGateway)
+    DataPoint, DeviceDataPoints, AgentPolledData, DeviceGateway)
 
 
 def poll():
@@ -63,7 +63,7 @@ def poll():
         else:
             ip_polltargets[next_device] = dpt.data
 
-    # Poll oids for all devices and update the DeviceDataVariables
+    # Poll oids for all devices and update the DeviceDataPoints
     ddv_list = _snmpwalks(ip_snmpvariables, ip_polltargets)
     gateway.add(ddv_list)
     agentdata.add(gateway)
@@ -75,7 +75,7 @@ def poll():
 def _snmpwalks(ip_snmpvariables, ip_polltargets):
     """Get PATOO_SNMP agent data.
 
-    Update the DeviceDataVariables with DataVariables
+    Update the DeviceDataPoints with DataPoints
 
     Args:
         ip_snmpvariables: Dict of type SNMPVariable keyed by ip_device
@@ -83,7 +83,7 @@ def _snmpwalks(ip_snmpvariables, ip_polltargets):
             lists to poll
 
     Returns:
-        ddv_list: List of type DeviceDataVariables
+        ddv_list: List of type DeviceDataPoints
 
     """
     # Initialize key variables
@@ -117,33 +117,33 @@ def _walker(snmpvariable, polltargets):
         polltargets: List of PollingTarget objects to poll
 
     Returns:
-        ddv: DeviceDataVariables for the SNMPVariable device
+        ddv: DeviceDataPoints for the SNMPVariable device
 
     """
     # Intialize data gathering
-    ddv = DeviceDataVariables(snmpvariable.ip_device)
+    ddv = DeviceDataPoints(snmpvariable.ip_device)
 
-    # Get list of type DataVariable
-    datavariables = []
+    # Get list of type DataPoint
+    datapoints = []
     for polltarget in polltargets:
         # Get OID polling results
         query = snmp.SNMP(snmpvariable)
-        query_datavariables = query.walk(polltarget.address)
+        query_datapoints = query.walk(polltarget.address)
 
         # Apply multiplier to the results
-        for _dv in query_datavariables:
+        for _dv in query_datapoints:
             # Do multiplication
             if data.is_data_type_numeric(_dv.data_type) is True:
                 value = float(_dv.value) * polltarget.multiplier
             else:
                 value = _dv.value
 
-            # Update datavariables
-            datavariable = DataVariable(
+            # Update datapoints
+            datapoint = DataPoint(
                 value=value, data_label=_dv.data_label,
                 data_index=_dv.data_index, data_type=_dv.data_type)
-            datavariables.append(datavariable)
+            datapoints.append(datapoint)
 
     # Return
-    ddv.add(datavariables)
+    ddv.add(datapoints)
     return ddv
