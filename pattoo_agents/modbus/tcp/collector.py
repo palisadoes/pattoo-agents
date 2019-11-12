@@ -124,7 +124,7 @@ def _serial_poller(drv):
             except ConnectionException as _err:
                 log_message = ('''\
 Cannot connect to device {} to retrieve input register {}, count {}, \
-unit {}: {}'''.format(ip_device, _rv.register, _rv.count, _rv.unit, str(err)))
+unit {}: {}'''.format(ip_device, _rv.register, _rv.count, _rv.unit, str(_err)))
                 log.log2info(51028, log_message)
                 continue
             except:
