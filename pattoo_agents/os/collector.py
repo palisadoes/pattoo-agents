@@ -43,7 +43,7 @@ def poll(agent_program):
     gateway = DeviceGateway(agent_hostname)
 
     # Intialize data gathering
-    ddv = DeviceDataPoints(agent_hostname)
+    ddv = DeviceDataPoints(agent_hostname, device_type=0)
 
     # Update agent with system data
     _stats_system(ddv)
