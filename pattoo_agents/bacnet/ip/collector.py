@@ -178,7 +178,7 @@ Unknown BACnet object {} requested from device {}.\
 
             # Update datapoints
             datapoint = DataPoint(
-                value=value, data_label=data_label,
+                value, data_label=data_label,
                 data_index=0, data_type=data_type)
             datapoints.append(datapoint)
 

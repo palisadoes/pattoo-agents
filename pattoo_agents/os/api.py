@@ -6,9 +6,9 @@ from flask import Flask, jsonify
 
 # Pattoo imports
 from pattoo_agents.os import collector
+from pattoo_shared import converter
 from pattoo_shared.constants import (
     PATTOO_AGENT_OS_SPOKED_API_PREFIX, PATTOO_AGENT_OS_SPOKED)
-from pattoo_shared.converter import ConvertAgentPolledData
 
 
 # Define flask parameters
@@ -28,6 +28,6 @@ def home():
     """
     # Process and present
     agentdata = collector.poll(PATTOO_AGENT_OS_SPOKED)
-    process = ConvertAgentPolledData(agentdata)
-    data_dict = process.data()
-    return jsonify(data_dict)
+    datapoints = converter.agentdata_to_datapoints(agentdata)
+    datapoint_dicts = converter.datapoints_to_dicts(datapoints)
+    return jsonify(datapoint_dicts)

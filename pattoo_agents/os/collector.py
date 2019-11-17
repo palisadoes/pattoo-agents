@@ -76,43 +76,43 @@ def _stats_system(ddv):
     # Set non timeseries values
     #########################################################################
 
-    ddv.add(DataPoint(value=platform.release(),
-                         data_label='release',
-                         data_type=DATA_STRING))
+    ddv.add(DataPoint(platform.release(),
+                      data_label='release',
+                      data_type=DATA_STRING))
 
-    ddv.add(DataPoint(value=platform.system(),
-                         data_label='system',
-                         data_type=DATA_STRING))
+    ddv.add(DataPoint(platform.system(),
+                      data_label='system',
+                      data_type=DATA_STRING))
 
-    ddv.add(DataPoint(value=platform.version(),
-                         data_label='version',
-                         data_type=DATA_STRING))
+    ddv.add(DataPoint(platform.version(),
+                      data_label='version',
+                      data_type=DATA_STRING))
 
-    ddv.add(DataPoint(value=psutil.cpu_count(),
-                         data_label='cpu_count',
-                         data_type=DATA_INT))
+    ddv.add(DataPoint(psutil.cpu_count(),
+                      data_label='cpu_count',
+                      data_type=DATA_INT))
 
     #########################################################################
     # Set timeseries values (Integers)
     #########################################################################
-    ddv.add(DataPoint(value=len(psutil.pids()),
-                         data_label='process_count',
-                         data_type=DATA_INT))
+    ddv.add(DataPoint(len(psutil.pids()),
+                      data_label='process_count',
+                      data_type=DATA_INT))
 
     # Load averages
     (la_01, la_05, la_15) = os.getloadavg()
 
-    ddv.add(DataPoint(value=la_01,
-                         data_label='load_average_01min',
-                         data_type=DATA_INT))
+    ddv.add(DataPoint(la_01,
+                      data_label='load_average_01min',
+                      data_type=DATA_INT))
 
-    ddv.add(DataPoint(value=la_05,
-                         data_label='load_average_05min',
-                         data_type=DATA_INT))
+    ddv.add(DataPoint(la_05,
+                      data_label='load_average_05min',
+                      data_type=DATA_INT))
 
-    ddv.add(DataPoint(value=la_15,
-                         data_label='load_average_15min',
-                         data_type=DATA_INT))
+    ddv.add(DataPoint(la_15,
+                      data_label='load_average_15min',
+                      data_type=DATA_INT))
 
     #########################################################################
     # Set timeseries values (Named Tuples)
@@ -167,7 +167,7 @@ def _stats_disk_swap(ddv):
 
         # No need to specify a suffix as there is only one swap
         _dv = DataPoint(
-            value=value, data_label=data_label, data_type=data_type)
+            value, data_label=data_label, data_type=data_type)
         result.append(_dv)
 
     # Add the result to data
@@ -201,7 +201,7 @@ def _stats_disk_partitions(ddv):
             for suffix, value in partition.items():
                 data_label = '{}_{}'.format(prefix, suffix)
                 _dv = DataPoint(
-                    value=value, data_label=data_label,
+                    value, data_label=data_label,
                     data_index=mountpoint, data_type=DATA_INT)
                 result.append(_dv)
 
@@ -241,7 +241,7 @@ def _stats_disk_io(ddv):
         for suffix, value in disk_dict.items():
             data_label = '{}_{}'.format(prefix, suffix)
             _dv = DataPoint(
-                value=value, data_label=data_label,
+                value, data_label=data_label,
                 data_index=disk, data_type=DATA_COUNT64)
             result.append(_dv)
 
@@ -270,7 +270,7 @@ def _stats_network(ddv):
         for suffix, value in nic_dict.items():
             data_label = '{}_{}'.format(prefix, suffix)
             _dv = DataPoint(
-                value=value, data_label=data_label,
+                value, data_label=data_label,
                 data_index=nic, data_type=DATA_COUNT64)
             result.append(_dv)
 
@@ -298,7 +298,7 @@ def _named_tuple_to_dv(
     # Cycle through results
     for data_index, value in data_dict.items():
         _dv = DataPoint(
-            value=value,
+            value,
             data_label=data_label,
             data_index=data_index,
             data_type=data_type)
