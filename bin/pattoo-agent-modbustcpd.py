@@ -25,7 +25,7 @@ else:
 # Pattoo libraries
 from pattoo_shared.configuration import Config
 from pattoo_shared.constants import PATTOO_AGENT_MODBUSTCPD
-from pattoo_shared.phttp import Post
+from pattoo_shared.phttp import PostAgent
 from pattoo_shared.agent import Agent, AgentCLI
 from pattoo_agents.modbus.tcp import collector
 
@@ -83,7 +83,7 @@ class PollingAgent(Agent):
             agentdata = collector.poll()
 
             # Post to remote server
-            server = Post(agentdata)
+            server = PostAgent(agentdata)
 
             # Post data
             success = server.post()

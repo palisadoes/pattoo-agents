@@ -28,7 +28,7 @@ else:
 # Pattoo libraries
 from pattoo_shared.constants import PATTOO_AGENT_BACNETIPD
 from pattoo_shared import log
-from pattoo_shared.phttp import Post
+from pattoo_shared.phttp import PostAgent
 from pattoo_shared.agent import Agent, AgentCLI
 from pattoo_agents.bacnet.ip.configuration import ConfigBACnetIP as Config
 from pattoo_agents.bacnet.ip import collector
@@ -99,7 +99,7 @@ other daemons that could be using BACnet'''.format(agent_ip_address))
             agentdata = collector.poll(bacnet)
 
             # Post to remote server
-            server = Post(agentdata)
+            server = PostAgent(agentdata)
 
             # Post data
             success = server.post()
