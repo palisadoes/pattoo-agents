@@ -45,34 +45,34 @@ class MockSNMP(object):
 
         # IfDesc
         self.data['.1.3.6.1.2.1.2.2.1.2'] = [
-            DataPoint(value='lo', data_label='.1.3.6.1.2.1.2.2.1.2',
-                         data_index='1', data_type=2),
-            DataPoint(value='eth0', data_label='.1.3.6.1.2.1.2.2.1.2',
-                         data_index='2', data_type=2),
-            DataPoint(value='wlan0', data_label='.1.3.6.1.2.1.2.2.1.2',
-                         data_index='3', data_type=2)]
+            DataPoint('lo', data_label='.1.3.6.1.2.1.2.2.1.2',
+                      data_index='1', data_type=2),
+            DataPoint('eth0', data_label='.1.3.6.1.2.1.2.2.1.2',
+                      data_index='2', data_type=2),
+            DataPoint('wlan0', data_label='.1.3.6.1.2.1.2.2.1.2',
+                      data_index='3', data_type=2)]
 
         # sysObjectID
         self.data['.1.3.6.1.2.1.1.2.0'] = [
-            DataPoint(value='.1.3.6.1.1234', data_label='.1.3.6.1.2.1.1.2',
-                         data_index='0', data_type=2)]
+            DataPoint('.1.3.6.1.1234', data_label='.1.3.6.1.2.1.1.2',
+                      data_index='0', data_type=2)]
 
         # ifInOctets
         self.data['.1.3.6.1.2.1.2.2.1.10'] = [
-            DataPoint(value=83554391, data_label='.1.3.6.1.2.1.2.2.1.10',
-                         data_index='1', data_type=32),
-            DataPoint(value=1099211361, data_label='.1.3.6.1.2.1.2.2.1.10',
-                         data_index='2', data_type=32),
-            DataPoint(value=0, data_label='.1.3.6.1.2.1.2.2.1.10',
-                         data_index='3', data_type=32)]
+            DataPoint(83554391, data_label='.1.3.6.1.2.1.2.2.1.10',
+                      data_index='1', data_type=32),
+            DataPoint(1099211361, data_label='.1.3.6.1.2.1.2.2.1.10',
+                      data_index='2', data_type=32),
+            DataPoint(0, data_label='.1.3.6.1.2.1.2.2.1.10',
+                      data_index='3', data_type=32)]
         # ifOutOctets
         self.data['.1.3.6.1.2.1.2.2.1.16'] = [
-            DataPoint(value=83596845, data_label='.1.3.6.1.2.1.2.2.1.16',
-                         data_index='1', data_type=32),
-            DataPoint(value=2788372879, data_label='.1.3.6.1.2.1.2.2.1.16',
-                         data_index='2', data_type=32),
-            DataPoint(value=0, data_label='.1.3.6.1.2.1.2.2.1.16',
-                         data_index='3', data_type=32)]
+            DataPoint(83596845, data_label='.1.3.6.1.2.1.2.2.1.16',
+                      data_index='1', data_type=32),
+            DataPoint(2788372879, data_label='.1.3.6.1.2.1.2.2.1.16',
+                      data_index='2', data_type=32),
+            DataPoint(0, data_label='.1.3.6.1.2.1.2.2.1.16',
+                      data_index='3', data_type=32)]
 
     def contactable(self):
         """Determine whether contactable.

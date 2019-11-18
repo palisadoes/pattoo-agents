@@ -632,7 +632,7 @@ def _convert_results(inbound):
 
         # Convert result to DataPoint
         datapoint = DataPoint(
-            value=converted,
+            converted,
             data_label=item.oid,
             data_index=item.oid_index,
             data_type=data_type

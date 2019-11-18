@@ -131,17 +131,17 @@ def _walker(snmpvariable, polltargets):
         query_datapoints = query.walk(polltarget.address)
 
         # Apply multiplier to the results
-        for _dv in query_datapoints:
+        for _dp in query_datapoints:
             # Do multiplication
-            if data.is_data_type_numeric(_dv.data_type) is True:
-                value = float(_dv.value) * polltarget.multiplier
+            if data.is_data_type_numeric(_dp.data_type) is True:
+                value = float(_dp.data_value) * polltarget.multiplier
             else:
-                value = _dv.value
+                value = _dp.data_value
 
             # Update datapoints
             datapoint = DataPoint(
-                value=value, data_label=_dv.data_label,
-                data_index=_dv.data_index, data_type=_dv.data_type)
+                value, data_label=_dp.data_label,
+                data_index=_dp.data_index, data_type=_dp.data_type)
             datapoints.append(datapoint)
 
     # Return
