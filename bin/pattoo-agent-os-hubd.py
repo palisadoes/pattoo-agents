@@ -24,10 +24,10 @@ else:
     sys.exit(2)
 
 # Pattoo libraries
-from pattoo_shared.constants import (
-    PATTOO_AGENT_OS_HUBD, PATTOO_AGENT_OS_SPOKED_API_PREFIX)
 from pattoo_shared.agent import Agent, AgentCLI
 from pattoo_shared.phttp import PassiveAgent
+from pattoo_agents.os.constants import (
+    PATTOO_AGENT_OS_HUBD, PATTOO_AGENT_OS_SPOKED_API_PREFIX)
 from pattoo_agents.os import configuration
 
 
@@ -120,7 +120,7 @@ def _relay(url):
 
     """
     # Initialize key variables
-    passive = PassiveAgent(url)
+    passive = PassiveAgent(PATTOO_AGENT_OS_HUBD, url)
     passive.relay()
 
 def _spoked_url(ip_device, ip_bind_port):

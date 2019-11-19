@@ -26,10 +26,10 @@ else:
     sys.exit(2)
 
 # Pattoo libraries
-from pattoo_shared.constants import PATTOO_AGENT_BACNETIPD
 from pattoo_shared import log
 from pattoo_shared.phttp import PostAgent
 from pattoo_shared.agent import Agent, AgentCLI
+from pattoo_agents.bacnet.ip.constants import PATTOO_AGENT_BACNETIPD
 from pattoo_agents.bacnet.ip.configuration import ConfigBACnetIP as Config
 from pattoo_agents.bacnet.ip import collector
 

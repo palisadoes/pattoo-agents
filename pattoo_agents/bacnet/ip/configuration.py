@@ -9,7 +9,7 @@ from pattoo_shared import configuration
 from pattoo_shared import data as lib_data
 from pattoo_shared.variables import DevicePollingTargets
 from pattoo_shared.configuration import Config
-from pattoo_shared.constants import PATTOO_AGENT_BACNETIPD
+from .constants import PATTOO_AGENT_BACNETIPD
 from pattoo_agents.modbus.variables import (
     InputRegisterVariable, HoldingRegisterVariable, DeviceRegisterVariables)
 

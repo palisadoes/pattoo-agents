@@ -26,8 +26,8 @@ else:
 from pattoo_shared.configuration import Config
 from pattoo_shared.phttp import PostAgent
 from pattoo_shared.agent import Agent, AgentCLI
-from pattoo_agents.modbus.tcp.constants import PATTOO_AGENT_MODBUSTCPD
-from pattoo_agents.modbus.tcp import collector
+from pattoo_agents.snmp.constants import PATTOO_AGENT_SNMP_IFMIBD
+from pattoo_agents.snmp.ifmib import collector
 
 
 class PollingAgent(Agent):
@@ -47,7 +47,7 @@ class PollingAgent(Agent):
         Agent.__init__(self, parent)
 
         # Initialize key variables
-        self._agent_name = PATTOO_AGENT_MODBUSTCPD
+        self._agent_name_constant = PATTOO_AGENT_SNMPD
 
     def name(self):
         """Return agent name.
@@ -60,7 +60,7 @@ class PollingAgent(Agent):
 
         """
         # Return
-        value = self._agent_name
+        value = self._agent_name_constant
         return value
 
     def query(self):
@@ -107,7 +107,7 @@ def main():
 
     """
     # Get configuration
-    agent_poller = PollingAgent(PATTOO_AGENT_MODBUSTCPD)
+    agent_poller = PollingAgent(PATTOO_AGENT_SNMPD)
 
     # Do control
     cli = AgentCLI()

@@ -9,9 +9,9 @@ from pattoo_shared import configuration
 from pattoo_shared import data as lib_data
 from pattoo_shared.variables import DevicePollingTargets
 from pattoo_shared.configuration import Config
-from pattoo_shared.constants import PATTOO_AGENT_MODBUSTCPD
 from pattoo_agents.modbus.variables import (
     InputRegisterVariable, HoldingRegisterVariable, DeviceRegisterVariables)
+from .constants import PATTOO_AGENT_MODBUSTCPD
 
 
 class ConfigModbusTCP(Config):
