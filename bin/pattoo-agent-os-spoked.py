@@ -26,9 +26,9 @@ else:
 
 # Pattoo libraries
 from pattoo_shared.agent import Agent, AgentAPI, AgentCLI
-from pattoo_shared.constants import (
-    PATTOO_AGENT_OS_SPOKED, PATTOO_AGENT_OS_SPOKED_PROXY)
 from pattoo_shared.variables import AgentAPIVariable
+from pattoo_agents.os.constants import (
+    PATTOO_AGENT_OS_SPOKED, PATTOO_AGENT_OS_SPOKED_PROXY)
 from pattoo_agents.os import configuration
 from pattoo_agents.os.api import API
 

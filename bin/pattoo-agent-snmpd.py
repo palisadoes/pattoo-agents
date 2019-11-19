@@ -24,10 +24,10 @@ else:
 
 # Pattoo libraries
 from pattoo_shared.configuration import Config
-from pattoo_shared.constants import PATTOO_AGENT_SNMPD
 from pattoo_shared.phttp import PostAgent
 from pattoo_shared.agent import Agent, AgentCLI
-from pattoo_agents.snmp import collector
+from pattoo_agents.snmp.default import collector
+from pattoo_agents.snmp.constants import PATTOO_AGENT_SNMPD
 
 
 class PollingAgent(Agent):
