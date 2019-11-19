@@ -11,9 +11,9 @@ from pattoo_agents.snmp import configuration
 from pattoo_agents.snmp import snmp
 from pattoo_shared import agent
 from pattoo_shared import data
-from pattoo_shared.constants import PATTOO_AGENT_SNMPD
 from pattoo_shared.variables import (
     DataPoint, DeviceDataPoints, AgentPolledData, DeviceGateway)
+from pattoo_agents.snmp.constants import PATTOO_AGENT_SNMPD
 
 
 def poll():

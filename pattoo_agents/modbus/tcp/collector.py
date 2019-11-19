@@ -16,9 +16,10 @@ from pattoo_agents.modbus.variables import (
     InputRegisterVariable, HoldingRegisterVariable, RegisterVariable)
 from pattoo_shared import agent
 from pattoo_shared import log
-from pattoo_shared.constants import PATTOO_AGENT_MODBUSTCPD, DATA_INT
+from pattoo_shared.constants import DATA_INT
 from pattoo_shared.variables import (
     DataPoint, DeviceDataPoints, AgentPolledData, DeviceGateway)
+from .constants import PATTOO_AGENT_MODBUSTCPD
 
 
 def poll():
