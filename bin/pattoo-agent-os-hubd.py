@@ -120,7 +120,7 @@ def _relay(url):
 
     """
     # Initialize key variables
-    passive = PassiveAgent(url)
+    passive = PassiveAgent(PATTOO_AGENT_OS_HUBD, url)
     passive.relay()
 
 def _spoked_url(ip_device, ip_bind_port):
