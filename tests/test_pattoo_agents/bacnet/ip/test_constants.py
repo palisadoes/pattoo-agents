@@ -28,7 +28,7 @@ This script is not installed in the \
 
 # Pattoo imports
 from tests.libraries.configuration import UnittestConfig
-from pattoo_shared.constants import PATTOO_AGENT_BACNETIPD
+from pattoo_agents.bacnet.ip.constants import PATTOO_AGENT_BACNETIPD
 
 
 class TestConstants(unittest.TestCase):
