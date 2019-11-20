@@ -15,7 +15,7 @@ from pattoo_shared import data
 from pattoo_shared import log
 from pattoo_shared.constants import DATA_FLOAT, DATA_STRING
 from pattoo_shared.variables import (
-    DataPoint, DeviceDataPoints, AgentPolledData, DeviceGateway)
+    DataPoint, DataPointMeta, DeviceDataPoints, AgentPolledData, DeviceGateway)
 from .constants import PATTOO_AGENT_BACNETIPD
 
 
@@ -171,15 +171,11 @@ Unknown BACnet object {} requested from device {}.\
             else:
                 data_type = DATA_STRING
 
-            # Setup the data label
-            data_label = (
-                'analogValue point {} device {}'.format(
-                    polltarget.address, ip_device))
-
             # Update datapoints
             datapoint = DataPoint(
-                value, data_label=data_label,
-                data_index=0, data_type=data_type)
+                'BACnet_analogValue', value, data_type=data_type)
+            datapoint.add(DataPointMeta('point', polltarget.address))
+            datapoint.add(DataPointMeta('device', ip_device))
             datapoints.append(datapoint)
 
         # Return

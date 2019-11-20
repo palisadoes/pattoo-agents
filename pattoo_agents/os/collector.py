@@ -6,6 +6,7 @@ import os
 import re
 import platform
 import socket
+from copy import deepcopy
 
 # pip3 libraries
 import psutil
@@ -14,7 +15,7 @@ import psutil
 from pattoo_shared import agent
 from pattoo_shared.configuration import Config
 from pattoo_shared.variables import (
-    DataPoint, DeviceDataPoints, DeviceGateway, AgentPolledData)
+    DataPoint, DataPointMeta, DeviceDataPoints, DeviceGateway, AgentPolledData)
 from pattoo_shared.constants import (
     DATA_INT, DATA_COUNT64, DATA_STRING, DATA_FLOAT)
 
@@ -45,16 +46,36 @@ def poll(agent_program):
     # Intialize data gathering
     ddv = DeviceDataPoints(agent_hostname, device_type=0)
 
+    #########################################################################
+    # Set non timeseries values
+    #########################################################################
+
+    metadata = []
+    metadata.append(
+        DataPointMeta('OperatingSystem_Release', platform.release()))
+    metadata.append(
+        DataPointMeta('OperatingSystem_Type', platform.system()))
+    metadata.append(
+        DataPointMeta('OperatingSystem_Version', platform.version()))
+    metadata.append(
+        DataPointMeta('OperatingSystem_CPUs', psutil.cpu_count()))
+    metadata.append(
+        DataPointMeta('Hostname', socket.getfqdn()))
+
+    #########################################################################
+    # Get timeseries values
+    #########################################################################
+
     # Update agent with system data
-    _stats_system(ddv)
+    _stats_system(ddv, metadata)
 
     # Update agent with disk data
-    _stats_disk_swap(ddv)
-    _stats_disk_partitions(ddv)
-    _stats_disk_io(ddv)
+    _stats_disk_swap(ddv, metadata)
+    _stats_disk_partitions(ddv, metadata)
+    _stats_disk_io(ddv, metadata)
 
     # Update agent with network data
-    _stats_network(ddv)
+    _stats_network(ddv, metadata)
 
     # Add results to the AgentPolledData object for posting
     gateway.add(ddv)
@@ -62,7 +83,7 @@ def poll(agent_program):
     return agentdata
 
 
-def _stats_system(ddv):
+def _stats_system(ddv, metadata):
     """Update agent with system data.
 
     Args:
@@ -73,46 +94,25 @@ def _stats_system(ddv):
 
     """
     #########################################################################
-    # Set non timeseries values
-    #########################################################################
-
-    ddv.add(DataPoint(platform.release(),
-                      data_label='release',
-                      data_type=DATA_STRING))
-
-    ddv.add(DataPoint(platform.system(),
-                      data_label='system',
-                      data_type=DATA_STRING))
-
-    ddv.add(DataPoint(platform.version(),
-                      data_label='version',
-                      data_type=DATA_STRING))
-
-    ddv.add(DataPoint(psutil.cpu_count(),
-                      data_label='cpu_count',
-                      data_type=DATA_INT))
-
-    #########################################################################
     # Set timeseries values (Integers)
     #########################################################################
-    ddv.add(DataPoint(len(psutil.pids()),
-                      data_label='process_count',
-                      data_type=DATA_INT))
+
+    ddv.add(DataPoint(
+        'OperatingSystem_ProcessCount',
+        len(psutil.pids()),
+        data_type=DATA_INT).add(metadata))
 
     # Load averages
     (la_01, la_05, la_15) = os.getloadavg()
 
-    ddv.add(DataPoint(la_01,
-                      data_label='load_average_01min',
-                      data_type=DATA_INT))
+    ddv.add(DataPoint('load_average_01min', la_01,
+                      data_type=DATA_INT).add(metadata))
 
-    ddv.add(DataPoint(la_05,
-                      data_label='load_average_05min',
-                      data_type=DATA_INT))
+    ddv.add(DataPoint('load_average_05min', la_05,
+                      data_type=DATA_INT).add(metadata))
 
-    ddv.add(DataPoint(la_15,
-                      data_label='load_average_15min',
-                      data_type=DATA_INT))
+    ddv.add(DataPoint('load_average_15min', la_15,
+                      data_type=DATA_INT).add(metadata))
 
     #########################################################################
     # Set timeseries values (Named Tuples)
@@ -121,25 +121,25 @@ def _stats_system(ddv):
     # Percentage CPU utilization
     ddv.add(_named_tuple_to_dv(
         psutil.cpu_times_percent(),
-        data_label='cpu_times_percent', data_type=DATA_FLOAT))
+        'cpu_times_percent', data_type=DATA_FLOAT, metadata=metadata))
 
     # Get CPU runtimes
     ddv.add(_named_tuple_to_dv(
         psutil.cpu_times(),
-        data_label='cpu_times', data_type=DATA_COUNT64))
+        'cpu_times', data_type=DATA_COUNT64, metadata=metadata))
 
     # Get CPU stats
     ddv.add(_named_tuple_to_dv(
         psutil.cpu_stats(),
-        data_label='cpu_stats', data_type=DATA_COUNT64))
+        data_label='cpu_stats', data_type=DATA_COUNT64, metadata=metadata))
 
     # Get memory utilization
     ddv.add(_named_tuple_to_dv(
         psutil.virtual_memory(),
-        data_label='memory', data_type=DATA_INT))
+        data_label='memory', data_type=DATA_INT, metadata=metadata))
 
 
-def _stats_disk_swap(ddv):
+def _stats_disk_swap(ddv, metadata):
     """Update agent with disk swap data.
 
     Args:
@@ -151,30 +151,27 @@ def _stats_disk_swap(ddv):
     """
     # Initialize key variables
     result = []
-    prefix = 'swap'
 
     # Get swap information
     system_list = psutil.swap_memory()._asdict()
-    for suffix, value in system_list.items():
+    for key, value in system_list.items():
         # Different suffixes have different data types
-        if suffix in ['sin', 'sout']:
+        if key in ['sin', 'sout']:
             data_type = DATA_COUNT64
         else:
             data_type = DATA_INT
 
-        # Create records
-        data_label = '{}_{}'.format(prefix, suffix)
-
         # No need to specify a suffix as there is only one swap
-        _dv = DataPoint(
-            value, data_label=data_label, data_type=data_type)
+        _dv = DataPoint(key, value, data_type=data_type)
+        _dv.add(metadata)
+        _dv.add(DataPointMeta('Parameter', 'SwapMemory'))
         result.append(_dv)
 
     # Add the result to data
     ddv.add(result)
 
 
-def _stats_disk_partitions(ddv):
+def _stats_disk_partitions(ddv, metadata):
     """Update agent with disk partition data.
 
     Args:
@@ -185,31 +182,34 @@ def _stats_disk_partitions(ddv):
 
     """
     # Initialize key variables
-    prefix = 'disk_usage'
     result = []
 
     # Get filesystem partition utilization
     diskddv = psutil.disk_partitions()
     # "diskddv" is named tuple describing partitions
     for item in diskddv:
-        # "source" is the partition mount point
-        mountpoint = item.mountpoint
-        if "docker" in str(mountpoint):
-            pass
-        else:
+        if "docker" not in str(mountpoint):
+            # "source" is the partition mount point
+            mountpoint = item.mountpoint
+
+            # Add more metadata
+            meta = []
+            for key, value in item._asdict():
+                meta.append(DataPointMeta(key, value))
+
             partition = psutil.disk_usage(mountpoint)._asdict()
-            for suffix, value in partition.items():
-                data_label = '{}_{}'.format(prefix, suffix)
-                _dv = DataPoint(
-                    value, data_label=data_label,
-                    data_index=mountpoint, data_type=DATA_INT)
+            for key, value in partition.items():
+                _dv = DataPoint(key, value, data_type=DATA_INT)
+                _dv.add(meta)
+                _dv.add(metadata)
+                _dv.add(DataPointMeta('Parameter', 'PartitonUsage'))
                 result.append(_dv)
 
     # Add the result to data
     ddv.add(result)
 
 
-def _stats_disk_io(ddv):
+def _stats_disk_io(ddv, metadata):
     """Update agent with disk io data.
 
     Args:
@@ -221,7 +221,6 @@ def _stats_disk_io(ddv):
     """
     # Initialize key variables
     regex = re.compile(r'^ram\d+$')
-    prefix = 'disk_io'
     result = []
 
     # Get disk I/O usage
@@ -238,18 +237,18 @@ def _stats_disk_io(ddv):
 
         # Populate data
         disk_dict = disk_named_tuple._asdict()
-        for suffix, value in disk_dict.items():
-            data_label = '{}_{}'.format(prefix, suffix)
-            _dv = DataPoint(
-                value, data_label=data_label,
-                data_index=disk, data_type=DATA_COUNT64)
+        for key, value in disk_dict.items():
+            _dv = DataPoint(key, value, data_type=DATA_COUNT64)
+            _dv.add(metadata)
+            _dv.add(DataPointMeta('Partition', disk))
+            _dv.add(DataPointMeta('Parameter', 'DiskIO'))
             result.append(_dv)
 
     # Add the result to data
     ddv.add(result)
 
 
-def _stats_network(ddv):
+def _stats_network(ddv, metadata):
     """Update agent with network data.
 
     Args:
@@ -261,17 +260,16 @@ def _stats_network(ddv):
     """
     # Initialize key variables
     result = []
-    prefix = 'network'
 
     # Get network utilization
     nicddv = psutil.net_io_counters(pernic=True)
     for nic, nic_named_tuple in nicddv.items():
         nic_dict = nic_named_tuple._asdict()
-        for suffix, value in nic_dict.items():
-            data_label = '{}_{}'.format(prefix, suffix)
-            _dv = DataPoint(
-                value, data_label=data_label,
-                data_index=nic, data_type=DATA_COUNT64)
+        for key, value in nic_dict.items():
+            _dv = DataPoint(key, value, data_type=DATA_COUNT64)
+            _dv.add(metadata)
+            _dv.add(DataPointMeta('interface', nic))
+            _dv.add(DataPointMeta('Parameter', 'NetworkIO'))
             result.append(_dv)
 
     # Add the result to data
@@ -279,7 +277,7 @@ def _stats_network(ddv):
 
 
 def _named_tuple_to_dv(
-        values, data_label=None, data_type=DATA_INT):
+        values, data_label=None, data_type=DATA_INT, metadata=None):
     """Convert a named tuple to a list of DataPoint objects.
 
     Args:
@@ -296,12 +294,10 @@ def _named_tuple_to_dv(
     result = []
 
     # Cycle through results
-    for data_index, value in data_dict.items():
-        _dv = DataPoint(
-            value,
-            data_label=data_label,
-            data_index=data_index,
-            data_type=data_type)
+    for key, value in data_dict.items():
+        _dv = DataPoint(key, value, data_type=data_type)
+        _dv.add(metadata)
+        _dv.add(DataPointMeta('Parameter', data_label))
         result.append(_dv)
 
     # Return
