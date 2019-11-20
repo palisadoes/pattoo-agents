@@ -6,7 +6,6 @@ import os
 import re
 import platform
 import socket
-from copy import deepcopy
 
 # pip3 libraries
 import psutil
@@ -17,7 +16,7 @@ from pattoo_shared.configuration import Config
 from pattoo_shared.variables import (
     DataPoint, DataPointMeta, DeviceDataPoints, DeviceGateway, AgentPolledData)
 from pattoo_shared.constants import (
-    DATA_INT, DATA_COUNT64, DATA_STRING, DATA_FLOAT)
+    DATA_INT, DATA_COUNT64, DATA_FLOAT)
 
 
 def poll(agent_program):
@@ -131,12 +130,12 @@ def _stats_system(ddv, metadata):
     # Get CPU stats
     ddv.add(_named_tuple_to_dv(
         psutil.cpu_stats(),
-        data_label='cpu_stats', data_type=DATA_COUNT64, metadata=metadata))
+        'cpu_stats', data_type=DATA_COUNT64, metadata=metadata))
 
     # Get memory utilization
     ddv.add(_named_tuple_to_dv(
         psutil.virtual_memory(),
-        data_label='memory', data_type=DATA_INT, metadata=metadata))
+        'memory', data_type=DATA_INT, metadata=metadata))
 
 
 def _stats_disk_swap(ddv, metadata):
@@ -185,18 +184,20 @@ def _stats_disk_partitions(ddv, metadata):
     result = []
 
     # Get filesystem partition utilization
-    diskddv = psutil.disk_partitions()
-    # "diskddv" is named tuple describing partitions
-    for item in diskddv:
+    items = psutil.disk_partitions()
+    # "items" is a list of named tuples describing partitions
+    for item in items:
+        # "source" is the partition mount point
+        mountpoint = item.mountpoint
         if "docker" not in str(mountpoint):
-            # "source" is the partition mount point
-            mountpoint = item.mountpoint
-
             # Add more metadata
             meta = []
-            for key, value in item._asdict():
-                meta.append(DataPointMeta(key, value))
+            meta.append(DataPointMeta('device', item.device))
+            meta.append(DataPointMeta('mountpoint', item.mountpoint))
+            meta.append(DataPointMeta('fstype', item.fstype))
+            meta.append(DataPointMeta('opts', item.opts))
 
+            # Get the partition data
             partition = psutil.disk_usage(mountpoint)._asdict()
             for key, value in partition.items():
                 _dv = DataPoint(key, value, data_type=DATA_INT)
@@ -277,12 +278,12 @@ def _stats_network(ddv, metadata):
 
 
 def _named_tuple_to_dv(
-        values, data_label=None, data_type=DATA_INT, metadata=None):
+        values, parameter_label, data_type=DATA_INT, metadata=None):
     """Convert a named tuple to a list of DataPoint objects.
 
     Args:
         values: Named tuple
-        data_label: data_label
+        parameter_label: parameter_label
         data_type: Data type
 
     Returns:
@@ -297,7 +298,7 @@ def _named_tuple_to_dv(
     for key, value in data_dict.items():
         _dv = DataPoint(key, value, data_type=data_type)
         _dv.add(metadata)
-        _dv.add(DataPointMeta('Parameter', data_label))
+        _dv.add(DataPointMeta('Parameter', parameter_label))
         result.append(_dv)
 
     # Return

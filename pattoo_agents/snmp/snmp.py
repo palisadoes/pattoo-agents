@@ -631,12 +631,9 @@ def _convert_results(inbound):
             converted = int(item.value)
 
         # Convert result to DataPoint
-        datapoint = DataPoint(
-            converted,
-            data_label=item.oid,
-            data_index=item.oid_index,
-            data_type=data_type
-        )
+        key = '{}.{}'.format(item.oid, item.oid_index)
+        datapoint = DataPoint(key, converted, data_type=data_type)
+        
         # Append to outbound result
         outbound.append(datapoint)
 
