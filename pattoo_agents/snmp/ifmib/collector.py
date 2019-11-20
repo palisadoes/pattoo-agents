@@ -4,6 +4,7 @@
 # Standard libraries
 import multiprocessing
 import socket
+import collections
 from pprint import pprint
 
 # Pattoo libraries
@@ -12,7 +13,7 @@ from pattoo_agents.snmp import snmp
 from pattoo_shared import agent
 from pattoo_shared import data
 from pattoo_shared.variables import (
-    DataPoint, DeviceDataPoints, AgentPolledData, DeviceGateway)
+    DataPoint, DataPointMeta, DeviceDataPoints, AgentPolledData, DeviceGateway)
 from pattoo_agents.snmp.constants import PATTOO_AGENT_SNMPD
 from pattoo_agents.snmp.ifmib.mib_if import Query
 
@@ -49,13 +50,7 @@ def poll():
 
     # Create a dict of snmpvariables keyed by ip_device
     for snmpvariable in cfg_snmpvariables:
-        query = Query(snmpvariable)
-        x = query.everything()
-        pprint(x)
-        # ip_snmpvariables[snmpvariable.ip_device] = snmpvariable
-        break
-
-    return
+        ip_snmpvariables[snmpvariable.ip_device] = snmpvariable
 
     # Create a dict of oid lists keyed by ip_device
     for dpt in device_poll_targets:
@@ -129,26 +124,175 @@ def _walker(snmpvariable, polltargets):
     """
     # Intialize data gathering
     ddv = DeviceDataPoints(snmpvariable.ip_device)
-
-    # Get list of type DataPoint
-    datapoints = []
-    for polltarget in polltargets:
-        # Get OID polling results
-        query = snmp.SNMP(snmpvariable)
-        query_datapoints = query.walk(polltarget.address)
-
-        # Apply multiplier to the results
-        for _dp in query_datapoints:
-            # Do multiplication
-            if data.is_data_type_numeric(_dp.data_type) is True:
-                value = float(_dp.value) * polltarget.multiplier
-            else:
-                value = _dp.value
-
-            # Update datapoints
-            datapoint = DataPoint(_dp.key, value, data_type=_dp.data_type)
-            datapoints.append(datapoint)
-
-    # Return
+    query = Query(snmpvariable)
+    results = query.everything()
+    datapoints = _create_datapoints(results)
     ddv.add(datapoints)
     return ddv
+
+
+def _create_datapoints(results):
+    """Get PATOO_SNMP agent data.
+
+    Update the DeviceDataPoints with DataPoints
+
+    Args:
+        ip_snmpvariables: Dict of type SNMPVariable keyed by ip_device
+        ip_polltargets: Dict keyed by ip_device with PollingTarget
+            lists to poll
+
+    Returns:
+        ddv_list: List of type DeviceDataPoints
+
+    """
+    # Initialize key variables
+    datapoints = []
+    ifindex_lookup = _metadata(results)
+
+    # Process the results
+    for key, items in results.items():
+        # Ignore keys used to create the ifindex_lookup
+        if key in ['ifDescr', 'ifName', 'ifAlias', 'ifIndex']:
+            continue
+        # Evaluate DataPoint list data from remaining keys
+        for item in items:
+            # Reassign DataPoint values
+            ifindex = item.key.split('.')[-1]
+            if ifindex in ifindex_lookup:
+                datapoint = DataPoint(
+                    _key(item.key), item.value, timestamp=item.timestamp)
+                datapoint.add(
+                    DataPointMeta('ifDescr', ifindex_lookup[ifindex].ifdescr))
+                datapoint.add(
+                    DataPointMeta('ifAlias', ifindex_lookup[ifindex].ifalias))
+                datapoint.add(
+                    DataPointMeta('ifName', ifindex_lookup[ifindex].ifname))
+                datapoints.append(datapoint)
+
+    return datapoints
+
+
+def _metadata(results):
+    """Create a dict of interface descriptions keyed by ifIndex.
+
+    Args:
+        _ifdescr: List of ifDescr DataPoints
+        _ifname: List of ifName DataPoints
+        _ifalias: List of ifAlias DataPoints
+
+    Returns:
+        result: Dict of data
+
+    """
+    # Initialize key variables
+    ifdescr = {}
+    ifalias = {}
+    ifname = {}
+    result = {}
+    Record = collections.namedtuple('Record', 'ifalias ifdescr ifname')
+
+    if 'ifDescr' in results:
+        _ifdescr = results['ifDescr']
+    else:
+        _ifdescr = {}
+
+    if 'ifAlias' in results:
+        _ifalias = results['ifAlias']
+    else:
+        _ifalias = {}
+
+    if 'ifName' in results:
+        _ifname = results['ifName']
+    else:
+        _ifname = {}
+
+    # Populate dict
+    for item in _ifdescr:
+        ifindex = item.key.split('.')[-1]
+        ifdescr[ifindex] = item.value
+    for item in _ifalias:
+        ifindex = item.key.split('.')[-1]
+        ifalias[ifindex] = item.value
+    for item in _ifname:
+        ifindex = item.key.split('.')[-1]
+        ifname[ifindex] = item.value
+    for key, value in sorted(ifdescr.items()):
+        if key in ifname:
+            use_ifname = ifname[key]
+        else:
+            use_ifname = None
+        if key in ifalias:
+            use_ifalias = ifalias[key]
+        else:
+            use_ifalias = None
+        result[key] = Record(
+            ifdescr=value, ifname=use_ifname, ifalias=use_ifalias)
+    return result
+
+
+def _key(oid):
+    """Create a key for an OID.
+
+    Args:
+        oid: SNMP OID
+
+    Returns:
+        result: Key value
+
+    """
+    # Initialize key variables
+    result = ''
+    limit = 8
+    table = {
+        '.1.3.6.1.2.1.2.2.1.1': 'ifIndex',
+        '.1.3.6.1.2.1.2.2.1.10': 'ifInOctets',
+        '.1.3.6.1.2.1.2.2.1.11': 'ifInUcastPkts',
+        '.1.3.6.1.2.1.2.2.1.12': 'ifInNUcastPkts',
+        '.1.3.6.1.2.1.2.2.1.13': 'ifInDiscards',
+        '.1.3.6.1.2.1.2.2.1.14': 'ifInErrors',
+        '.1.3.6.1.2.1.2.2.1.15': 'ifInUnknownProtos',
+        '.1.3.6.1.2.1.2.2.1.16': 'ifOutOctets',
+        '.1.3.6.1.2.1.2.2.1.17': 'ifOutUcastPkts',
+        '.1.3.6.1.2.1.2.2.1.18': 'ifOutNUcastPkts',
+        '.1.3.6.1.2.1.2.2.1.19': 'ifOutDiscards',
+        '.1.3.6.1.2.1.2.2.1.2': 'ifDescr',
+        '.1.3.6.1.2.1.2.2.1.20': 'ifOutErrors',
+        '.1.3.6.1.2.1.2.2.1.21': 'ifOutQLen',
+        '.1.3.6.1.2.1.2.2.1.22': 'ifSpecific',
+        '.1.3.6.1.2.1.2.2.1.3': 'ifType',
+        '.1.3.6.1.2.1.2.2.1.4': 'ifMtu',
+        '.1.3.6.1.2.1.2.2.1.5': 'ifSpeed',
+        '.1.3.6.1.2.1.2.2.1.6': 'ifPhysAddress',
+        '.1.3.6.1.2.1.2.2.1.7': 'ifAdminStatus',
+        '.1.3.6.1.2.1.2.2.1.8': 'ifOperStatus',
+        '.1.3.6.1.2.1.2.2.1.9': 'ifLastChange',
+        '.1.3.6.1.2.1.31.1.1.1.1': 'ifName',
+        '.1.3.6.1.2.1.31.1.1.1.10': 'ifHCOutOctets',
+        '.1.3.6.1.2.1.31.1.1.1.11': 'ifHCOutUcastPkts',
+        '.1.3.6.1.2.1.31.1.1.1.12': 'ifHCOutMulticastPkts',
+        '.1.3.6.1.2.1.31.1.1.1.13': 'ifHCOutBroadcastPkts',
+        '.1.3.6.1.2.1.31.1.1.1.14': 'ifLinkUpDownTrapEnable',
+        '.1.3.6.1.2.1.31.1.1.1.15': 'ifHighSpeed',
+        '.1.3.6.1.2.1.31.1.1.1.16': 'ifPromiscuousMode',
+        '.1.3.6.1.2.1.31.1.1.1.17': 'ifConnectorPresent',
+        '.1.3.6.1.2.1.31.1.1.1.18': 'ifAlias',
+        '.1.3.6.1.2.1.31.1.1.1.19': 'ifCounterDiscontinuityTime',
+        '.1.3.6.1.2.1.31.1.1.1.2': 'ifInMulticastPkts',
+        '.1.3.6.1.2.1.31.1.1.1.3': 'ifInBroadcastPkts',
+        '.1.3.6.1.2.1.31.1.1.1.4': 'ifOutMulticastPkts',
+        '.1.3.6.1.2.1.31.1.1.1.5': 'ifOutBroadcastPkts',
+        '.1.3.6.1.2.1.31.1.1.1.6': 'ifHCInOctets',
+        '.1.3.6.1.2.1.31.1.1.1.7': 'ifHCInUcastPkts',
+        '.1.3.6.1.2.1.31.1.1.1.8': 'ifHCInMulticastPkts',
+        '.1.3.6.1.2.1.31.1.1.1.9': 'ifHCInBroadcastPkts',
+    }
+
+    # Search for a match in the table
+    splits = oid.split('.')
+    for count in range(0, limit):
+        key = '.'.join(splits[:-count])
+        if key in table:
+            result = table[key]
+            break
+
+    return result

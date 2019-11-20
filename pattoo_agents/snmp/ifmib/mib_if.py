@@ -79,6 +79,31 @@ class Query(object):
         # Get interface ifOutMulticastPkts data
         _get_data('ifOutMulticastPkts', self.ifoutmulticastpkts, final)
 
+        # Get interface ifHCOutBroadcastPkts data
+        _get_data('ifHCOutBroadcastPkts', self.ifhcoutbroadcastpkts, final)
+
+        # Get interface ifHCOutMulticastPkts data
+        _get_data('ifHCOutMulticastPkts', self.ifhcoutmulticastpkts, final)
+
+        # Get interface ifHCOutUcastPkts data
+        _get_data('ifHCOutUcastPkts', self.ifhcoutucastpkts, final)
+
+        # Get interface ifHCOutOctets data
+        _get_data('ifHCOutOctets', self.ifhcoutoctets, final)
+
+        # Get interface ifHCInBroadcastPkts data
+        _get_data('ifHCInBroadcastPkts', self.ifhcinbroadcastpkts, final)
+
+        # Get interface ifHCInMulticastPkts data
+        _get_data('ifHCInMulticastPkts', self.ifhcinmulticastpkts, final)
+
+        # Get interface ifHCInUcastPkts data
+        _get_data('ifHCInUcastPkts', self.ifhcinucastpkts, final)
+
+        # Get interface ifHCInOctets data
+        _get_data('ifHCInOctets', self.ifhcinoctets, final)
+
+
         # Return
         return final
 
@@ -228,6 +253,126 @@ class Query(object):
         """
         # Process OID
         oid = '.1.3.6.1.2.1.31.1.1.1.5'
+        result = self._query.walk(oid)
+        return result
+
+    def ifhcinucastpkts(self):
+        """Return dict of IFMIB ifHCInUcastPkts for each ifIndex for device.
+
+        Args:
+            None
+
+        Returns:
+            data_dict: Dict of ifHCInUcastPkts using the oid's last node as key
+
+        """
+        # Process OID
+        oid = '.1.3.6.1.2.1.31.1.1.1.7'
+        result = self._query.walk(oid)
+        return result
+
+    def ifhcoutucastpkts(self):
+        """Return dict of IFMIB ifHCOutUcastPkts for each ifIndex for device.
+
+        Args:
+            None
+
+        Returns:
+            data_dict: Dict of ifHCOutUcastPkts. Key = OID's last node.
+
+        """
+        # Process OID
+        oid = '.1.3.6.1.2.1.31.1.1.1.11'
+        result = self._query.walk(oid)
+        return result
+
+    def ifhcinmulticastpkts(self):
+        """Return dict IFMIB ifHCInMulticastPkts for each ifIndex for device.
+
+        Args:
+            None
+
+        Returns:
+            data_dict: Dict of ifHCInMulticastPkts. Key = OID's last node.
+
+        """
+        # Process OID
+        oid = '.1.3.6.1.2.1.31.1.1.1.8'
+        result = self._query.walk(oid)
+        return result
+
+    def ifhcoutmulticastpkts(self):
+        """Return dict IFMIB ifHCOutMulticastPkts for each ifIndex for device.
+
+        Args:
+            None
+
+        Returns:
+            data_dict: Dict of ifHCOutMulticastPkts. Key = OID's last node.
+
+        """
+        # Process OID
+        oid = '.1.3.6.1.2.1.31.1.1.1.12'
+        result = self._query.walk(oid)
+        return result
+
+    def ifhcinbroadcastpkts(self):
+        """Return dict IFMIB ifHCInBroadcastPkts for each ifIndex for device.
+
+        Args:
+            None
+
+        Returns:
+            data_dict: Dict of ifHCInBroadcastPkts. Key = OID's last node.
+
+        """
+        # Process OID
+        oid = '.1.3.6.1.2.1.31.1.1.1.9'
+        result = self._query.walk(oid)
+        return result
+
+    def ifhcoutbroadcastpkts(self):
+        """Return dict IFMIB ifHCOutBroadcastPkts for each ifIndex for device.
+
+        Args:
+            None
+
+        Returns:
+            data_dict: Dict of ifHCOutBroadcastPkts. Key = OID's last node.
+
+        """
+        # Process OID
+        oid = '.1.3.6.1.2.1.31.1.1.1.13'
+        result = self._query.walk(oid)
+        return result
+
+    def ifhcinoctets(self):
+        """Return dict of IFMIB ifHCInOctets for each ifIndex for device.
+
+        Args:
+            None
+
+        Returns:
+            data_dict: Dict of ifHCInOctets. Key = OID's last node.
+
+        """
+        # Process OID
+        oid = '.1.3.6.1.2.1.31.1.1.1.6'
+        result = self._query.walk(oid)
+        return result
+
+    def ifhcoutoctets(self):
+        """Return dict of IFMIB ifHCOutOctets for each ifIndex for device.
+
+        Args:
+            None
+
+        Returns:
+            data_dict: Dict of ifHCOutOctets. Key = OID's last node.
+
+        """
+        # Process OID
+        oid = '.1.3.6.1.2.1.31.1.1.1.10'
         result = self._query.walk(oid)
         return result
 
