@@ -11,9 +11,9 @@ from pattoo_agents.snmp import configuration
 from pattoo_agents.snmp import snmp
 from pattoo_shared import agent
 from pattoo_shared import data
-from pattoo_shared.constants import PATTOO_AGENT_SNMPD
 from pattoo_shared.variables import (
     DataPoint, DeviceDataPoints, AgentPolledData, DeviceGateway)
+from pattoo_agents.snmp.constants import PATTOO_AGENT_SNMPD
 
 
 def poll():
@@ -134,14 +134,12 @@ def _walker(snmpvariable, polltargets):
         for _dp in query_datapoints:
             # Do multiplication
             if data.is_data_type_numeric(_dp.data_type) is True:
-                value = float(_dp.data_value) * polltarget.multiplier
+                value = float(_dp.value) * polltarget.multiplier
             else:
-                value = _dp.data_value
+                value = _dp.value
 
             # Update datapoints
-            datapoint = DataPoint(
-                value, data_label=_dp.data_label,
-                data_index=_dp.data_index, data_type=_dp.data_type)
+            datapoint = DataPoint(_dp.key, value, data_type=_dp.data_type)
             datapoints.append(datapoint)
 
     # Return

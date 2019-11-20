@@ -16,9 +16,10 @@ from pattoo_agents.modbus.variables import (
     InputRegisterVariable, HoldingRegisterVariable, RegisterVariable)
 from pattoo_shared import agent
 from pattoo_shared import log
-from pattoo_shared.constants import PATTOO_AGENT_MODBUSTCPD, DATA_INT
+from pattoo_shared.constants import DATA_INT
 from pattoo_shared.variables import (
-    DataPoint, DeviceDataPoints, AgentPolledData, DeviceGateway)
+    DataPoint, DataPointMeta, DeviceDataPoints, AgentPolledData, DeviceGateway)
+from .constants import PATTOO_AGENT_MODBUSTCPD
 
 
 def poll():
@@ -121,6 +122,7 @@ def _serial_poller(drv):
             try:
                 response = client.read_input_registers(
                     _rv.address, count=_rv.count, unit=_rv.unit)
+                key = 'Modbus_InputRegister'
             except ConnectionException as _err:
                 log_message = ('''\
 Cannot connect to device {} to retrieve input register {}, count {}, \
@@ -136,6 +138,7 @@ unit {}'''.format(ip_device, _rv.register, _rv.count, _rv.unit))
         elif isinstance(_rv, HoldingRegisterVariable):
             try:
                 response = client.read_holding_registers(_rv.address)
+                key = 'Modbus_HoldingRegister'
             except ConnectionException:
                 log_message = ('''\
 Cannot connect to device {} to retrieve input register {}, count {}, \
@@ -159,11 +162,10 @@ unit {}'''.format(ip_device, _rv.register, _rv.count, _rv.unit))
                 value = _value * _rv.multiplier
 
                 # Create DataPoint and append
-                datapoint = DataPoint(
-                    value,
-                    data_index='unit {}'.format(str(_rv.unit).zfill(3)),
-                    data_label=_rv.register + data_index,
-                    data_type=DATA_INT)
+                datapoint = DataPoint(key, value, data_type=DATA_INT)
+                datapoint.add(DataPointMeta('Unit', str(_rv.unit).zfill(3)))
+                datapoint.add(DataPointMeta(
+                    'Register', _rv.register + data_index))
                 datapoints.append(datapoint)
     ddv.add(datapoints)
 
