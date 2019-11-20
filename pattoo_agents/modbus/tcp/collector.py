@@ -122,7 +122,7 @@ def _serial_poller(drv):
             try:
                 response = client.read_input_registers(
                     _rv.address, count=_rv.count, unit=_rv.unit)
-                key = 'Modbus_InputRegister'
+                key = 'modbus_input_register'
             except ConnectionException as _err:
                 log_message = ('''\
 Cannot connect to device {} to retrieve input register {}, count {}, \
@@ -138,7 +138,7 @@ unit {}'''.format(ip_device, _rv.register, _rv.count, _rv.unit))
         elif isinstance(_rv, HoldingRegisterVariable):
             try:
                 response = client.read_holding_registers(_rv.address)
-                key = 'Modbus_HoldingRegister'
+                key = 'modbus_holding_register'
             except ConnectionException:
                 log_message = ('''\
 Cannot connect to device {} to retrieve input register {}, count {}, \
@@ -163,9 +163,10 @@ unit {}'''.format(ip_device, _rv.register, _rv.count, _rv.unit))
 
                 # Create DataPoint and append
                 datapoint = DataPoint(key, value, data_type=DATA_INT)
-                datapoint.add(DataPointMeta('Unit', str(_rv.unit).zfill(3)))
+                datapoint.add(
+                    DataPointMeta('modbus_unit', str(_rv.unit).zfill(3)))
                 datapoint.add(DataPointMeta(
-                    'Register', _rv.register + data_index))
+                    'modbus_register', _rv.register + data_index))
                 datapoints.append(datapoint)
     ddv.add(datapoints)
 

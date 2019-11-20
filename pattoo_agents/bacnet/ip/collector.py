@@ -173,9 +173,9 @@ Unknown BACnet object {} requested from device {}.\
 
             # Update datapoints
             datapoint = DataPoint(
-                'BACnet_analogValue', value, data_type=data_type)
-            datapoint.add(DataPointMeta('point', polltarget.address))
-            datapoint.add(DataPointMeta('device', ip_device))
+                'bacnet_analog_value', value, data_type=data_type)
+            datapoint.add(DataPointMeta('bacnet_point', polltarget.address))
+            datapoint.add(DataPointMeta('bacnet_device', ip_device))
             datapoints.append(datapoint)
 
         # Return

@@ -51,15 +51,15 @@ def poll(agent_program):
 
     metadata = []
     metadata.append(
-        DataPointMeta('OperatingSystem_Release', platform.release()))
+        DataPointMeta('operating_system_release', platform.release()))
     metadata.append(
-        DataPointMeta('OperatingSystem_Type', platform.system()))
+        DataPointMeta('operating_system_type', platform.system()))
     metadata.append(
-        DataPointMeta('OperatingSystem_Version', platform.version()))
+        DataPointMeta('operating_system_version', platform.version()))
     metadata.append(
-        DataPointMeta('OperatingSystem_CPUs', psutil.cpu_count()))
+        DataPointMeta('operating_system_cpus', psutil.cpu_count()))
     metadata.append(
-        DataPointMeta('Hostname', socket.getfqdn()))
+        DataPointMeta('operating_system_hostname', socket.getfqdn()))
 
     #########################################################################
     # Get timeseries values
@@ -97,20 +97,20 @@ def _stats_system(ddv, metadata):
     #########################################################################
 
     ddv.add(DataPoint(
-        'OperatingSystem_ProcessCount',
+        'operating_system_process_count',
         len(psutil.pids()),
         data_type=DATA_INT).add(metadata))
 
     # Load averages
     (la_01, la_05, la_15) = os.getloadavg()
 
-    ddv.add(DataPoint('load_average_01min', la_01,
+    ddv.add(DataPoint('operating_system_load_average_01min', la_01,
                       data_type=DATA_INT).add(metadata))
 
-    ddv.add(DataPoint('load_average_05min', la_05,
+    ddv.add(DataPoint('operating_system_load_average_05min', la_05,
                       data_type=DATA_INT).add(metadata))
 
-    ddv.add(DataPoint('load_average_15min', la_15,
+    ddv.add(DataPoint('operating_system_load_average_15min', la_15,
                       data_type=DATA_INT).add(metadata))
 
     #########################################################################
@@ -150,6 +150,7 @@ def _stats_disk_swap(ddv, metadata):
     """
     # Initialize key variables
     result = []
+    prefix = 'operating_system_swap_memory_'
 
     # Get swap information
     system_list = psutil.swap_memory()._asdict()
@@ -161,9 +162,8 @@ def _stats_disk_swap(ddv, metadata):
             data_type = DATA_INT
 
         # No need to specify a suffix as there is only one swap
-        _dv = DataPoint(key, value, data_type=data_type)
+        _dv = DataPoint('{}{}'.format(prefix, key), value, data_type=data_type)
         _dv.add(metadata)
-        _dv.add(DataPointMeta('Parameter', 'SwapMemory'))
         result.append(_dv)
 
     # Add the result to data
@@ -182,6 +182,7 @@ def _stats_disk_partitions(ddv, metadata):
     """
     # Initialize key variables
     result = []
+    prefix = 'operating_system_disk_partition_'
 
     # Get filesystem partition utilization
     items = psutil.disk_partitions()
@@ -192,18 +193,20 @@ def _stats_disk_partitions(ddv, metadata):
         if "docker" not in str(mountpoint):
             # Add more metadata
             meta = []
-            meta.append(DataPointMeta('device', item.device))
-            meta.append(DataPointMeta('mountpoint', item.mountpoint))
-            meta.append(DataPointMeta('fstype', item.fstype))
-            meta.append(DataPointMeta('opts', item.opts))
+            meta.append(DataPointMeta('{}device'.format(prefix), item.device))
+            meta.append(DataPointMeta(
+                '{}mountpoint'.format(prefix), item.mountpoint))
+            meta.append(DataPointMeta('{}fstype'.format(prefix), item.fstype))
+            meta.append(DataPointMeta('{}opts'.format(prefix), item.opts))
 
             # Get the partition data
             partition = psutil.disk_usage(mountpoint)._asdict()
             for key, value in partition.items():
-                _dv = DataPoint(key, value, data_type=DATA_INT)
+                _dv = DataPoint(
+                    '{}disk_usage_{}'.format(prefix, key),
+                    value, data_type=DATA_INT)
                 _dv.add(meta)
                 _dv.add(metadata)
-                _dv.add(DataPointMeta('Parameter', 'PartitonUsage'))
                 result.append(_dv)
 
     # Add the result to data
@@ -223,6 +226,7 @@ def _stats_disk_io(ddv, metadata):
     # Initialize key variables
     regex = re.compile(r'^ram\d+$')
     result = []
+    prefix = 'operating_system_disk_io_'
 
     # Get disk I/O usage
     ioddv = psutil.disk_io_counters(perdisk=True)
@@ -239,10 +243,10 @@ def _stats_disk_io(ddv, metadata):
         # Populate data
         disk_dict = disk_named_tuple._asdict()
         for key, value in disk_dict.items():
-            _dv = DataPoint(key, value, data_type=DATA_COUNT64)
+            _dv = DataPoint(
+                '{}{}'.format(prefix, key), value, data_type=DATA_COUNT64)
             _dv.add(metadata)
-            _dv.add(DataPointMeta('Partition', disk))
-            _dv.add(DataPointMeta('Parameter', 'DiskIO'))
+            _dv.add(DataPointMeta('operating_system_disk_partition', disk))
             result.append(_dv)
 
     # Add the result to data
@@ -261,16 +265,17 @@ def _stats_network(ddv, metadata):
     """
     # Initialize key variables
     result = []
+    prefix = 'operating_system_network_io_'
 
     # Get network utilization
     nicddv = psutil.net_io_counters(pernic=True)
     for nic, nic_named_tuple in nicddv.items():
         nic_dict = nic_named_tuple._asdict()
         for key, value in nic_dict.items():
-            _dv = DataPoint(key, value, data_type=DATA_COUNT64)
+            _dv = DataPoint(
+                '{}{}'.format(prefix, key), value, data_type=DATA_COUNT64)
             _dv.add(metadata)
-            _dv.add(DataPointMeta('interface', nic))
-            _dv.add(DataPointMeta('Parameter', 'NetworkIO'))
+            _dv.add(DataPointMeta('{}interface'.format(prefix), nic))
             result.append(_dv)
 
     # Add the result to data
@@ -293,12 +298,15 @@ def _named_tuple_to_dv(
     # Get data
     data_dict = values._asdict()
     result = []
+    prefix = 'operating_system_'
 
     # Cycle through results
     for key, value in data_dict.items():
-        _dv = DataPoint(key, value, data_type=data_type)
+        _dv = DataPoint(
+            '{}{}{}'.format(prefix, parameter_label, key),
+            value,
+            data_type=data_type)
         _dv.add(metadata)
-        _dv.add(DataPointMeta('Parameter', parameter_label))
         result.append(_dv)
 
     # Return

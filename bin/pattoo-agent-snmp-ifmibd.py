@@ -47,7 +47,7 @@ class PollingAgent(Agent):
         Agent.__init__(self, parent)
 
         # Initialize key variables
-        self._agent_name_constant = PATTOO_AGENT_SNMPD
+        self._agent_name_constant = PATTOO_AGENT_SNMP_IFMIBD
 
     def name(self):
         """Return agent name.
@@ -107,7 +107,7 @@ def main():
 
     """
     # Get configuration
-    agent_poller = PollingAgent(PATTOO_AGENT_SNMPD)
+    agent_poller = PollingAgent(PATTOO_AGENT_SNMP_IFMIBD)
 
     # Do control
     cli = AgentCLI()
