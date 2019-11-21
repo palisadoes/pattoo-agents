@@ -160,7 +160,6 @@ def _create_datapoints(results):
                 # Ignore administratively down interfaces
                 if bool(ifindex_lookup[ifindex].ifadminstatus) is False:
                     continue
-
                 # Otherwise create the datapoint
                 datapoint = DataPoint(
                     _key(item.key), item.value, timestamp=item.timestamp)
@@ -232,7 +231,7 @@ def _metadata(results):
         ifname[ifindex] = item.value
     for item in _ifadminstatus:
         ifindex = item.key.split('.')[-1]
-        ifadminstatus[ifindex] = True if item.value != 1 else False
+        ifadminstatus[ifindex] = False if item.value != 1 else True
     for key, value in sorted(ifdescr.items()):
         use_ifname = ifname.get(key, None)
         use_ifalias = ifalias.get(key, None)
