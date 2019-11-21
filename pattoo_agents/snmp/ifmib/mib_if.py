@@ -58,6 +58,9 @@ class Query(object):
         # Get interface ifName data
         _get_data('ifName', self.ifname, final)
 
+        # Get interface ifAdminStatus data
+        _get_data('ifAdminStatus', self.ifadminstatus, final)
+
         # Get interface ifIndex data
         _get_data('ifIndex', self.ifindex, final)
 
@@ -196,6 +199,21 @@ class Query(object):
         result = self._query.walk(oid)
         return result
 
+    def ifadminstatus(self):
+        """Return dict of IFMIB ifAdminStatus for each ifIndex for device.
+
+        Args:
+            None
+
+        Returns:
+            result: List of ifAdminStatus DataPoint objects
+
+        """
+        # Process OID
+        oid = '.1.3.6.1.2.1.2.2.1.7'
+        result = self._query.walk(oid)
+        return result
+
     def ifinmulticastpkts(self):
         """Return dict of IFMIB ifInMulticastPkts for each ifIndex for device.
 
@@ -263,7 +281,7 @@ class Query(object):
             None
 
         Returns:
-            data_dict: Dict of ifHCInUcastPkts using the oid's last node as key
+            result: List of ifHCInUcastPkts DataPoint objects
 
         """
         # Process OID
@@ -278,7 +296,7 @@ class Query(object):
             None
 
         Returns:
-            data_dict: Dict of ifHCOutUcastPkts. Key = OID's last node.
+            result: List of ifHCOutUcastPkts DataPoint objects
 
         """
         # Process OID
@@ -293,7 +311,7 @@ class Query(object):
             None
 
         Returns:
-            data_dict: Dict of ifHCInMulticastPkts. Key = OID's last node.
+            result: List of ifHCInMulticastPkts DataPoint objects
 
         """
         # Process OID
@@ -308,7 +326,7 @@ class Query(object):
             None
 
         Returns:
-            data_dict: Dict of ifHCOutMulticastPkts. Key = OID's last node.
+            result: List of ifHCOutMulticastPkts DataPoint objects
 
         """
         # Process OID
@@ -323,7 +341,7 @@ class Query(object):
             None
 
         Returns:
-            data_dict: Dict of ifHCInBroadcastPkts. Key = OID's last node.
+            result: List of ifHCInBroadcastPkts DataPoint objects
 
         """
         # Process OID
@@ -338,7 +356,7 @@ class Query(object):
             None
 
         Returns:
-            data_dict: Dict of ifHCOutBroadcastPkts. Key = OID's last node.
+            result: List of ifHCOutBroadcastPkts DataPoint objects
 
         """
         # Process OID
@@ -353,7 +371,7 @@ class Query(object):
             None
 
         Returns:
-            data_dict: Dict of ifHCInOctets. Key = OID's last node.
+            result: List of ifHCInOctets DataPoint objects
 
         """
         # Process OID
@@ -368,7 +386,7 @@ class Query(object):
             None
 
         Returns:
-            data_dict: Dict of ifHCOutOctets. Key = OID's last node.
+            result: List of ifHCOutOctets DataPoint objects
 
         """
         # Process OID

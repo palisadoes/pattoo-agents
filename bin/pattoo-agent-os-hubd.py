@@ -10,6 +10,7 @@ from __future__ import print_function
 from time import sleep
 import sys
 import os
+import socket
 import multiprocessing
 
 # Try to create a working PYTHONPATH
@@ -25,6 +26,7 @@ else:
 
 # Pattoo libraries
 from pattoo_shared.agent import Agent, AgentCLI
+from pattoo_shared import agent
 from pattoo_shared.phttp import PassiveAgent
 from pattoo_agents.os.constants import (
     PATTOO_AGENT_OS_HUBD, PATTOO_AGENT_OS_SPOKED_API_PREFIX)
@@ -120,8 +122,13 @@ def _relay(url):
 
     """
     # Initialize key variables
-    passive = PassiveAgent(PATTOO_AGENT_OS_HUBD, url)
+    agent_hostname = socket.getfqdn()
+    agent_id = agent.get_agent_id(PATTOO_AGENT_OS_HUBD, agent_hostname)
+
+    # Initialize key variables
+    passive = PassiveAgent(agent_id, url)
     passive.relay()
+
 
 def _spoked_url(ip_device, ip_bind_port):
     """Poll a spoke.
