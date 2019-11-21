@@ -164,12 +164,18 @@ def _create_datapoints(results):
                 # Otherwise create the datapoint
                 datapoint = DataPoint(
                     _key(item.key), item.value, timestamp=item.timestamp)
-                datapoint.add(
-                    DataPointMeta('ifDescr', ifindex_lookup[ifindex].ifdescr))
-                datapoint.add(
-                    DataPointMeta('ifAlias', ifindex_lookup[ifindex].ifalias))
-                datapoint.add(
-                    DataPointMeta('ifName', ifindex_lookup[ifindex].ifname))
+                if bool(ifindex_lookup[ifindex].ifdescr) is True:
+                    datapoint.add(
+                        DataPointMeta(
+                            'ifDescr', ifindex_lookup[ifindex].ifdescr))
+                if bool(ifindex_lookup[ifindex].ifalias) is True:
+                    datapoint.add(
+                        DataPointMeta(
+                            'ifAlias', ifindex_lookup[ifindex].ifalias))
+                if bool(ifindex_lookup[ifindex].ifname) is True:
+                    datapoint.add(
+                        DataPointMeta(
+                            'ifName', ifindex_lookup[ifindex].ifname))
                 datapoints.append(datapoint)
 
     return datapoints
