@@ -9,9 +9,7 @@ from pprint import pprint
 
 # Pattoo libraries
 from pattoo_agents.snmp import configuration
-from pattoo_agents.snmp import snmp
 from pattoo_shared import agent
-from pattoo_shared import data
 from pattoo_shared.variables import (
     DataPoint, DataPointMeta, DeviceDataPoints, AgentPolledData, DeviceGateway)
 from pattoo_agents.snmp.constants import PATTOO_AGENT_SNMPD
@@ -159,6 +157,11 @@ def _create_datapoints(results):
             # Reassign DataPoint values
             ifindex = item.key.split('.')[-1]
             if ifindex in ifindex_lookup:
+                # Ignore administratively down interfaces
+                if bool(ifindex_lookup[ifindex].ifadminstatus) is False:
+                    continue
+
+                # Otherwise create the datapoint
                 datapoint = DataPoint(
                     _key(item.key), item.value, timestamp=item.timestamp)
                 datapoint.add(
@@ -173,12 +176,10 @@ def _create_datapoints(results):
 
 
 def _metadata(results):
-    """Create a dict of interface descriptions keyed by ifIndex.
+    """Create a dict of interface descriptions and status keyed by ifIndex.
 
     Args:
-        _ifdescr: List of ifDescr DataPoints
-        _ifname: List of ifName DataPoints
-        _ifalias: List of ifAlias DataPoints
+        results: Dict of SNMP walk results
 
     Returns:
         result: Dict of data
@@ -188,8 +189,10 @@ def _metadata(results):
     ifdescr = {}
     ifalias = {}
     ifname = {}
+    ifadminstatus = {}
     result = {}
-    Record = collections.namedtuple('Record', 'ifalias ifdescr ifname')
+    Record = collections.namedtuple(
+        'Record', 'ifalias ifdescr ifname ifadminstatus')
 
     if 'ifDescr' in results:
         _ifdescr = results['ifDescr']
@@ -206,6 +209,11 @@ def _metadata(results):
     else:
         _ifname = {}
 
+    if 'ifAdminStatus' in results:
+        _ifadminstatus = results['ifAdminStatus']
+    else:
+        _ifadminstatus = {}
+
     # Populate dict
     for item in _ifdescr:
         ifindex = item.key.split('.')[-1]
@@ -216,17 +224,18 @@ def _metadata(results):
     for item in _ifname:
         ifindex = item.key.split('.')[-1]
         ifname[ifindex] = item.value
+    for item in _ifadminstatus:
+        ifindex = item.key.split('.')[-1]
+        ifadminstatus[ifindex] = True if item.value != 1 else False
     for key, value in sorted(ifdescr.items()):
-        if key in ifname:
-            use_ifname = ifname[key]
-        else:
-            use_ifname = None
-        if key in ifalias:
-            use_ifalias = ifalias[key]
-        else:
-            use_ifalias = None
+        use_ifname = ifname.get(key, None)
+        use_ifalias = ifalias.get(key, None)
+        use_ifadminstatus = ifadminstatus.get(key, False)
         result[key] = Record(
-            ifdescr=value, ifname=use_ifname, ifalias=use_ifalias)
+            ifdescr=value,
+            ifname=use_ifname,
+            ifalias=use_ifalias,
+            ifadminstatus=use_ifadminstatus)
     return result
 
 
