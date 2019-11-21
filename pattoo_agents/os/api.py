@@ -28,6 +28,6 @@ def home():
     """
     # Process and present
     agentdata = collector.poll(PATTOO_AGENT_OS_SPOKED)
-    datapoints = converter.agentdata_to_datapoints(agentdata)
-    datapoint_dicts = converter.datapoints_to_dicts(datapoints)
-    return jsonify(datapoint_dicts)
+    pdp = converter.agentdata_to_post(agentdata)
+    result = converter.posting_data_points(pdp)
+    return jsonify(result)
