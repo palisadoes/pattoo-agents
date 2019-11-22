@@ -148,21 +148,19 @@ def _create_datapoints(results):
     ifindex_lookup = _metadata(results)
 
     # Process the results
-    for key, items in results.items():
+    for key, datapoints in results.items():
         # Ignore keys used to create the ifindex_lookup
         if key in ['ifDescr', 'ifName', 'ifAlias', 'ifIndex']:
             continue
         # Evaluate DataPoint list data from remaining keys
-        for item in items:
+        for datapoint in datapoints:
             # Reassign DataPoint values
-            ifindex = item.key.split('.')[-1]
+            ifindex = datapoint.key.split('.')[-1]
             if ifindex in ifindex_lookup:
                 # Ignore administratively down interfaces
                 if bool(ifindex_lookup[ifindex].ifadminstatus) is False:
                     continue
                 # Otherwise create the datapoint
-                datapoint = DataPoint(
-                    _key(item.key), item.value, timestamp=item.timestamp)
                 if bool(ifindex_lookup[ifindex].ifdescr) is True:
                     datapoint.add(
                         DataPointMeta(
