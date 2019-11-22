@@ -154,13 +154,16 @@ def _create_datapoints(results):
             continue
         # Evaluate DataPoint list data from remaining keys
         for datapoint in datapoints:
+            if datapoint.valid is False:
+                continue
+
             # Reassign DataPoint values
             ifindex = datapoint.key.split('.')[-1]
             if ifindex in ifindex_lookup:
                 # Ignore administratively down interfaces
                 if bool(ifindex_lookup[ifindex].ifadminstatus) is False:
                     continue
-                # Otherwise create the datapoint
+                # Otherwise add metadata to the datapoint
                 if bool(ifindex_lookup[ifindex].ifdescr) is True:
                     datapoint.add(
                         DataPointMeta(
