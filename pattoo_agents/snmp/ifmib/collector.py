@@ -11,7 +11,7 @@ from pprint import pprint
 from pattoo_agents.snmp import configuration
 from pattoo_shared import agent
 from pattoo_shared.variables import (
-    DataPoint, DataPointMeta, DeviceDataPoints, AgentPolledData, DeviceGateway)
+    DataPointMeta, DeviceDataPoints, AgentPolledData, DeviceGateway)
 from pattoo_agents.snmp.constants import PATTOO_AGENT_SNMPD
 from pattoo_agents.snmp.ifmib.mib_if import Query
 
@@ -129,29 +129,28 @@ def _walker(snmpvariable, polltargets):
     return ddv
 
 
-def _create_datapoints(results):
+def _create_datapoints(items):
     """Get PATOO_SNMP agent data.
 
     Update the DeviceDataPoints with DataPoints
 
     Args:
-        ip_snmpvariables: Dict of type SNMPVariable keyed by ip_device
-        ip_polltargets: Dict keyed by ip_device with PollingTarget
-            lists to poll
+        items: Dict of type SNMPVariable keyed by OID branch
 
     Returns:
-        ddv_list: List of type DeviceDataPoints
+        result: List of DataPoints with metadata added
 
     """
     # Initialize key variables
-    datapoints = []
-    ifindex_lookup = _metadata(results)
+    result = []
+    ifindex_lookup = _metadata(items)
 
     # Process the results
-    for key, datapoints in results.items():
+    for key, datapoints in items.items():
         # Ignore keys used to create the ifindex_lookup
-        if key in ['ifDescr', 'ifName', 'ifAlias', 'ifIndex']:
+        if key in ['ifDescr', 'ifName', 'ifAlias', 'ifIndex', 'ifAdminStatus']:
             continue
+
         # Evaluate DataPoint list data from remaining keys
         for datapoint in datapoints:
             if datapoint.valid is False:
@@ -160,9 +159,11 @@ def _create_datapoints(results):
             # Reassign DataPoint values
             ifindex = datapoint.key.split('.')[-1]
             if ifindex in ifindex_lookup:
+
                 # Ignore administratively down interfaces
                 if bool(ifindex_lookup[ifindex].ifadminstatus) is False:
                     continue
+
                 # Otherwise add metadata to the datapoint
                 if bool(ifindex_lookup[ifindex].ifdescr) is True:
                     datapoint.add(
@@ -176,9 +177,9 @@ def _create_datapoints(results):
                     datapoint.add(
                         DataPointMeta(
                             'ifName', ifindex_lookup[ifindex].ifname))
-                datapoints.append(datapoint)
+                result.append(datapoint)
 
-    return datapoints
+    return result
 
 
 def _metadata(results):
