@@ -43,7 +43,7 @@ def poll(agent_program):
     gateway = DeviceGateway(agent_hostname)
 
     # Intialize data gathering
-    ddv = DeviceDataPoints(agent_hostname, device_type=0)
+    ddv = DeviceDataPoints(agent_hostname)
 
     #########################################################################
     # Set non timeseries values
