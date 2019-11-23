@@ -130,6 +130,7 @@ class _PollBACnetIP(object):
         """
         # Intialize data gathering
         ddv = DeviceDataPoints(ip_device)
+        name_object2poll = 'objectName'
         object2poll = 'analogValue'
 
         # Get list of type DataPoint
