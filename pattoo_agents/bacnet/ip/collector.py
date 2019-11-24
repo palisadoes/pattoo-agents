@@ -32,11 +32,10 @@ def poll(bacnet):
     """
     # Initialize key variables.
     config = configuration.ConfigBACnetIP()
-    polling_interval = config.polling_interval()
 
     # Initialize AgentPolledData
     agent_program = PATTOO_AGENT_BACNETIPD
-    agentdata = AgentPolledData(agent_program, polling_interval)
+    agentdata = AgentPolledData(agent_program, config)
 
     # Poll oids for all devices and update the DeviceDataPoints
     poller = _PollBACnetIP(bacnet)

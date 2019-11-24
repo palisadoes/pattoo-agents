@@ -10,7 +10,7 @@ from pattoo_agents.snmp import configuration
 from pattoo_agents.snmp import snmp
 from pattoo_shared import data
 from pattoo_shared.variables import (
-    DataPoint, DeviceDataPoints, AgentPolledData, DeviceGateway)
+    DataPoint, DeviceDataPoints, AgentPolledData)
 from pattoo_agents.snmp.constants import PATTOO_AGENT_SNMPD
 
 
@@ -28,13 +28,12 @@ def poll():
     """
     # Initialize key variables.
     config = configuration.ConfigSNMP()
-    polling_interval = config.polling_interval()
     ip_snmpvariables = {}
     ip_polltargets = {}
 
     # Initialize AgentPolledData
     agent_program = PATTOO_AGENT_SNMPD
-    agentdata = AgentPolledData(agent_program, polling_interval)
+    agentdata = AgentPolledData(agent_program, config)
 
     # Get SNMP OIDs to be polled (Along with authorizations and ip_devices)
     cfg_snmpvariables = config.snmpvariables()
