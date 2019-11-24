@@ -37,10 +37,7 @@ def poll(agent_program):
 
     # Initialize AgentPolledData
     agent_hostname = socket.getfqdn()
-    agent_id = agent.get_agent_id(agent_program, agent_hostname)
-    agentdata = AgentPolledData(
-        agent_id, agent_program, agent_hostname, polling_interval)
-    gateway = DeviceGateway(agent_hostname)
+    agentdata = AgentPolledData(agent_program, polling_interval)
 
     # Intialize data gathering
     ddv = DeviceDataPoints(agent_hostname)
@@ -77,8 +74,7 @@ def poll(agent_program):
     _stats_network(ddv, metadata)
 
     # Add results to the AgentPolledData object for posting
-    gateway.add(ddv)
-    agentdata.add(gateway)
+    agentdata.add(ddv)
     return agentdata
 
 

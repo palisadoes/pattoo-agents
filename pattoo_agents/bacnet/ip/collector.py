@@ -10,12 +10,11 @@ from BAC0.core.io.IOExceptions import (
 
 # Pattoo libraries
 from pattoo_agents.bacnet.ip import configuration
-from pattoo_shared import agent
 from pattoo_shared import data
 from pattoo_shared import log
 from pattoo_shared.constants import DATA_FLOAT, DATA_STRING
 from pattoo_shared.variables import (
-    DataPoint, DataPointMeta, DeviceDataPoints, AgentPolledData, DeviceGateway)
+    DataPoint, DataPointMeta, DeviceDataPoints, AgentPolledData)
 from .constants import PATTOO_AGENT_BACNETIPD
 
 
@@ -37,17 +36,12 @@ def poll(bacnet):
 
     # Initialize AgentPolledData
     agent_program = PATTOO_AGENT_BACNETIPD
-    agent_hostname = socket.getfqdn()
-    agent_id = agent.get_agent_id(agent_program, agent_hostname)
-    agentdata = AgentPolledData(
-        agent_id, agent_program, agent_hostname, polling_interval)
-    gateway = DeviceGateway(agent_hostname)
+    agentdata = AgentPolledData(agent_program, polling_interval)
 
     # Poll oids for all devices and update the DeviceDataPoints
     poller = _PollBACnetIP(bacnet)
     ddv_list = poller.data()
-    gateway.add(ddv_list)
-    agentdata.add(gateway)
+    agentdata.add(ddv_list)
 
     # Return data
     return agentdata
