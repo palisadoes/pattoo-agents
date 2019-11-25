@@ -3,16 +3,14 @@
 
 # Standard libraries
 import multiprocessing
-import socket
 
 
 # Pattoo libraries
 from pattoo_agents.snmp import configuration
 from pattoo_agents.snmp import snmp
-from pattoo_shared import agent
 from pattoo_shared import data
 from pattoo_shared.variables import (
-    DataPoint, DeviceDataPoints, AgentPolledData, DeviceGateway)
+    DataPoint, DeviceDataPoints, AgentPolledData)
 from pattoo_agents.snmp.constants import PATTOO_AGENT_SNMPD
 
 
@@ -30,17 +28,12 @@ def poll():
     """
     # Initialize key variables.
     config = configuration.ConfigSNMP()
-    polling_interval = config.polling_interval()
     ip_snmpvariables = {}
     ip_polltargets = {}
 
     # Initialize AgentPolledData
     agent_program = PATTOO_AGENT_SNMPD
-    agent_hostname = socket.getfqdn()
-    agent_id = agent.get_agent_id(agent_program, agent_hostname)
-    agentdata = AgentPolledData(
-        agent_id, agent_program, agent_hostname, polling_interval)
-    gateway = DeviceGateway(agent_hostname)
+    agentdata = AgentPolledData(agent_program, config)
 
     # Get SNMP OIDs to be polled (Along with authorizations and ip_devices)
     cfg_snmpvariables = config.snmpvariables()
@@ -65,8 +58,7 @@ def poll():
 
     # Poll oids for all devices and update the DeviceDataPoints
     ddv_list = _snmpwalks(ip_snmpvariables, ip_polltargets)
-    gateway.add(ddv_list)
-    agentdata.add(gateway)
+    agentdata.add(ddv_list)
 
     # Return data
     return agentdata

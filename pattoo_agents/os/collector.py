@@ -11,10 +11,9 @@ import socket
 import psutil
 
 # Pattoo libraries
-from pattoo_shared import agent
 from pattoo_shared.configuration import Config
 from pattoo_shared.variables import (
-    DataPoint, DataPointMeta, DeviceDataPoints, DeviceGateway, AgentPolledData)
+    DataPoint, DataPointMeta, DeviceDataPoints, AgentPolledData)
 from pattoo_shared.constants import (
     DATA_INT, DATA_COUNT64, DATA_FLOAT)
 
@@ -33,17 +32,13 @@ def poll(agent_program):
     """
     # Initialize key variables.
     config = Config()
-    polling_interval = config.polling_interval()
 
     # Initialize AgentPolledData
     agent_hostname = socket.getfqdn()
-    agent_id = agent.get_agent_id(agent_program, agent_hostname)
-    agentdata = AgentPolledData(
-        agent_id, agent_program, agent_hostname, polling_interval)
-    gateway = DeviceGateway(agent_hostname)
+    agentdata = AgentPolledData(agent_program, config)
 
     # Intialize data gathering
-    ddv = DeviceDataPoints(agent_hostname, device_type=0)
+    ddv = DeviceDataPoints(agent_hostname)
 
     #########################################################################
     # Set non timeseries values
@@ -77,8 +72,7 @@ def poll(agent_program):
     _stats_network(ddv, metadata)
 
     # Add results to the AgentPolledData object for posting
-    gateway.add(ddv)
-    agentdata.add(gateway)
+    agentdata.add(ddv)
     return agentdata
 
 

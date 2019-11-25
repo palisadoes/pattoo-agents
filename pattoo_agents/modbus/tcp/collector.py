@@ -3,7 +3,7 @@
 
 # Standard libraries
 import multiprocessing
-import socket
+import sys
 
 # PIP libraries
 from pymodbus.client.sync import ModbusTcpClient
@@ -14,11 +14,10 @@ from pymodbus.exceptions import ModbusIOException, ConnectionException
 from pattoo_agents.modbus.tcp import configuration
 from pattoo_agents.modbus.variables import (
     InputRegisterVariable, HoldingRegisterVariable, RegisterVariable)
-from pattoo_shared import agent
 from pattoo_shared import log
 from pattoo_shared.constants import DATA_INT
 from pattoo_shared.variables import (
-    DataPoint, DataPointMeta, DeviceDataPoints, AgentPolledData, DeviceGateway)
+    DataPoint, DataPointMeta, DeviceDataPoints, AgentPolledData)
 from .constants import PATTOO_AGENT_MODBUSTCPD
 
 
@@ -36,16 +35,11 @@ def poll():
     """
     # Initialize key variables.
     config = configuration.ConfigModbusTCP()
-    polling_interval = config.polling_interval()
     arguments = []
 
     # Initialize AgentPolledData
     agent_program = PATTOO_AGENT_MODBUSTCPD
-    agent_hostname = socket.getfqdn()
-    agent_id = agent.get_agent_id(agent_program, agent_hostname)
-    agentdata = AgentPolledData(
-        agent_id, agent_program, agent_hostname, polling_interval)
-    gateway = DeviceGateway(agent_hostname)
+    agentdata = AgentPolledData(agent_program, config)
 
     # Get registers to be polled
     drvs = config.registervariables()
@@ -56,8 +50,7 @@ def poll():
 
     # Poll registers for all devices and update the DeviceDataPoints
     ddv_list = _parallel_poller(arguments)
-    gateway.add(ddv_list)
-    agentdata.add(gateway)
+    agentdata.add(ddv_list)
 
     # Return data
     return agentdata
@@ -148,7 +141,9 @@ unit {}'''.format(ip_device, _rv.register, _rv.count, _rv.unit))
             except:
                 log_message = ('''\
 Cause unknown failure with device {} getting holding register {}, count {}, \
-unit {}'''.format(ip_device, _rv.register, _rv.count, _rv.unit))
+unit {}. [{}, {}, {}]\
+'''.format(ip_device, _rv.register, _rv.count, _rv.unit, sys.exc_info()[0],
+           sys.exc_info()[1], sys.exc_info()[2]))
                 log.log2info(51031, log_message)
                 continue
 
