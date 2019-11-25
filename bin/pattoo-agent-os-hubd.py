@@ -128,7 +128,7 @@ def _relay(url):
     agent_id = files.get_agent_id(PATTOO_AGENT_OS_HUBD, agent_hostname, config)
 
     # Initialize key variables
-    passive = PassiveAgent(agent_id, url)
+    passive = PassiveAgent(PATTOO_AGENT_OS_HUBD, agent_id, url)
     passive.relay()
 
 

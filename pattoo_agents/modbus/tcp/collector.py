@@ -3,6 +3,7 @@
 
 # Standard libraries
 import multiprocessing
+import sys
 
 # PIP libraries
 from pymodbus.client.sync import ModbusTcpClient
@@ -140,7 +141,9 @@ unit {}'''.format(ip_device, _rv.register, _rv.count, _rv.unit))
             except:
                 log_message = ('''\
 Cause unknown failure with device {} getting holding register {}, count {}, \
-unit {}'''.format(ip_device, _rv.register, _rv.count, _rv.unit))
+unit {}. [{}, {}, {}]\
+'''.format(ip_device, _rv.register, _rv.count, _rv.unit, sys.exc_info()[0],
+           sys.exc_info()[1], sys.exc_info()[2]))
                 log.log2info(51031, log_message)
                 continue
 

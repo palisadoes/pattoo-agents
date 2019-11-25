@@ -4,6 +4,7 @@
 
 from collections import defaultdict
 
+from pattoo_shared.variables import DataPoint
 from pattoo_agents.snmp import snmp
 
 
@@ -122,7 +123,8 @@ class Query(object):
         """
         # Process OID
         oid = '.1.3.6.1.2.1.2.2.1.10'
-        result = self._query.walk(oid)
+        _result = self._query.walk(oid)
+        result = _multiply_octets(_result)
         return result
 
     def ifoutoctets(self):
@@ -137,7 +139,8 @@ class Query(object):
         """
         # Process OID
         oid = '.1.3.6.1.2.1.2.2.1.16'
-        result = self._query.walk(oid)
+        _result = self._query.walk(oid)
+        result = _multiply_octets(_result)
         return result
 
     def ifdescr(self):
@@ -152,7 +155,8 @@ class Query(object):
         """
         # Process OID
         oid = '.1.3.6.1.2.1.2.2.1.2'
-        result = self._query.walk(oid)
+        _result = self._query.walk(oid)
+        result = _multiply_octets(_result)
         return result
 
     def ifalias(self):
@@ -376,7 +380,8 @@ class Query(object):
         """
         # Process OID
         oid = '.1.3.6.1.2.1.31.1.1.1.6'
-        result = self._query.walk(oid)
+        _result = self._query.walk(oid)
+        result = _multiply_octets(_result)
         return result
 
     def ifhcoutoctets(self):
@@ -391,7 +396,8 @@ class Query(object):
         """
         # Process OID
         oid = '.1.3.6.1.2.1.31.1.1.1.10'
-        result = self._query.walk(oid)
+        _result = self._query.walk(oid)
+        result = _multiply_octets(_result)
         return result
 
 
@@ -410,3 +416,24 @@ def _get_data(title, func, dest):
     # Get interface data
     dest[title] = func()
     return dest
+
+
+def _multiply_octets(datapoints):
+    """Multiply datapoint value by 8.
+
+    Args:
+        datapoints: List of Datapoint objects to multiply
+
+    Returns:
+        result: Datapoint with result multiplied by 8
+
+    """
+    # Initialize key variables
+    result = []
+    
+    # Get interface data
+    for datapoint in datapoints:
+        new_value = datapoint.value * 8
+        result.append(
+            DataPoint(datapoint.key, new_value, data_type=datapoint.data_type))
+    return result
