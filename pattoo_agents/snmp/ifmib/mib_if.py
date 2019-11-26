@@ -155,8 +155,7 @@ class Query(object):
         """
         # Process OID
         oid = '.1.3.6.1.2.1.2.2.1.2'
-        _result = self._query.walk(oid)
-        result = _multiply_octets(_result)
+        result = self._query.walk(oid)
         return result
 
     def ifalias(self):
@@ -430,7 +429,7 @@ def _multiply_octets(datapoints):
     """
     # Initialize key variables
     result = []
-    
+
     # Get interface data
     for datapoint in datapoints:
         new_value = datapoint.value * 8
