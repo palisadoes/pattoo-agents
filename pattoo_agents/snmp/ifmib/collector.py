@@ -131,6 +131,16 @@ def _create_datapoints(items):
     Returns:
         result: List of DataPoints with metadata added
 
+    Method:
+        1) Poll all desired OIDs from the target device. Ignore shutdown
+            interfaces
+        2) Get the IfAlias, IfName, and ifDescr values for each snmp ifIndex
+            to use as metadata for DataPoints
+        3) Convert the polled datapoints to use a key of their MIB string
+            versus the OID as the key. Use the OID as a metadata value instead.
+        4) Add the IfAlias, IfName, and ifDescr values as metadata to
+            each datapoint.
+
     """
     # Initialize key variables
     result = []
