@@ -13,7 +13,7 @@ import psutil
 # Pattoo libraries
 from pattoo_shared.configuration import Config
 from pattoo_shared.variables import (
-    DataPoint, DataPointMeta, DeviceDataPoints, AgentPolledData)
+    DataPoint, DataPointMetadata, DeviceDataPoints, AgentPolledData)
 from pattoo_shared.constants import (
     DATA_INT, DATA_COUNT64, DATA_FLOAT)
 
@@ -46,15 +46,15 @@ def poll(agent_program):
 
     metadata = []
     metadata.append(
-        DataPointMeta('operating_system_release', platform.release()))
+        DataPointMetadata('operating_system_release', platform.release()))
     metadata.append(
-        DataPointMeta('operating_system_type', platform.system()))
+        DataPointMetadata('operating_system_type', platform.system()))
     metadata.append(
-        DataPointMeta('operating_system_version', platform.version()))
+        DataPointMetadata('operating_system_version', platform.version()))
     metadata.append(
-        DataPointMeta('operating_system_cpus', psutil.cpu_count()))
+        DataPointMetadata('operating_system_cpus', psutil.cpu_count()))
     metadata.append(
-        DataPointMeta('operating_system_hostname', socket.getfqdn()))
+        DataPointMetadata('operating_system_hostname', socket.getfqdn()))
 
     #########################################################################
     # Get timeseries values
@@ -187,11 +187,11 @@ def _stats_disk_partitions(ddv, metadata):
         if "docker" not in str(mountpoint):
             # Add more metadata
             meta = []
-            meta.append(DataPointMeta('{}device'.format(prefix), item.device))
-            meta.append(DataPointMeta(
+            meta.append(DataPointMetadata('{}device'.format(prefix), item.device))
+            meta.append(DataPointMetadata(
                 '{}mountpoint'.format(prefix), item.mountpoint))
-            meta.append(DataPointMeta('{}fstype'.format(prefix), item.fstype))
-            meta.append(DataPointMeta('{}opts'.format(prefix), item.opts))
+            meta.append(DataPointMetadata('{}fstype'.format(prefix), item.fstype))
+            meta.append(DataPointMetadata('{}opts'.format(prefix), item.opts))
 
             # Get the partition data
             partition = psutil.disk_usage(mountpoint)._asdict()
@@ -240,7 +240,7 @@ def _stats_disk_io(ddv, metadata):
             _dv = DataPoint(
                 '{}{}'.format(prefix, key), value, data_type=DATA_COUNT64)
             _dv.add(metadata)
-            _dv.add(DataPointMeta('operating_system_disk_partition', disk))
+            _dv.add(DataPointMetadata('operating_system_disk_partition', disk))
             result.append(_dv)
 
     # Add the result to data
@@ -269,7 +269,7 @@ def _stats_network(ddv, metadata):
             _dv = DataPoint(
                 '{}{}'.format(prefix, key), value, data_type=DATA_COUNT64)
             _dv.add(metadata)
-            _dv.add(DataPointMeta('{}interface'.format(prefix), nic))
+            _dv.add(DataPointMetadata('{}interface'.format(prefix), nic))
             result.append(_dv)
 
     # Add the result to data

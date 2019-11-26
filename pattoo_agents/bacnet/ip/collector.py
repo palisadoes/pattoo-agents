@@ -14,7 +14,7 @@ from pattoo_shared import data
 from pattoo_shared import log
 from pattoo_shared.constants import DATA_FLOAT, DATA_STRING
 from pattoo_shared.variables import (
-    DataPoint, DataPointMeta, DeviceDataPoints, AgentPolledData)
+    DataPoint, DataPointMetadata, DeviceDataPoints, AgentPolledData)
 from .constants import PATTOO_AGENT_BACNETIPD
 
 
@@ -147,10 +147,10 @@ class _PollBACnetIP(object):
             # Update datapoints
             datapoint = DataPoint(
                 'bacnet_analog_value', value, data_type=data_type)
-            datapoint.add(DataPointMeta('bacnet_point', polltarget.address))
-            datapoint.add(DataPointMeta('bacnet_device', ip_device))
+            datapoint.add(DataPointMetadata('bacnet_point', polltarget.address))
+            datapoint.add(DataPointMetadata('bacnet_device', ip_device))
             if name is not None:
-                datapoint.add(DataPointMeta('bacnet_object_name', name))
+                datapoint.add(DataPointMetadata('bacnet_object_name', name))
             datapoints.append(datapoint)
 
         # Return

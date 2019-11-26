@@ -17,7 +17,7 @@ from pattoo_agents.modbus.variables import (
 from pattoo_shared import log
 from pattoo_shared.constants import DATA_INT
 from pattoo_shared.variables import (
-    DataPoint, DataPointMeta, DeviceDataPoints, AgentPolledData)
+    DataPoint, DataPointMetadata, DeviceDataPoints, AgentPolledData)
 from .constants import PATTOO_AGENT_MODBUSTCPD
 
 
@@ -159,8 +159,8 @@ unit {}. [{}, {}, {}]\
                 # Create DataPoint and append
                 datapoint = DataPoint(key, value, data_type=DATA_INT)
                 datapoint.add(
-                    DataPointMeta('modbus_unit', str(_rv.unit).zfill(3)))
-                datapoint.add(DataPointMeta(
+                    DataPointMetadata('modbus_unit', str(_rv.unit).zfill(3)))
+                datapoint.add(DataPointMetadata(
                     'modbus_register', _rv.register + data_index))
                 datapoints.append(datapoint)
     ddv.add(datapoints)
