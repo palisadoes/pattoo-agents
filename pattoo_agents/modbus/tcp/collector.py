@@ -132,7 +132,7 @@ unit {}'''.format(ip_device, _rv.register, _rv.count, _rv.unit))
         elif isinstance(_rv, HoldingRegisterVariable):
             try:
                 response = client.read_holding_registers(_rv.address)
-                key = 'modbus_holding_register'
+                key = prefix.key('holding_register')
             except ConnectionException:
                 log_message = ('''\
 Cannot connect to device {} to retrieve input register {}, count {}, \
@@ -158,12 +158,9 @@ unit {}. [{}, {}, {}]\
                 value = _value * _rv.multiplier
 
                 # Create DataPoint and append
-                datapoint = DataPoint(key, value, data_type=DATA_INT)
-                datapoint.add(
-                    DataPointMetadata(
-                        prefix.key('unit'), str(_rv.unit).zfill(3)))
-                datapoint.add(DataPointMetadata(
-                    prefix.key('register'), _rv.register + data_index))
+                new_key = ('''{}_register_{}_unit_{}\
+'''.format(key, _rv.register + data_index, str(_rv.unit).zfill(3)))
+                datapoint = DataPoint(new_key, value, data_type=DATA_INT)
                 datapoints.append(datapoint)
     ddv.add(datapoints)
 
