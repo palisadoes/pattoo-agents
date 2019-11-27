@@ -10,7 +10,7 @@ from pattoo_agents.snmp import configuration
 from pattoo_agents.snmp import snmp
 from pattoo_shared import data
 from pattoo_shared.variables import (
-    DataPoint, DeviceDataPoints, AgentPolledData)
+    DataPoint, DataPointMeta, DeviceDataPoints, AgentPolledData)
 from pattoo_agents.snmp.constants import PATTOO_AGENT_SNMPD
 
 
@@ -131,7 +131,9 @@ def _walker(snmpvariable, polltargets):
                 value = _dp.value
 
             # Update datapoints
-            datapoint = DataPoint(_dp.key, value, data_type=_dp.data_type)
+            datapoint = DataPoint(
+                polltarget.address, value, data_type=_dp.data_type)
+            datapoint.add(DataPointMeta('snmp_oid', _dp.key))
             datapoints.append(datapoint)
 
     # Return
