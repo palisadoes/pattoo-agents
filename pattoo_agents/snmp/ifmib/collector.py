@@ -8,9 +8,10 @@ import collections
 # Pattoo libraries
 from pattoo_agents.snmp import configuration
 from pattoo_shared.variables import (
-    DataPointMetadata, DataPoint, DeviceDataPoints, AgentPolledData)
+    AgentKey, DataPointMetadata, DataPoint, DeviceDataPoints, AgentPolledData)
 from pattoo_agents.snmp.constants import PATTOO_AGENT_SNMPD
 from pattoo_agents.snmp.ifmib.mib_if import Query
+from pattoo_shared import log
 
 
 def poll():
@@ -131,10 +132,21 @@ def _create_datapoints(items):
     Returns:
         result: List of DataPoints with metadata added
 
+    Method:
+        1) Poll all desired OIDs from the target device. Ignore shutdown
+            interfaces
+        2) Get the IfAlias, IfName, and ifDescr values for each snmp ifIndex
+            to use as metadata for DataPoints
+        3) Convert the polled datapoints to use a key of their MIB string
+            versus the OID as the key. Use the OID as a metadata value instead.
+        4) Add the IfAlias, IfName, and ifDescr values as metadata to
+            each datapoint.
+
     """
     # Initialize key variables
     result = []
     ifindex_lookup = _metadata(items)
+    prefix = AgentKey(PATTOO_AGENT_SNMPD)
 
     # Process the results
     for key, polled_datapoints in items.items():
@@ -156,24 +168,29 @@ def _create_datapoints(items):
                     continue
 
                 # Create a new Datapoint keyed by MIB equivalent
-                datapoint = DataPoint(
-                    _key(polled_datapoint.key), polled_datapoint.value)
+                new_key = prefix.key(_key(polled_datapoint.key))
+                datapoint = DataPoint(new_key, polled_datapoint.value)
 
                 # Add metadata to the datapoint
-                datapoint.add(DataPointMetadata(
-                    'snmp_oid', polled_datapoint.key))
+                datapoint.add(
+                    DataPointMetadata(
+                        prefix.key('oid'),
+                        polled_datapoint.key))
                 if bool(ifindex_lookup[ifindex].ifdescr) is True:
                     datapoint.add(
                         DataPointMetadata(
-                            'snmp_ifDescr', ifindex_lookup[ifindex].ifdescr))
+                            prefix.key('ifDescr'),
+                            ifindex_lookup[ifindex].ifdescr))
                 if bool(ifindex_lookup[ifindex].ifalias) is True:
                     datapoint.add(
                         DataPointMetadata(
-                            'snmp_ifAlias', ifindex_lookup[ifindex].ifalias))
+                            prefix.key('ifAlias'),
+                            ifindex_lookup[ifindex].ifalias))
                 if bool(ifindex_lookup[ifindex].ifname) is True:
                     datapoint.add(
                         DataPointMetadata(
-                            'snmp_ifName', ifindex_lookup[ifindex].ifname))
+                            prefix.key('ifName'),
+                            ifindex_lookup[ifindex].ifname))
                 result.append(datapoint)
 
     return result

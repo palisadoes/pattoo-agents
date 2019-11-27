@@ -17,7 +17,7 @@ from pattoo_agents.modbus.variables import (
 from pattoo_shared import log
 from pattoo_shared.constants import DATA_INT
 from pattoo_shared.variables import (
-    DataPoint, DataPointMetadata, DeviceDataPoints, AgentPolledData)
+    AgentKey, DataPoint, DataPointMetadata, DeviceDataPoints, AgentPolledData)
 from .constants import PATTOO_AGENT_MODBUSTCPD
 
 
@@ -99,6 +99,7 @@ def _serial_poller(drv):
     # Intialize data gathering
     ip_device = drv.device
     ddv = DeviceDataPoints(ip_device)
+    prefix = AgentKey(PATTOO_AGENT_MODBUSTCPD)
 
     # Get list of type DataPoint
     datapoints = []
@@ -115,7 +116,7 @@ def _serial_poller(drv):
             try:
                 response = client.read_input_registers(
                     _rv.address, count=_rv.count, unit=_rv.unit)
-                key = 'modbus_input_register'
+                key = prefix.key('input_register')
             except ConnectionException as _err:
                 log_message = ('''\
 Cannot connect to device {} to retrieve input register {}, count {}, \
@@ -159,9 +160,10 @@ unit {}. [{}, {}, {}]\
                 # Create DataPoint and append
                 datapoint = DataPoint(key, value, data_type=DATA_INT)
                 datapoint.add(
-                    DataPointMetadata('modbus_unit', str(_rv.unit).zfill(3)))
+                    DataPointMetadata(
+                        prefix.key('unit'), str(_rv.unit).zfill(3)))
                 datapoint.add(DataPointMetadata(
-                    'modbus_register', _rv.register + data_index))
+                    prefix.key('register'), _rv.register + data_index))
                 datapoints.append(datapoint)
     ddv.add(datapoints)
 
