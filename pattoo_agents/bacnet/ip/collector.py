@@ -147,9 +147,9 @@ class _PollBACnetIP(object):
 
             # Update datapoints
             datapoint = DataPoint(
-                prefix.key('analog_value'), value, data_type=data_type)
-            datapoint.add(
-                DataPointMetadata(prefix.key('point'), polltarget.address))
+                prefix.key('analog_value_point_{}'.format(polltarget.address)),
+                value,
+                data_type=data_type)
             datapoint.add(
                 DataPointMetadata(prefix.key('device'), ip_device))
             if name is not None:
