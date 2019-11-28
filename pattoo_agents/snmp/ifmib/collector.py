@@ -11,7 +11,6 @@ from pattoo_shared.variables import (
     AgentKey, DataPointMetadata, DataPoint, DeviceDataPoints, AgentPolledData)
 from pattoo_agents.snmp.constants import PATTOO_AGENT_SNMPD
 from pattoo_agents.snmp.ifmib.mib_if import Query
-from pattoo_shared import log
 
 
 def poll():
@@ -169,7 +168,10 @@ def _create_datapoints(items):
 
                 # Create a new Datapoint keyed by MIB equivalent
                 new_key = prefix.key(_key(polled_datapoint.key))
-                datapoint = DataPoint(new_key, polled_datapoint.value)
+                datapoint = DataPoint(
+                    new_key,
+                    polled_datapoint.value,
+                    data_type=polled_datapoint.data_type)
 
                 # Add metadata to the datapoint
                 datapoint.add(

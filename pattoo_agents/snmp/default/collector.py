@@ -133,7 +133,9 @@ def _walker(snmpvariable, polltargets):
 
             # Update datapoints
             datapoint = DataPoint(
-                prefix.key(polltarget.address), value, data_type=_dp.data_type)
+                prefix.key(polltarget.address),
+                value,
+                data_type=_dp.data_type)
             datapoint.add(DataPointMetadata(prefix.key('oid'), _dp.key))
             datapoints.append(datapoint)
 
