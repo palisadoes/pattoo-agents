@@ -130,7 +130,7 @@ class _PollBACnetIP(object):
         for polltarget in polltargets:
             # Get polling results
             value = poll_device_address(
-                ip_device, polltarget.address, 'analogValue', self._bacnet)
+                ip_device, polltarget.address, 'presentValue', self._bacnet)
             name = poll_device_address(
                 ip_device, polltarget.address, 'objectName', self._bacnet)
 
@@ -177,7 +177,7 @@ def poll_device_address(ip_device, address, object2poll, bacnet):
     # Intialize data gathering
     result = None
     poller_string = (
-        '{} {} {} presentValue'.format(ip_device, object2poll, address))
+        '{} analogValue {} {}'.format(ip_device, address, object2poll))
 
     try:
         result = bacnet.read(poller_string)
