@@ -184,16 +184,16 @@ def poll_device_address(ip_device, address, object2poll, bacnet):
     except NoResponseFromController:
         log_message = (
             'No BACnet response from {}. Timeout.'.format(ip_device))
-        log.log2info(51004, log_message)
+        log.log2warning(51004, log_message)
     except UnknownObjectError:
         log_message = ('''\
 Unknown BACnet object {} requested from device {}.\
 '''.format(object2poll, ip_device))
-        log.log2info(51005, log_message)
+        log.log2warning(51005, log_message)
     except Exception as reason:
         log_message = ('BACnet error polling {}. Reason: {}'.format(
             ip_device, str(reason)))
-        log.log2info(51006, log_message)
+        log.log2warning(51006, log_message)
     except:
         log_message = ('''Unknown BACnet error polling {}: [{}, {}, {}]\
 '''.format(ip_device, sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2]))
