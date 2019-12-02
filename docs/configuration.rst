@@ -38,7 +38,7 @@ Mandatory Configuration Sections
 
    remote_api:
        api_ip_address: 192.168.1.100
-       api_ip_bind_port: 6000
+       api_ip_bind_port: 20201
        api_uses_https: False
        api_listen_address: 0.0.0.0
 
@@ -82,7 +82,7 @@ This table outlines the purpose of each configuration parameter
      - IP address of remote ``pattoo`` server
    * -
      - ``api_ip_bind_port``
-     - Port of remote ``pattoo`` server
+     - Port of remote ``pattoo`` server accepting agent data. Default 20201.
    * -
      - ``api_uses_https``
      - Use ``https`` when sending data  to remote ``pattoo`` server
