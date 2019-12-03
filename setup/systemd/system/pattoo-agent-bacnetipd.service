@@ -5,10 +5,15 @@ After=network.target
 
 [Service]
 Environment="PATTOO_CONFIGDIR=x"
-Environment="BIN_DIR=x"
-ExecStart=$BIN_DIR/pattoo-agent-bacnetipd --start
-ExecStop=$BIN_DIR/pattoo-agent-bacnetipd --stop
-ExecReload=$BIN_DIR/pattoo-agent-bacnetipd --restart
+User=pattoo
+Group=pattoo
+ExecStart=
+ExecStart=INSTALLATION_DIRECTORY/bin/pattoo-agent-bacnetipd.py --start
+ExecStop=INSTALLATION_DIRECTORY/bin/pattoo-agent-bacnetipd.py --stop
+ExecReload=INSTALLATION_DIRECTORY/bin/pattoo-agent-bacnetipd.py --restart
+RemainAfterExit=yes
+GuessMainPID=yes
+Type=forking
 
 [Install]
 WantedBy=multi-user.target
