@@ -107,7 +107,6 @@ class Query(object):
         # Get interface ifHCInOctets data
         _get_data('ifHCInOctets', self.ifhcinoctets, final)
 
-
         # Return
         return final
 
