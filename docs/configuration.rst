@@ -33,13 +33,11 @@ Mandatory Configuration Sections
        log_directory: ~/GitHub/pattoo-agents/log
        cache_directory: ~/GitHub/pattoo-agents/cache
        daemon_directory: ~/GitHub/pattoo-agents/daemon
-       language: en
        polling_interval: 300
 
    pattoo-api-agentd:
        api_ip_address: 192.168.1.100
        api_ip_bind_port: 20201
-       api_listen_address: 0.0.0.0
 
 Configuration Explanation
 ^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -68,9 +66,6 @@ This table outlines the purpose of each configuration parameter
      - ``daemon_directory``
      - Directory used to store daemon related data that needs to be maintained between reboots
    * -
-     - ``language``
-     - Language  to be used in reporting statistics in JSON output. Language files can be found in the ``metadata/language/agents/`` directory.
-   * -
      - ``polling_interval``
      - Interval of data collection and posting in seconds
    * - ``pattoo-api-agentd``
@@ -82,9 +77,6 @@ This table outlines the purpose of each configuration parameter
    * -
      - ``api_ip_bind_port``
      - Port of remote ``pattoo`` server accepting agent data. Default 20201.
-   * -
-     - ``api_listen_address``
-     - IP address on which the API server will listen. Setting this to ``0.0.0.0`` will make it listen on all IPv4 addresses. Setting to ``"0::"`` will make it listen on all IPv6 configured interfaces. It will not listen on IPv4 and IPv6 addresses simultaneously. You must **quote** all IPv6 addresses. The default is ``0.0.0.0``
 
 
 Agent Configuration

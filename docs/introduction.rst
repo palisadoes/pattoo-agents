@@ -1,19 +1,24 @@
 Introduction
 ============
 
-``pattoo`` agents collect IoT data for a centralized ``pattoo`` server. The agents can be configured to report on the status of various types of IoT devices running popular protocols such as:
+``pattoo`` is a timeseries data store. It was inspired by the need to collect and visualize data from various DevOps, network, industrial PLC controllers, electro-mechanical and enterprise systems.
 
+Its modular design facilitates the creation of custom data collection agents and web interfaces by software developers.
 
-#. SNMP
-#. Modbus
+The ``pattoo-agents`` repository provides a number standard data collection agents for:
 
-The agents can also report on the status of systems that support the ``python3`` programming language such as:
+* Linux
+* SNMP
+* Modbus
+* Bacnet
 
-#. Windows
-#. Linux
-#. BSD
+Operational Overview
+--------------------
 
-All ``pattoo`` agents report data using a standardized JSON format. The data is sent to a centralized ``pattoo`` server for processing. The server data can then be accessed through an API.
+``patoo`` handles data in three steps.
+#. ``pattoo-agents`` collect data and send it to a central ``pattoo`` server in a standardized format.
+#. The ``pattoo`` server stores the agent data.
+#. The ``pattoo`` web application can be used to visualize the data in a chart format.
 
 Pattoo Agents Objective
 -----------------------
