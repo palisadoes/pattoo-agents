@@ -46,12 +46,15 @@ class UnittestConfig(object):
                 'log_level': 'debug',
                 'cache_directory': self._cache_directory,
                 'daemon_directory': self._daemon_directory,
+            },
+            'polling': {
+                'ip_address': '127.0.0.7',
+                'ip_bind_port': 6067,
                 'polling_interval': 20
             },
             'pattoo-api-agentd': {
-                'api_ip_address': '127.0.0.1',
-                'api_ip_bind_port': 6060,
-                'api_uses_https': False
+                'ip_listen_address': '127.0.0.1',
+                'ip_bind_port': 6060,
             },
             'pattoo-agent-bacnetipd': {
                 'agent_ip_address': 'localhost_agent_ip_address',
@@ -109,7 +112,7 @@ class UnittestConfig(object):
                 ],
             },
             'pattoo-agent-os-spoked': {
-                'listen_address': '127.0.0.1',
+                'ip_listen_address': '127.0.0.1',
                 'ip_bind_port': 5000
                 },
             'pattoo-agent-os-hubd': {

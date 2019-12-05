@@ -56,7 +56,7 @@ Section "{}" not found in configuration file in directory {}. Please fix.\
         'log_level', 'log_directory', 'cache_directory',
         'daemon_directory', 'polling_interval']
     secondary_key_check(config, 'main', secondaries)
-    secondaries = ['api_ip_address', 'api_ip_bind_port']
+    secondaries = ['ip_address', 'ip_bind_port']
     secondary_key_check(config, 'pattoo-api-agentd', secondaries)
 
     # Print Status

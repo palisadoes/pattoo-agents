@@ -43,7 +43,7 @@ def main():
     config = configuration.ConfigSpoked()
     aav = AgentAPIVariable(
         ip_bind_port=config.ip_bind_port(),
-        listen_address=config.listen_address())
+        ip_listen_address=config.ip_listen_address())
     agent_gunicorn = AgentAPI(
         PATTOO_AGENT_OS_SPOKED, PATTOO_AGENT_OS_SPOKED_PROXY, aav, API)
 

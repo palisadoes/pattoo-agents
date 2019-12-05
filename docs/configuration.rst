@@ -36,8 +36,8 @@ Mandatory Configuration Sections
        polling_interval: 300
 
    pattoo-api-agentd:
-       api_ip_address: 192.168.1.100
-       api_ip_bind_port: 20201
+       ip_address: 192.168.1.100
+       ip_bind_port: 20201
 
 Configuration Explanation
 ^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -72,10 +72,10 @@ This table outlines the purpose of each configuration parameter
      -
      - **Note** The ``pattoo-api-agentd`` section is not required for ``patoo-os-spoked`` configurations
    * -
-     - ``api_ip_address``
+     - ``ip_address``
      - IP address of remote ``pattoo`` server
    * -
-     - ``api_ip_bind_port``
+     - ``ip_bind_port``
      - Port of remote ``pattoo`` server accepting agent data. Default 20201.
 
 
