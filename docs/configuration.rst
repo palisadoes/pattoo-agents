@@ -6,7 +6,7 @@ After installing your agents, you will need to edit a configuration file in the 
 
 For the sake of simplicity we will assume there is one file called ``etc/config.yaml``.
 
-Make sure you have configured the ``main`` and ``pattoo-api-agentd`` sections of ``etc/config.yaml`` file before adding any sections for ``pattoo-agent-os`` related daemons.
+Make sure you have configured the ``main`` and ``polling`` sections of ``etc/config.yaml`` file before adding any sections for ``pattoo-agent-os`` related daemons.
 
 Custom Directory Location
 -------------------------
@@ -33,9 +33,9 @@ Mandatory Configuration Sections
        log_directory: ~/GitHub/pattoo-agents/log
        cache_directory: ~/GitHub/pattoo-agents/cache
        daemon_directory: ~/GitHub/pattoo-agents/daemon
-       polling_interval: 300
 
-   pattoo-api-agentd:
+   polling:
+       polling_interval: 300
        ip_address: 192.168.1.100
        ip_bind_port: 20201
 
@@ -65,18 +65,18 @@ This table outlines the purpose of each configuration parameter
    * -
      - ``daemon_directory``
      - Directory used to store daemon related data that needs to be maintained between reboots
-   * -
-     - ``polling_interval``
-     - Interval of data collection and posting in seconds
-   * - ``pattoo-api-agentd``
+   * - ``polling``
      -
-     - **Note** The ``pattoo-api-agentd`` section is not required for ``patoo-os-spoked`` configurations
+     - **Note** The ``polling`` section is not required for ``patoo-os-spoked`` configurations
    * -
      - ``ip_address``
      - IP address of remote ``pattoo`` server
    * -
      - ``ip_bind_port``
      - Port of remote ``pattoo`` server accepting agent data. Default 20201.
+   * -
+     - ``polling_interval``
+     - Interval of data collection and posting in seconds
 
 
 Agent Configuration

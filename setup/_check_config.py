@@ -54,10 +54,12 @@ Section "{}" not found in configuration file in directory {}. Please fix.\
     # Check secondary keys
     secondaries = [
         'log_level', 'log_directory', 'cache_directory',
-        'daemon_directory', 'polling_interval']
+        'daemon_directory']
     secondary_key_check(config, 'main', secondaries)
     secondaries = ['ip_address', 'ip_bind_port']
     secondary_key_check(config, 'pattoo-api-agentd', secondaries)
+    secondaries = ['polling_interval', 'ip_address', 'ip_bind_port']
+    secondary_key_check(config, 'polling', secondaries)
 
     # Print Status
     print('OK: Configuration paramter check passed.')

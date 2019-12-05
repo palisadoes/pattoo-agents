@@ -144,7 +144,7 @@ Add the following statements to the ``config.yaml`` file to configure the  ``pat
 .. code-block:: yaml
 
    pattoo-agent-os-spoked:
-       listen_address: 0.0.0.0
+       ip_listen_address: 0.0.0.0
        ip_bind_port: 5000
 
 Configuration Explanation
@@ -162,7 +162,7 @@ This table outlines the purpose of each configuration parameter
      -
      - **Note:** Only required for devices running ``pattoo-agent-os-spoked``
    * -
-     - ``listen_address``
+     - ``ip_listen_address``
      - IP address on which the API server will listen. Setting this to ``0.0.0.0`` will make it listen on all IPv4 addresses. Setting to ``"0::"`` will make it listen on all IPv6 configured interfaces. It will not listen on IPv4 and IPv6 addresses simultaneously. You must **quote** all IPv6 addresses. The default value is ``0.0.0.0``
    * -
      - ``ip_bind_port``
