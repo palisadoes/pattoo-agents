@@ -38,9 +38,9 @@ You have to specify a ``--config_dir`` defining the configuration file directory
 
    SUCCESS! You are now able to start/stop and enable/disable the following systemd services:
 
-   pattoo-agent-os-spoked.service
-   pattoo-agent-snmpd.service
-   pattoo-agent-os-autonomousd.service
-   pattoo-agent-os-hubd.service
+   pattoo_agent_os_spoked.service
+   pattoo_agent_snmpd.service
+   pattoo_agent_os_autonomousd.service
+   pattoo_agent_os_hubd.service
 
    $

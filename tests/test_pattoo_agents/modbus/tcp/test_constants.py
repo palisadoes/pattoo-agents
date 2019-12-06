@@ -42,7 +42,7 @@ class TestConstants(unittest.TestCase):
         """Testing constants."""
         # Test 
         self.assertEqual(
-            PATTOO_AGENT_MODBUSTCPD, 'pattoo-agent-modbustcpd')
+            PATTOO_AGENT_MODBUSTCPD, 'pattoo_agent_modbustcpd')
 
 
 if __name__ == '__main__':

@@ -1,4 +1,4 @@
 """Module that defines constants shared between agents."""
 
-# pattoo-agent-bacnetipd constants
-PATTOO_AGENT_BACNETIPD = 'pattoo-agent-bacnetipd'
+# pattoo_agent_bacnetipd constants
+PATTOO_AGENT_BACNETIPD = 'pattoo_agent_bacnetipd'

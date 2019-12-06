@@ -38,7 +38,7 @@ class TestConstants(unittest.TestCase):
     def test_constants(self):
         """Testing constants."""
         self.assertEqual(
-            PATTOO_AGENT_SNMPD, 'pattoo-agent-snmpd')
+            PATTOO_AGENT_SNMPD, 'pattoo_agent_snmpd')
 
 
 if __name__ == '__main__':

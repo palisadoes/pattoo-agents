@@ -42,7 +42,7 @@ class TestConstants(unittest.TestCase):
         """Testing constants."""
         # Test agent constants
         self.assertEqual(
-            PATTOO_AGENT_BACNETIPD, 'pattoo-agent-bacnetipd')
+            PATTOO_AGENT_BACNETIPD, 'pattoo_agent_bacnetipd')
 
 
 if __name__ == '__main__':
