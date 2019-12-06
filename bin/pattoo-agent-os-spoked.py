@@ -24,7 +24,7 @@ else:
         'Please fix.')
     sys.exit(2)
 
-# Pattoo libraries
+# Pattoo libraries 
 from pattoo_shared import log
 from pattoo_shared.agent import Agent, AgentAPI, AgentCLI
 from pattoo_shared.variables import AgentAPIVariable
