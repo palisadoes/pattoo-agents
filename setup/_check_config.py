@@ -43,7 +43,7 @@ def check():
     config = files.read_yaml_files(config_directory)
 
     # Check main keys
-    keys = ['main', 'pattoo-api-agentd']
+    keys = ['main', 'pattoo_api_agentd']
     for key in keys:
         if key not in config:
             log_message = ('''\
@@ -57,7 +57,7 @@ Section "{}" not found in configuration file in directory {}. Please fix.\
         'daemon_directory']
     secondary_key_check(config, 'main', secondaries)
     secondaries = ['ip_address', 'ip_bind_port']
-    secondary_key_check(config, 'pattoo-api-agentd', secondaries)
+    secondary_key_check(config, 'pattoo_api_agentd', secondaries)
     secondaries = ['polling_interval', 'ip_address', 'ip_bind_port']
     secondary_key_check(config, 'polling', secondaries)
 

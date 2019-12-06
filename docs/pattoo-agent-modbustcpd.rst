@@ -2,7 +2,7 @@
 Pattoo ModbusTCP Agent
 ======================
 
-``pattoo-agent-modbustcpd`` provides performance data on any ModbusTCP enabled system it can poll. The data gathered is posted in ``json`` format using HTTP to a remote server.
+``pattoo_agent_modbustcpd`` provides performance data on any ModbusTCP enabled system it can poll. The data gathered is posted in ``json`` format using HTTP to a remote server.
 
 The ``json`` data is formatted for easy ingestion by `the Pattoo Server <https://pattoo.readthedocs.io/>`_
 
@@ -20,14 +20,14 @@ Follow these steps.
 Usage
 -----
 
-``pattoo-agent-modbustcpd`` has a simple command structure.
+``pattoo_agent_modbustcpd`` has a simple command structure.
 
 The daemon will require a configuration file in the ``etc/``\ directory. See the configuration section for details.
 
 .. code-block:: bash
 
-   $ bin/pattoo-agent-modbustcpd.py --help
-   usage: pattoo-agent-modbustcpd.py [-h] [--start] [--stop] [--status] [--restart]
+   $ bin/pattoo_agent_modbustcpd.py --help
+   usage: pattoo_agent_modbustcpd.py [-h] [--start] [--stop] [--status] [--restart]
                             [--force]
 
    optional arguments:
@@ -51,16 +51,16 @@ For the sake of simplicity we will assume there is one file called ``etc/config.
 #. Make sure you have configured the ``main`` and ``remote_api`` sections of ``etc/config.yaml`` file before adding any sections for ``pattoo-agent-os`` related daemons. The :doc:`configuration` file explains this in detail.
 #. After doing this, edit the ``etc/config.yaml`` file to change configuration options specific to the daemons . An explanation follows.
 
-pattoo-agent-modbustcpd Section
+pattoo_agent_modbustcpd Section
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Add the following statements to the ``config.yaml`` file to configure the  ``pattoo-agent-modbustcpd`` daemon. An explanation follows.
+Add the following statements to the ``config.yaml`` file to configure the  ``pattoo_agent_modbustcpd`` daemon. An explanation follows.
 
 **NOTE:** The indentations in the YAML configuration are important. Make sure indentations line up. Dashes '-' indicate one item in a list of items.
 
 .. code-block:: yaml
 
-  pattoo-agent-modbustcpd:
+  pattoo_agent_modbustcpd:
 
     polling_groups:
 
@@ -103,10 +103,10 @@ This table outlines the purpose of each configuration parameter
      - Sub-Section
      - Config Options
      - Description
-   * - ``pattoo-agent-modbustcpd:``
+   * - ``pattoo_agent_modbustcpd:``
      -
      -
-     - **Note:** Only required for devices running ``pattoo-agent-modbustcpd``
+     - **Note:** Only required for devices running ``pattoo_agent_modbustcpd``
    * -
      - ``polling_groups:``
      -

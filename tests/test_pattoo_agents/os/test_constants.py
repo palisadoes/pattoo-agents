@@ -46,14 +46,14 @@ class TestConstants(unittest.TestCase):
         self.assertEqual(
             PATTOO_AGENT_OS_SPOKED_API_PREFIX, '/pattoo-agent-os')
         self.assertEqual(
-            PATTOO_AGENT_OS_SPOKED, 'pattoo-agent-os-spoked')
+            PATTOO_AGENT_OS_SPOKED, 'pattoo_agent_os_spoked')
         self.assertEqual(
             PATTOO_AGENT_OS_SPOKED_PROXY,
             '{}-gunicorn'.format(PATTOO_AGENT_OS_SPOKED))
         self.assertEqual(
-            PATTOO_AGENT_OS_AUTONOMOUSD, 'pattoo-agent-os-autonomousd')
+            PATTOO_AGENT_OS_AUTONOMOUSD, 'pattoo_agent_os_autonomousd')
         self.assertEqual(
-            PATTOO_AGENT_OS_HUBD, 'pattoo-agent-os-hubd')
+            PATTOO_AGENT_OS_HUBD, 'pattoo_agent_os_hubd')
 
 
 

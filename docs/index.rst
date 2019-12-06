@@ -34,10 +34,10 @@ How to get the daemons running to collect data.
    :caption: Agent Setup:
 
    agent
-   pattoo-agent-bacnetipd
-   pattoo-agent-modbustcpd
+   pattoo_agent_bacnetipd
+   pattoo_agent_modbustcpd
    pattoo-agent-os
-   pattoo-agent-snmpd
+   pattoo_agent_snmpd
 
 Miscellaneous Information
 -------------------------
