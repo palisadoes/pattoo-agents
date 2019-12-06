@@ -158,7 +158,7 @@ unit {}. [{}, {}, {}]\
                 value = _value * _rv.multiplier
 
                 # Create DataPoint and append
-                new_key = ('''{}_register_{}_unit_{}\
+                new_key = ('''{}_{}_unit_{}\
 '''.format(key, _rv.register + data_index, str(_rv.unit).zfill(3)))
                 datapoint = DataPoint(new_key, value, data_type=DATA_INT)
                 datapoints.append(datapoint)
