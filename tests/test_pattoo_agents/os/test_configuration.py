@@ -39,13 +39,13 @@ class TestConfigSpoked(unittest.TestCase):
         """Testing function __init__."""
         pass
 
-    def test_listen_address(self):
-        """Testing function listen_address."""
+    def test_ip_listen_address(self):
+        """Testing function ip_listen_address."""
         # Initialize key values
         expected = '127.0.0.1'
 
         # Test
-        result = self.config.listen_address()
+        result = self.config.ip_listen_address()
         self.assertEqual(result, expected)
 
     def test_ip_bind_port(self):

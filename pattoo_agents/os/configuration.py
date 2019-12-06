@@ -29,8 +29,8 @@ class ConfigSpoked(Config):
         # Instantiate the Config parent
         Config.__init__(self)
 
-    def listen_address(self):
-        """Get listen_address.
+    def ip_listen_address(self):
+        """Get ip_listen_address.
 
         Args:
             None
@@ -41,7 +41,7 @@ class ConfigSpoked(Config):
         """
         # Get result
         key = PATTOO_AGENT_OS_SPOKED
-        sub_key = 'listen_address'
+        sub_key = 'ip_listen_address'
         result = configuration.search(
             key, sub_key, self._configuration, die=False)
 

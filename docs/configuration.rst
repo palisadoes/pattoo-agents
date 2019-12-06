@@ -6,7 +6,7 @@ After installing your agents, you will need to edit a configuration file in the 
 
 For the sake of simplicity we will assume there is one file called ``etc/config.yaml``.
 
-Make sure you have configured the ``main`` and ``remote_api`` sections of ``etc/config.yaml`` file before adding any sections for ``pattoo-agent-os`` related daemons.
+Make sure you have configured the ``main`` and ``polling`` sections of ``etc/config.yaml`` file before adding any sections for ``pattoo-agent-os`` related daemons.
 
 Custom Directory Location
 -------------------------
@@ -33,14 +33,11 @@ Mandatory Configuration Sections
        log_directory: ~/GitHub/pattoo-agents/log
        cache_directory: ~/GitHub/pattoo-agents/cache
        daemon_directory: ~/GitHub/pattoo-agents/daemon
-       language: en
-       polling_interval: 300
 
-   remote_api:
-       api_ip_address: 192.168.1.100
-       api_ip_bind_port: 20201
-       api_uses_https: False
-       api_listen_address: 0.0.0.0
+   polling:
+       polling_interval: 300
+       ip_address: 192.168.1.100
+       ip_bind_port: 20201
 
 Configuration Explanation
 ^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -68,27 +65,18 @@ This table outlines the purpose of each configuration parameter
    * -
      - ``daemon_directory``
      - Directory used to store daemon related data that needs to be maintained between reboots
+   * - ``polling``
+     -
+     - **Note** The ``polling`` section is not required for ``patoo-os-spoked`` configurations
    * -
-     - ``language``
-     - Language  to be used in reporting statistics in JSON output. Language files can be found in the ``metadata/language/agents/`` directory.
+     - ``ip_address``
+     - IP address of remote ``pattoo`` server
+   * -
+     - ``ip_bind_port``
+     - Port of remote ``pattoo`` server accepting agent data. Default 20201.
    * -
      - ``polling_interval``
      - Interval of data collection and posting in seconds
-   * - ``remote_api``
-     -
-     - **Note** The ``remote_api`` section is not required for ``patoo-os-spoked`` configurations
-   * -
-     - ``api_ip_address``
-     - IP address of remote ``pattoo`` server
-   * -
-     - ``api_ip_bind_port``
-     - Port of remote ``pattoo`` server accepting agent data. Default 20201.
-   * -
-     - ``api_uses_https``
-     - Use ``https`` when sending data  to remote ``pattoo`` server
-   * -
-     - ``api_listen_address``
-     - IP address on which the API server will listen. Setting this to ``0.0.0.0`` will make it listen on all IPv4 addresses. Setting to ``"0::"`` will make it listen on all IPv6 configured interfaces. It will not listen on IPv4 and IPv6 addresses simultaneously. You must **quote** all IPv6 addresses. The default is ``0.0.0.0``
 
 
 Agent Configuration
