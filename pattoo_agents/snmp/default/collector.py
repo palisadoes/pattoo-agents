@@ -10,14 +10,14 @@ from pattoo_agents.snmp import configuration
 from pattoo_agents.snmp import snmp
 from pattoo_shared import data
 from pattoo_shared.variables import (
-    AgentKey, DataPoint, DataPointMetadata, DeviceDataPoints, AgentPolledData)
+    AgentKey, DataPoint, DataPointMetadata, TargetDataPoints, AgentPolledData)
 from pattoo_agents.snmp.constants import PATTOO_AGENT_SNMPD
 
 
 def poll():
     """Get PATOO_SNMP agent data.
 
-    Performance data from SNMP enabled devices.
+    Performance data from SNMP enabled targets.
 
     Args:
         None
@@ -35,28 +35,28 @@ def poll():
     agent_program = PATTOO_AGENT_SNMPD
     agentdata = AgentPolledData(agent_program, config)
 
-    # Get SNMP OIDs to be polled (Along with authorizations and ip_devices)
+    # Get SNMP OIDs to be polled (Along with authorizations and ip_targets)
     cfg_snmpvariables = config.snmpvariables()
-    device_poll_targets = config.device_polling_targets()
+    target_poll_targets = config.target_polling_points()
 
-    # Create a dict of snmpvariables keyed by ip_device
+    # Create a dict of snmpvariables keyed by ip_target
     for snmpvariable in cfg_snmpvariables:
-        ip_snmpvariables[snmpvariable.ip_device] = snmpvariable
+        ip_snmpvariables[snmpvariable.ip_target] = snmpvariable
 
-    # Create a dict of oid lists keyed by ip_device
-    for dpt in device_poll_targets:
+    # Create a dict of oid lists keyed by ip_target
+    for dpt in target_poll_targets:
         # Ignore invalid data
         if dpt.valid is False:
             continue
 
         # Process
-        next_device = dpt.device
-        if next_device in ip_polltargets:
-            ip_polltargets[next_device].extend(dpt.data)
+        next_target = dpt.target
+        if next_target in ip_polltargets:
+            ip_polltargets[next_target].extend(dpt.data)
         else:
-            ip_polltargets[next_device] = dpt.data
+            ip_polltargets[next_target] = dpt.data
 
-    # Poll oids for all devices and update the DeviceDataPoints
+    # Poll oids for all targets and update the TargetDataPoints
     ddv_list = _snmpwalks(ip_snmpvariables, ip_polltargets)
     agentdata.add(ddv_list)
 
@@ -67,25 +67,25 @@ def poll():
 def _snmpwalks(ip_snmpvariables, ip_polltargets):
     """Get PATOO_SNMP agent data.
 
-    Update the DeviceDataPoints with DataPoints
+    Update the TargetDataPoints with DataPoints
 
     Args:
-        ip_snmpvariables: Dict of type SNMPVariable keyed by ip_device
-        ip_polltargets: Dict keyed by ip_device with PollingTarget
+        ip_snmpvariables: Dict of type SNMPVariable keyed by ip_target
+        ip_polltargets: Dict keyed by ip_target with PollingPoint
             lists to poll
 
     Returns:
-        ddv_list: List of type DeviceDataPoints
+        ddv_list: List of type TargetDataPoints
 
     """
     # Initialize key variables
     arguments = []
     sub_processes_in_pool = max(1, multiprocessing.cpu_count())
 
-    # Poll all devices in sequence
-    for ip_device, snmpvariable in sorted(ip_snmpvariables.items()):
-        if ip_device in ip_polltargets:
-            polltargets = ip_polltargets[ip_device]
+    # Poll all targets in sequence
+    for ip_target, snmpvariable in sorted(ip_snmpvariables.items()):
+        if ip_target in ip_polltargets:
+            polltargets = ip_polltargets[ip_target]
             arguments.append((snmpvariable, polltargets))
 
     # Create a pool of sub process resources
@@ -106,14 +106,14 @@ def _walker(snmpvariable, polltargets):
 
     Args:
         snmpvariable: SNMPVariable to poll
-        polltargets: List of PollingTarget objects to poll
+        polltargets: List of PollingPoint objects to poll
 
     Returns:
-        ddv: DeviceDataPoints for the SNMPVariable device
+        ddv: TargetDataPoints for the SNMPVariable target
 
     """
     # Intialize data gathering
-    ddv = DeviceDataPoints(snmpvariable.ip_device)
+    ddv = TargetDataPoints(snmpvariable.ip_target)
     prefix = AgentKey(PATTOO_AGENT_SNMPD)
 
     # Get list of type DataPoint

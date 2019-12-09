@@ -61,7 +61,7 @@ class UnittestConfig(object):
                 'polling_groups': [
                     {
                         'group_name': 'TEST',
-                        'ip_devices': ['localhost-bacnet'],
+                        'ip_targets': ['localhost-bacnet'],
                         'points': [
                             {'address': 123},
                             {'address': 345}
@@ -73,7 +73,7 @@ class UnittestConfig(object):
                 'polling_groups': [
                     {
                         'group_name': 'TEST',
-                        'ip_devices': ['localhost'],
+                        'ip_targets': ['localhost'],
                         'oids': [
                             {'address': '.1.3.6.1.2.1.2.2.1.10',
                              'multiplier': 8},
@@ -92,7 +92,7 @@ class UnittestConfig(object):
                         'snmp_privprotocol': None,
                         'snmp_secname': None,
                         'snmp_version': 2,
-                        'ip_devices': ['localhost']
+                        'ip_targets': ['localhost']
                     }
                 ]
             },
@@ -100,7 +100,7 @@ class UnittestConfig(object):
                 'polling_groups': [
                     {
                         'group_name': 'TEST',
-                        'ip_devices': ['unittest.modbus.tcp.device.net'],
+                        'ip_targets': ['unittest.modbus.tcp.target.net'],
                         'unit': 3,
                         'input_registers': [
                             {'address': 30388, 'multiplier': 7},
@@ -117,7 +117,7 @@ class UnittestConfig(object):
                 },
             'pattoo_agent_os_hubd': {
 
-                'ip_devices': [
+                'ip_targets': [
                     {'ip_address': '127.0.0.1',
                      'ip_bind_port': 5000}]
                 }

@@ -17,14 +17,14 @@ from pattoo_agents.modbus.variables import (
 from pattoo_shared import log
 from pattoo_shared.constants import DATA_INT
 from pattoo_shared.variables import (
-    AgentKey, DataPoint, DataPointMetadata, DeviceDataPoints, AgentPolledData)
+    AgentKey, DataPoint, DataPointMetadata, TargetDataPoints, AgentPolledData)
 from .constants import PATTOO_AGENT_MODBUSTCPD
 
 
 def poll():
     """Get Modbus agent data.
 
-    Performance data from Modbus enabled devices.
+    Performance data from Modbus enabled targets.
 
     Args:
         None
@@ -44,11 +44,11 @@ def poll():
     # Get registers to be polled
     drvs = config.registervariables()
 
-    # Create a dict of register lists keyed by ip_device
+    # Create a dict of register lists keyed by ip_target
     for drv in drvs:
         arguments.append((drv,))
 
-    # Poll registers for all devices and update the DeviceDataPoints
+    # Poll registers for all targets and update the TargetDataPoints
     ddv_list = _parallel_poller(arguments)
     agentdata.add(ddv_list)
 
@@ -59,13 +59,13 @@ def poll():
 def _parallel_poller(arguments):
     """Get data.
 
-    Update the DeviceDataPoints with DataPoints
+    Update the TargetDataPoints with DataPoints
 
     Args:
         arguments: List of arguments for _serial_poller
 
     Returns:
-        ddv_list: List of type DeviceDataPoints
+        ddv_list: List of type TargetDataPoints
 
     """
     # Initialize key variables
@@ -88,17 +88,17 @@ def _serial_poller(drv):
     """Poll each spoke in parallel.
 
     Args:
-        drv: Device to poll
+        drv: Target to poll
         input_registers: Input registers to poll
         holding_registers: Holding registers to poll
 
     Returns:
-        ddv: DeviceDataPoints for the ip_device
+        ddv: TargetDataPoints for the ip_target
 
     """
     # Intialize data gathering
-    ip_device = drv.device
-    ddv = DeviceDataPoints(ip_device)
+    ip_target = drv.target
+    ddv = TargetDataPoints(ip_target)
     prefix = AgentKey(PATTOO_AGENT_MODBUSTCPD)
 
     # Get list of type DataPoint
@@ -111,7 +111,7 @@ def _serial_poller(drv):
             continue
 
         # Poll
-        client = ModbusTcpClient(ip_device)
+        client = ModbusTcpClient(ip_target)
         if isinstance(_rv, InputRegisterVariable):
             try:
                 response = client.read_input_registers(
@@ -119,14 +119,14 @@ def _serial_poller(drv):
                 key = prefix.key('input_register')
             except ConnectionException as _err:
                 log_message = ('''\
-Cannot connect to device {} to retrieve input register {}, count {}, \
-unit {}: {}'''.format(ip_device, _rv.register, _rv.count, _rv.unit, str(_err)))
+Cannot connect to target {} to retrieve input register {}, count {}, \
+unit {}: {}'''.format(ip_target, _rv.register, _rv.count, _rv.unit, str(_err)))
                 log.log2warning(51028, log_message)
                 continue
             except:
                 log_message = ('''\
-Cause unknown failure with device {} getting input register {}, count {}, \
-unit {}'''.format(ip_device, _rv.register, _rv.count, _rv.unit))
+Cause unknown failure with target {} getting input register {}, count {}, \
+unit {}'''.format(ip_target, _rv.register, _rv.count, _rv.unit))
                 log.log2warning(51030, log_message)
                 continue
         elif isinstance(_rv, HoldingRegisterVariable):
@@ -135,22 +135,22 @@ unit {}'''.format(ip_device, _rv.register, _rv.count, _rv.unit))
                 key = prefix.key('holding_register')
             except ConnectionException:
                 log_message = ('''\
-Cannot connect to device {} to retrieve input register {}, count {}, \
-unit {}'''.format(ip_device, _rv.register, _rv.count, _rv.unit))
+Cannot connect to target {} to retrieve input register {}, count {}, \
+unit {}'''.format(ip_target, _rv.register, _rv.count, _rv.unit))
                 log.log2warning(51032, log_message)
                 continue
             except:
                 log_message = ('''\
-Cause unknown failure with device {} getting holding register {}, count {}, \
+Cause unknown failure with target {} getting holding register {}, count {}, \
 unit {}. [{}, {}, {}]\
-'''.format(ip_device, _rv.register, _rv.count, _rv.unit, sys.exc_info()[0],
+'''.format(ip_target, _rv.register, _rv.count, _rv.unit, sys.exc_info()[0],
            sys.exc_info()[1], sys.exc_info()[2]))
                 log.log2warning(51031, log_message)
                 continue
 
         # Process data
         if response.isError() is True:
-            _log_modbus(ip_device, _rv, response)
+            _log_modbus(ip_target, _rv, response)
         else:
             values = response.registers
             for data_index, _value in enumerate(values):
@@ -168,11 +168,11 @@ unit {}. [{}, {}, {}]\
     return ddv
 
 
-def _log_modbus(ip_device, registervariable, response):
+def _log_modbus(ip_target, registervariable, response):
     """Log error.
 
     Args:
-        ip_device: Device that caused the error
+        ip_target: Target that caused the error
         registervariable: RegisterVariable object
         response: Pymodbus response object
 
@@ -187,23 +187,23 @@ def _log_modbus(ip_device, registervariable, response):
         2: '''Illegal Data Address. Data address of some or all the required \
     entities are not allowed or do not exist in slave''',
         3: '''Illegal Data Value. Value is not accepted by slave''',
-        4: '''Slave Device Failure. Unrecoverable error occurred while slave \
+        4: '''Slave Target Failure. Unrecoverable error occurred while slave \
 was attempting to perform requested action''',
         5: '''Acknowledge. Slave has accepted request and is processing it, \
 but a long duration of time is required. This response is returned to \
 prevent a timeout error from occurring in the master. Master can next issue \
 a Poll Program Complete message to determine whether processing is \
 completed''',
-        6: '''Slave Device Busy. Slave is engaged in processing a \
+        6: '''Slave Target Busy. Slave is engaged in processing a \
 long-duration command. Master should retry later''',
         7: '''Negative Acknowledge. Slave cannot perform the programming \
 functions. Master should request diagnostic or error information from slave''',
         8: '''Memory Parity Error. Slave detected a parity error in memory. \
 Master can retry the request, but service may be required on the \
-slave device''',
+slave target''',
         10: '''Gateway Path Unavailable. Specialized for Modbus gateways. \
 Indicates a misconfigured gateway''',
-        11: '''Gateway Target Device Failed to Respond. Specialized for \
+        11: '''Gateway Target Target Failed to Respond. Specialized for \
 Modbus gateways. Sent when slave fails to respond'''
     }
 
@@ -218,10 +218,10 @@ Modbus gateways. Sent when slave fails to respond'''
 
         # Register does not exist
         log_message = ('''\
-Device failure {}: Could not read register {}, count {}, unit {}: \
+Target failure {}: Could not read register {}, count {}, unit {}: \
 original code {}, exception code {}, function code {}, check {}, \
 protocol ID {}, transaction ID {}, unit ID {}.{}\
-'''.format(ip_device,
+'''.format(ip_target,
            registervariable.register, registervariable.count,
            registervariable.unit,
            response.original_code, response.exception_code,
@@ -230,7 +230,7 @@ protocol ID {}, transaction ID {}, unit ID {}.{}\
         log.log2warning(51027, log_message)
 
     elif isinstance(response, ModbusIOException):
-        # Device may not be available or not listening on Modbus port
+        # Target may not be available or not listening on Modbus port
         log_message = ('''\
 Pymodbus failure code {}. Message: {}\
 '''.format(response.fcode, response.message))

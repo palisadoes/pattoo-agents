@@ -2,7 +2,7 @@
 
 # Import pattoo libraries
 from pattoo_agents.snmp import oid as class_oid
-from pattoo_shared.variables import PollingTarget
+from pattoo_shared.variables import PollingPoint
 
 
 class SNMPAuth(object):
@@ -23,7 +23,7 @@ class SNMPAuth(object):
             authpassword: SNMP authpassword
             privprotocol: SNMP privprotocol
             privpassword: SNMP privpassword
-            ip_devices: Devices that have these SNMP security parameters
+            ip_targets: Targets that have these SNMP security parameters
 
         Returns:
             None
@@ -89,12 +89,12 @@ class SNMPAuth(object):
 class SNMPVariable(object):
     """Variable representation for data for SNMP polling."""
 
-    def __init__(self, snmpauth=None, ip_device=None):
+    def __init__(self, snmpauth=None, ip_target=None):
         """Initialize the class.
 
         Args:
             snmpauth: SNMPAuth object
-            ip_device: Devices for these SNMP security parameters
+            ip_target: Targets for these SNMP security parameters
 
         Returns:
             None
@@ -102,14 +102,14 @@ class SNMPVariable(object):
         """
         # Initialize variables
         self.snmpauth = None
-        self.ip_device = None
+        self.ip_target = None
 
         # Assign variables
         if isinstance(snmpauth, SNMPAuth) is True:
             self.snmpauth = snmpauth
-        if isinstance(ip_device, str) is True:
-            self.ip_device = ip_device
-        self.valid = False not in [bool(self.snmpauth), bool(self.ip_device)]
+        if isinstance(ip_target, str) is True:
+            self.ip_target = ip_target
+        self.valid = False not in [bool(self.snmpauth), bool(self.ip_target)]
 
     def __repr__(self):
         """Return a representation of the attributes of the class.
@@ -123,10 +123,10 @@ class SNMPVariable(object):
         """
         # Return repr
         return (
-            '<{0} snmpauth={1}, ip_device={2}, valid={3}>'
+            '<{0} snmpauth={1}, ip_target={2}, valid={3}>'
             ''.format(
                 self.__class__.__name__,
-                repr(self.snmpauth), repr(self.ip_device),
+                repr(self.snmpauth), repr(self.ip_target),
                 repr(self.valid)
             )
         )
@@ -135,12 +135,12 @@ class SNMPVariable(object):
 class SNMPVariableList(object):
     """Variable representation for data for SNMP polling."""
 
-    def __init__(self, snmpauth=None, ip_devices=None):
+    def __init__(self, snmpauth=None, ip_targets=None):
         """Initialize the class.
 
         Args:
             snmpauth: SNMPAuth authentication parameters
-            ip_devices: Devices needing snmpauth
+            ip_targets: Targets needing snmpauth
 
         Returns:
             None
@@ -148,17 +148,17 @@ class SNMPVariableList(object):
         """
         # Initialize variables
         self.snmpvariables = []
-        if isinstance(ip_devices, str) is True:
-            _ip_devices = [ip_devices]
-        elif isinstance(ip_devices, list) is True:
-            _ip_devices = ip_devices
+        if isinstance(ip_targets, str) is True:
+            _ip_targets = [ip_targets]
+        elif isinstance(ip_targets, list) is True:
+            _ip_targets = ip_targets
         else:
-            _ip_devices = []
+            _ip_targets = []
 
         # Append to the SNMP list
-        for ip_device in _ip_devices:
+        for ip_target in _ip_targets:
             snmpvariable = SNMPVariable(
-                snmpauth=snmpauth, ip_device=ip_device)
+                snmpauth=snmpauth, ip_target=ip_target)
             if snmpvariable.valid is True:
                 self.snmpvariables.append(snmpvariable)
 

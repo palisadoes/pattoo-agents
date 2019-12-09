@@ -52,7 +52,7 @@ class PollingAgent(Agent):
         Agent.__init__(self, parent)
 
     def query(self):
-        """Query all remote devices for data.
+        """Query all remote targets for data.
 
         Args:
             None
@@ -86,21 +86,21 @@ def _parallel_poll():
     # Initialize key variables
     sub_processes_in_pool = max(1, multiprocessing.cpu_count())
     config = configuration.ConfigHubd()
-    ip_devices = config.ip_devices()
+    ip_targets = config.ip_targets()
     argument_list = []
 
     # Create tuple list of parameters
-    for ip_device in ip_devices:
+    for ip_target in ip_targets:
         # Test
-        if isinstance(ip_device, dict) is False:
+        if isinstance(ip_target, dict) is False:
             continue
-        if 'ip_address' not in ip_device:
+        if 'ip_address' not in ip_target:
             continue
-        if 'ip_bind_port' not in ip_device:
+        if 'ip_bind_port' not in ip_target:
             continue
 
         # Append argument
-        url = _spoked_url(ip_device['ip_address'], ip_device['ip_bind_port'])
+        url = _spoked_url(ip_target['ip_address'], ip_target['ip_bind_port'])
         argument_list.append((url,))
 
     # Create a pool of sub process resources
@@ -133,11 +133,11 @@ def _relay(url):
     passive.relay()
 
 
-def _spoked_url(ip_device, ip_bind_port):
+def _spoked_url(ip_target, ip_bind_port):
     """Poll a spoke.
 
     Args:
-        ip_device: IP device to poll for data
+        ip_target: IP target to poll for data
         ip_bind_port: TCP listening port
 
     Returns:
@@ -145,13 +145,13 @@ def _spoked_url(ip_device, ip_bind_port):
 
     """
     # Initialize key variables
-    hostname = ip_device
-    if ':' in ip_device:
+    hostname = ip_target
+    if ':' in ip_target:
         hostname = '[{}]'.format(hostname)
 
     # Return
     url = 'http://{}:{}{}'.format(
-        ip_device, ip_bind_port, PATTOO_AGENT_OS_SPOKED_API_PREFIX)
+        ip_target, ip_bind_port, PATTOO_AGENT_OS_SPOKED_API_PREFIX)
     return url
 
 

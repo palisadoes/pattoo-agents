@@ -71,7 +71,7 @@ class MockSNMP(object):
             None
 
         Returns:
-            result: Device ID
+            result: Target ID
 
         """
         # Return
@@ -79,7 +79,7 @@ class MockSNMP(object):
         return result
 
     def walk(self, item):
-        """Return simulated dict of OID values for device.
+        """Return simulated dict of OID values for target.
 
         Args:
             item: OID branch to walk
@@ -96,7 +96,7 @@ class MockSNMP(object):
         return result
 
     def get(self, item):
-        """Return simulated dict of OID values for device.
+        """Return simulated dict of OID values for target.
 
         Args:
             item: OID branch to get

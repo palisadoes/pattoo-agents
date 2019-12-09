@@ -23,7 +23,7 @@ This script is not installed in the \
     sys.exit(2)
 
 # Pattoo imports
-from pattoo_shared.variables import PollingTarget, DevicePollingTargets
+from pattoo_shared.variables import PollingPoint, TargetPollingPoints
 from pattoo_agents.snmp import configuration
 from pattoo_agents.snmp.variables import SNMPVariable
 from tests.libraries.configuration import UnittestConfig
@@ -63,10 +63,10 @@ class TestConfigSNMP(unittest.TestCase):
         self.assertEqual(authvariable.privprotocol, None)
         self.assertEqual(authvariable.secname, None)
 
-    def test_device_polling_targets(self):
+    def test_target_polling_points(self):
         """Testing function oidvariables."""
         # Initialize key variables.
-        result = self.config.device_polling_targets()
+        result = self.config.target_polling_points()
         oids = ['.1.3.6.1.2.1.2.2.1.10', '.1.3.6.1.2.1.2.2.1.16']
 
         # Test
@@ -75,10 +75,10 @@ class TestConfigSNMP(unittest.TestCase):
 
         # Test each dpt
         item = result[0]
-        self.assertEqual(isinstance(item, DevicePollingTargets), True)
-        self.assertEqual(item.device, 'localhost')
+        self.assertEqual(isinstance(item, TargetPollingPoints), True)
+        self.assertEqual(item.target, 'localhost')
         for index, value in enumerate(item.data):
-            self.assertEqual(isinstance(value, PollingTarget), True)
+            self.assertEqual(isinstance(value, PollingPoint), True)
             self.assertEqual(value.address, oids[index])
             self.assertEqual(value.multiplier, 8)
 

@@ -25,7 +25,7 @@ This script is not installed in the \
 # Pattoo imports
 from pattoo_agents.modbus.variables import (
     RegisterVariable, InputRegisterVariable,
-    HoldingRegisterVariable, DeviceRegisterVariables, )
+    HoldingRegisterVariable, TargetRegisterVariables, )
 from tests.libraries.configuration import UnittestConfig
 
 
@@ -275,8 +275,8 @@ class TestHoldingRegisterVariable(unittest.TestCase):
             self.assertFalse(_rv.valid)
 
 
-class TestDeviceRegisterVariables(unittest.TestCase):
-    """Checks all DeviceRegisterVariables methods."""
+class TestTargetRegisterVariables(unittest.TestCase):
+    """Checks all TargetRegisterVariables methods."""
 
     #########################################################################
     # General object setup
@@ -284,12 +284,12 @@ class TestDeviceRegisterVariables(unittest.TestCase):
 
     def test___init__(self):
         """Testing method / function __init__."""
-        # Setup DeviceRegisterVariables
-        device = 'localhost'
-        drv = DeviceRegisterVariables(device)
+        # Setup TargetRegisterVariables
+        target = 'localhost'
+        drv = TargetRegisterVariables(target)
 
         # Test initial vlues
-        self.assertEqual(drv.device, device)
+        self.assertEqual(drv.target, target)
         self.assertFalse(drv.valid)
         self.assertEqual(drv.data, [])
 
@@ -299,10 +299,10 @@ class TestDeviceRegisterVariables(unittest.TestCase):
 
     def test_add(self):
         """Testing method / function add."""
-        # Initialize DeviceRegisterVariables
-        device = 'teddy_bear'
-        drv = DeviceRegisterVariables(device)
-        self.assertEqual(drv.device, device)
+        # Initialize TargetRegisterVariables
+        target = 'teddy_bear'
+        drv = TargetRegisterVariables(target)
+        self.assertEqual(drv.target, target)
         self.assertFalse(drv.valid)
         self.assertEqual(drv.data, [])
 

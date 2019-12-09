@@ -68,7 +68,7 @@ class PollingAgent(Agent):
         return value
 
     def query(self):
-        """Query all remote devices for data.
+        """Query all remote targets for data.
 
         Args:
             None

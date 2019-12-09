@@ -29,7 +29,7 @@ This script is not installed in the \
 from pattoo_agents.modbus.tcp import configuration
 from pattoo_agents.modbus.variables import (
     InputRegisterVariable, HoldingRegisterVariable, RegisterVariable,
-    DeviceRegisterVariables)
+    TargetRegisterVariables)
 from tests.libraries.configuration import UnittestConfig
 
 
@@ -48,7 +48,7 @@ class TestConfigModbusTCP(unittest.TestCase):
     def test_registervariables(self):
         """Testing method / function registervariables."""
         # Initialize variables
-        expected_ip_device = 'unittest.modbus.tcp.device.net'
+        expected_ip_target = 'unittest.modbus.tcp.target.net'
         register_variables = []
 
         # Test
@@ -56,9 +56,9 @@ class TestConfigModbusTCP(unittest.TestCase):
         self.assertTrue(isinstance(result, list))
         self.assertEqual(len(result), 2)
         for drv in result:
-            self.assertTrue(isinstance(drv, DeviceRegisterVariables))
+            self.assertTrue(isinstance(drv, TargetRegisterVariables))
             self.assertTrue(drv.valid)
-            self.assertEqual(drv.device, expected_ip_device)
+            self.assertEqual(drv.target, expected_ip_target)
             for _rv in drv.data:
                 self.assertTrue(isinstance(_rv, RegisterVariable))
                 self.assertTrue(_rv.valid)
