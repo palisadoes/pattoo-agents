@@ -17,7 +17,7 @@ from pattoo_agents.modbus.variables import (
 from pattoo_shared import log
 from pattoo_shared.constants import DATA_INT
 from pattoo_shared.variables import (
-    AgentKey, DataPoint, DataPointMetadata, DeviceDataPoints, AgentPolledData)
+    AgentKey, DataPoint, DataPointMetadata, TargetDataPoints, AgentPolledData)
 from .constants import PATTOO_AGENT_MODBUSTCPD
 
 
@@ -48,7 +48,7 @@ def poll():
     for drv in drvs:
         arguments.append((drv,))
 
-    # Poll registers for all devices and update the DeviceDataPoints
+    # Poll registers for all devices and update the TargetDataPoints
     ddv_list = _parallel_poller(arguments)
     agentdata.add(ddv_list)
 
@@ -59,13 +59,13 @@ def poll():
 def _parallel_poller(arguments):
     """Get data.
 
-    Update the DeviceDataPoints with DataPoints
+    Update the TargetDataPoints with DataPoints
 
     Args:
         arguments: List of arguments for _serial_poller
 
     Returns:
-        ddv_list: List of type DeviceDataPoints
+        ddv_list: List of type TargetDataPoints
 
     """
     # Initialize key variables
@@ -93,12 +93,12 @@ def _serial_poller(drv):
         holding_registers: Holding registers to poll
 
     Returns:
-        ddv: DeviceDataPoints for the ip_device
+        ddv: TargetDataPoints for the ip_device
 
     """
     # Intialize data gathering
     ip_device = drv.device
-    ddv = DeviceDataPoints(ip_device)
+    ddv = TargetDataPoints(ip_device)
     prefix = AgentKey(PATTOO_AGENT_MODBUSTCPD)
 
     # Get list of type DataPoint

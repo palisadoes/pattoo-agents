@@ -8,7 +8,7 @@ import collections
 # Pattoo libraries
 from pattoo_agents.snmp import configuration
 from pattoo_shared.variables import (
-    AgentKey, DataPointMetadata, DataPoint, DeviceDataPoints, AgentPolledData)
+    AgentKey, DataPointMetadata, DataPoint, TargetDataPoints, AgentPolledData)
 from pattoo_agents.snmp.constants import PATTOO_AGENT_SNMPD
 from pattoo_agents.snmp.ifmib.mib_if import Query
 
@@ -55,7 +55,7 @@ def poll():
         else:
             ip_polltargets[next_device] = dpt.data
 
-    # Poll oids for all devices and update the DeviceDataPoints
+    # Poll oids for all devices and update the TargetDataPoints
     ddv_list = _snmpwalks(ip_snmpvariables, ip_polltargets)
     agentdata.add(ddv_list)
 
@@ -66,7 +66,7 @@ def poll():
 def _snmpwalks(ip_snmpvariables, ip_polltargets):
     """Get PATOO_SNMP agent data.
 
-    Update the DeviceDataPoints with DataPoints
+    Update the TargetDataPoints with DataPoints
 
     Args:
         ip_snmpvariables: Dict of type SNMPVariable keyed by ip_device
@@ -74,7 +74,7 @@ def _snmpwalks(ip_snmpvariables, ip_polltargets):
             lists to poll
 
     Returns:
-        ddv_list: List of type DeviceDataPoints
+        ddv_list: List of type TargetDataPoints
 
     """
     # Initialize key variables
@@ -108,11 +108,11 @@ def _walker(snmpvariable, polltargets):
         polltargets: List of PollingTarget objects to poll
 
     Returns:
-        ddv: DeviceDataPoints for the SNMPVariable device
+        ddv: TargetDataPoints for the SNMPVariable device
 
     """
     # Intialize data gathering
-    ddv = DeviceDataPoints(snmpvariable.ip_device)
+    ddv = TargetDataPoints(snmpvariable.ip_device)
     query = Query(snmpvariable)
     results = query.everything()
     datapoints = _create_datapoints(results)
@@ -123,7 +123,7 @@ def _walker(snmpvariable, polltargets):
 def _create_datapoints(items):
     """Get PATOO_SNMP agent data.
 
-    Update the DeviceDataPoints with DataPoints
+    Update the TargetDataPoints with DataPoints
 
     Args:
         items: Dict of type SNMPVariable keyed by OID branch

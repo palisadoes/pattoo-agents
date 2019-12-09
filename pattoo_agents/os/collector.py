@@ -13,7 +13,7 @@ import psutil
 # Pattoo libraries
 from pattoo_shared.configuration import Config
 from pattoo_shared.variables import (
-    AgentKey, DataPoint, DataPointMetadata, DeviceDataPoints, AgentPolledData)
+    AgentKey, DataPoint, DataPointMetadata, TargetDataPoints, AgentPolledData)
 from pattoo_shared.constants import (
     DATA_INT, DATA_COUNT64, DATA_FLOAT)
 
@@ -38,7 +38,7 @@ def poll(agent_program):
     agentdata = AgentPolledData(agent_program, config)
 
     # Intialize data gathering
-    ddv = DeviceDataPoints(agent_hostname)
+    ddv = TargetDataPoints(agent_hostname)
 
     #########################################################################
     # Set non timeseries values
@@ -110,7 +110,7 @@ class Performance(object):
         """Update agent with system data.
 
         Args:
-            ddv: DeviceDataPoints object
+            ddv: TargetDataPoints object
 
         Returns:
             result: List of DataPoint objects
@@ -187,7 +187,7 @@ class Performance(object):
         """Update agent with disk swap data.
 
         Args:
-            ddv: DeviceDataPoints object
+            ddv: TargetDataPoints object
 
         Returns:
             None
@@ -218,7 +218,7 @@ class Performance(object):
         """Update agent with disk partition data.
 
         Args:
-            ddv: DeviceDataPoints object
+            ddv: TargetDataPoints object
 
         Returns:
             None
@@ -267,7 +267,7 @@ class Performance(object):
         """Update agent with disk io data.
 
         Args:
-            ddv: DeviceDataPoints object
+            ddv: TargetDataPoints object
 
         Returns:
             None
@@ -306,7 +306,7 @@ class Performance(object):
         """Update agent with network data.
 
         Args:
-            ddv: DeviceDataPoints object
+            ddv: TargetDataPoints object
 
         Returns:
             None

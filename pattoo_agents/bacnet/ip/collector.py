@@ -14,7 +14,7 @@ from pattoo_shared import data
 from pattoo_shared import log
 from pattoo_shared.constants import DATA_FLOAT, DATA_STRING
 from pattoo_shared.variables import (
-    AgentKey, DataPoint, DataPointMetadata, DeviceDataPoints, AgentPolledData)
+    AgentKey, DataPoint, DataPointMetadata, TargetDataPoints, AgentPolledData)
 from .constants import PATTOO_AGENT_BACNETIPD
 
 
@@ -37,7 +37,7 @@ def poll(bacnet):
     agent_program = PATTOO_AGENT_BACNETIPD
     agentdata = AgentPolledData(agent_program, config)
 
-    # Poll oids for all devices and update the DeviceDataPoints
+    # Poll oids for all devices and update the TargetDataPoints
     poller = _PollBACnetIP(bacnet)
     ddv_list = poller.data()
     agentdata.add(ddv_list)
@@ -84,13 +84,13 @@ class _PollBACnetIP(object):
     def data(self):
         """Get agent data.
 
-        Update the DeviceDataPoints with DataPoints
+        Update the TargetDataPoints with DataPoints
 
         Args:
             None
 
         Returns:
-            ddv_list: List of type DeviceDataPoints
+            ddv_list: List of type TargetDataPoints
 
         """
         # Initialize key variables
@@ -118,11 +118,11 @@ class _PollBACnetIP(object):
             bacnet: BAC0 connect object
 
         Returns:
-            ddv: DeviceDataPoints for the SNMPVariable device
+            ddv: TargetDataPoints for the SNMPVariable device
 
         """
         # Intialize data gathering
-        ddv = DeviceDataPoints(ip_device)
+        ddv = TargetDataPoints(ip_device)
         prefix = AgentKey(PATTOO_AGENT_BACNETIPD)
 
         # Get list of type DataPoint
