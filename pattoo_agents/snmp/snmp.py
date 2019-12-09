@@ -1,4 +1,4 @@
-"""Module used polling SNMP enabled devices."""
+"""Module used polling SNMP enabled targets."""
 
 import sys
 
@@ -16,7 +16,7 @@ from pattoo_agents.snmp.variables import SNMPVariable
 
 
 class SNMP(object):
-    """Class to interact with devices using SNMP."""
+    """Class to interact with targets using SNMP."""
 
     def __init__(self, snmpvariable):
         """Initialize the class.
@@ -29,15 +29,15 @@ class SNMP(object):
 
         """
         # Initialize key variables
-        self._snmp_ip_device = snmpvariable.ip_device
+        self._snmp_ip_target = snmpvariable.ip_target
         self._snmp_version = snmpvariable.snmpauth.version
         self._snmpvariable = snmpvariable
 
     def contactable(self):
-        """Check if device is contactable.
+        """Check if target is contactable.
 
         Args:
-            device_id: Device ID
+            target_id: Target ID
 
         Returns:
             _contactable: True if a contactable
@@ -47,13 +47,13 @@ class SNMP(object):
         _contactable = False
         result = None
 
-        # Get device data
-        device_name = self._snmp_ip_device
+        # Get target data
+        target_name = self._snmp_ip_target
 
-        # Try to reach device
+        # Try to reach target
         try:
             # If we can poll the SNMP sysObjectID,
-            # then the device is contactable
+            # then the target is contactable
             result = self.sysobjectid(check_reachability=True)
             if bool(result) is True:
                 _contactable = True
@@ -64,10 +64,10 @@ class SNMP(object):
 
             # Log a message
             log_message = ('''\
-Unable to access device {} via SNMP. Make sure device is contactable and \
-that the database\'s SNMP parameters for the device are correct. Fix, repeat \
+Unable to access target {} via SNMP. Make sure target is contactable and \
+that the database\'s SNMP parameters for the target are correct. Fix, repeat \
 your command AND make sure you set --.valid=True. Error: {}\
-'''.format(device_name, exception_error))
+'''.format(target_name, exception_error))
             log.log2see(51035, log_message)
 
         except:
@@ -76,15 +76,15 @@ your command AND make sure you set --.valid=True. Error: {}\
 
             # Log a message
             log_message = (
-                'Unexpected SNMP error for device {}'
-                ''.format(device_name))
+                'Unexpected SNMP error for target {}'
+                ''.format(target_name))
             log.log2see(51036, log_message)
 
         # Return
         return _contactable
 
     def sysobjectid(self, check_reachability=False):
-        """Get the sysObjectID of the device.
+        """Get the sysObjectID of the target.
 
         Args:
             check_reachability:
@@ -107,7 +107,7 @@ your command AND make sure you set --.valid=True. Error: {}\
         return object_id
 
     def oid_exists(self, oid_to_get, context_name=''):
-        """Determine existence of OID on device.
+        """Determine existence of OID on target.
 
         Args:
             oid_to_get: OID to get
@@ -139,7 +139,7 @@ your command AND make sure you set --.valid=True. Error: {}\
         return validity
 
     def branch_exists(self, oid_to_get, context_name=''):
-        """Determine existence of OID on device.
+        """Determine existence of OID on target.
 
         Args:
             oid_to_get: OID to get
@@ -270,9 +270,9 @@ your command AND make sure you set --.valid=True. Error: {}\
         # Create failure log message
         try_log_message = (
             'Error occurred during SNMPget {}, SNMPwalk {} query against '
-            'device {} OID {} for context "{}"'
+            'target {} OID {} for context "{}"'
             ''.format(
-                get, not get, self._snmp_ip_device,
+                get, not get, self._snmp_ip_target,
                 oid_to_get, context_name))
 
         # Fill the results object by getting OID data
@@ -329,7 +329,7 @@ your command AND make sure you set --.valid=True. Error: {}\
                     sys.exc_info()[0],
                     sys.exc_info()[1],
                     sys.exc_info()[2],
-                    self._snmp_ip_device))
+                    self._snmp_ip_target))
             log.log2die(51029, log_message)
 
         # Format results
@@ -340,7 +340,7 @@ your command AND make sure you set --.valid=True. Error: {}\
 
 
 class _Session(object):
-    """Class to create an SNMP session with a device."""
+    """Class to create an SNMP session with a target."""
 
     def __init__(self, snmpvariable, context_name=''):
         """Initialize the class.
@@ -355,7 +355,7 @@ class _Session(object):
         """
         # Initialize key variables
         self._context_name = context_name
-        self._snmp_ip_device = snmpvariable.ip_device
+        self._snmp_ip_target = snmpvariable.ip_target
         self._snmp_port = snmpvariable.snmpauth.port
         self._snmp_version = snmpvariable.snmpauth.version
         self._snmp_community = snmpvariable.snmpauth.community
@@ -369,7 +369,7 @@ class _Session(object):
         if self._snmp_version is None:
             log_message = (
                 'SNMP version is "None". Non existent host? - {}'
-                ''.format(self._snmp_ip_device))
+                ''.format(self._snmp_ip_target))
             log.log2die(51223, log_message)
 
         # Fail if snmpvariable dictionary is empty
@@ -400,7 +400,7 @@ class _Session(object):
         if self._snmp_version != 3:
             session = easysnmp.Session(
                 community=self._snmp_community,
-                hostname=self._snmp_ip_device,
+                hostname=self._snmp_ip_target,
                 version=self._snmp_version,
                 remote_port=self._snmp_port,
                 use_numeric=True,
@@ -408,7 +408,7 @@ class _Session(object):
             )
         else:
             session = easysnmp.Session(
-                hostname=self._snmp_ip_device,
+                hostname=self._snmp_ip_target,
                 version=self._snmp_version,
                 remote_port=self._snmp_port,
                 use_numeric=True,
@@ -544,7 +544,7 @@ def _process_error(
             exists = False
             return (_contactable, exists)
 
-    # Checking if the device is reachable
+    # Checking if the target is reachable
     if check_reachability is True:
         _contactable = False
         exists = False

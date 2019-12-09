@@ -21,7 +21,7 @@ from .constants import PATTOO_AGENT_BACNETIPD
 def poll(bacnet):
     """Get BACnetIP agent data.
 
-    Performance data from BACnetIP enabled devices.
+    Performance data from BACnetIP enabled targets.
 
     Args:
         None
@@ -37,7 +37,7 @@ def poll(bacnet):
     agent_program = PATTOO_AGENT_BACNETIPD
     agentdata = AgentPolledData(agent_program, config)
 
-    # Poll oids for all devices and update the TargetDataPoints
+    # Poll oids for all targets and update the TargetDataPoints
     poller = _PollBACnetIP(bacnet)
     ddv_list = poller.data()
     agentdata.add(ddv_list)
@@ -47,7 +47,7 @@ def poll(bacnet):
 
 
 class _PollBACnetIP(object):
-    """Poll BACnetIP devices."""
+    """Poll BACnetIP targets."""
 
     def __init__(self, bacnet):
         """Initialize the class.
@@ -65,21 +65,21 @@ class _PollBACnetIP(object):
         config = configuration.ConfigBACnetIP()
         self._ip_polltargets = {}
 
-        # Get SNMP OIDs to be polled (Along with authorizations and ip_devices)
-        device_poll_targets = config.device_polling_targets()
+        # Get SNMP OIDs to be polled (Along with authorizations and ip_targets)
+        target_poll_targets = config.target_polling_points()
 
-        # Create a dict of oid lists keyed by ip_device
-        for dpt in device_poll_targets:
+        # Create a dict of oid lists keyed by ip_target
+        for dpt in target_poll_targets:
             # Ignore invalid data
             if dpt.valid is False:
                 continue
 
             # Process
-            next_device = dpt.device
-            if next_device in self._ip_polltargets:
-                self._ip_polltargets[next_device].extend(dpt.data)
+            next_target = dpt.target
+            if next_target in self._ip_polltargets:
+                self._ip_polltargets[next_target].extend(dpt.data)
             else:
-                self._ip_polltargets[next_device] = dpt.data
+                self._ip_polltargets[next_target] = dpt.data
 
     def data(self):
         """Get agent data.
@@ -97,42 +97,42 @@ class _PollBACnetIP(object):
         arguments = []
         ddv_list = []
 
-        # Poll all devices in sequence
-        for ip_device, dpts in sorted(self._ip_polltargets.items()):
-            arguments.append((ip_device, dpts))
+        # Poll all targets in sequence
+        for ip_target, dpts in sorted(self._ip_polltargets.items()):
+            arguments.append((ip_target, dpts))
 
-        for ip_device, dpts in arguments:
-            result = self._get_device_datapoints(ip_device, dpts)
+        for ip_target, dpts in arguments:
+            result = self._get_target_datapoints(ip_target, dpts)
             if result.valid is True:
                 ddv_list.append(result)
 
         # Return
         return ddv_list
 
-    def _get_device_datapoints(self, ip_device, polltargets):
+    def _get_target_datapoints(self, ip_target, polltargets):
         """Poll each spoke in parallel.
 
         Args:
-            ip_device: Device to poll
+            ip_target: Target to poll
             polltargets: List of PollingPoint objects to poll
             bacnet: BAC0 connect object
 
         Returns:
-            ddv: TargetDataPoints for the SNMPVariable device
+            ddv: TargetDataPoints for the SNMPVariable target
 
         """
         # Intialize data gathering
-        ddv = TargetDataPoints(ip_device)
+        ddv = TargetDataPoints(ip_target)
         prefix = AgentKey(PATTOO_AGENT_BACNETIPD)
 
         # Get list of type DataPoint
         datapoints = []
         for polltarget in polltargets:
             # Get polling results
-            value = poll_device_address(
-                ip_device, polltarget.address, 'presentValue', self._bacnet)
-            name = poll_device_address(
-                ip_device, polltarget.address, 'objectName', self._bacnet)
+            value = poll_target_address(
+                ip_target, polltarget.address, 'presentValue', self._bacnet)
+            name = poll_target_address(
+                ip_target, polltarget.address, 'objectName', self._bacnet)
 
             # Skip if invalid data is received
             if value is None:
@@ -151,7 +151,7 @@ class _PollBACnetIP(object):
                 value,
                 data_type=data_type)
             datapoint.add(
-                DataPointMetadata(prefix.key('device'), ip_device))
+                DataPointMetadata(prefix.key('target'), ip_target))
             if name is not None:
                 datapoint.add(DataPointMetadata(
                     prefix.key('object_name'), name))
@@ -162,11 +162,11 @@ class _PollBACnetIP(object):
         return ddv
 
 
-def poll_device_address(ip_device, address, object2poll, bacnet):
+def poll_target_address(ip_target, address, object2poll, bacnet):
     """Poll each spoke in parallel.
 
     Args:
-        ip_device: Device to poll
+        ip_target: Target to poll
         polltargets: List of PollingPoint objects to poll
         bacnet: BAC0 connect object
 
@@ -177,26 +177,26 @@ def poll_device_address(ip_device, address, object2poll, bacnet):
     # Intialize data gathering
     result = None
     poller_string = (
-        '{} analogValue {} {}'.format(ip_device, address, object2poll))
+        '{} analogValue {} {}'.format(ip_target, address, object2poll))
 
     try:
         result = bacnet.read(poller_string)
     except NoResponseFromController:
         log_message = (
-            'No BACnet response from {}. Timeout.'.format(ip_device))
+            'No BACnet response from {}. Timeout.'.format(ip_target))
         log.log2warning(51004, log_message)
     except UnknownObjectError:
         log_message = ('''\
-Unknown BACnet object {} requested from device {}.\
-'''.format(object2poll, ip_device))
+Unknown BACnet object {} requested from target {}.\
+'''.format(object2poll, ip_target))
         log.log2warning(51005, log_message)
     except Exception as reason:
         log_message = ('BACnet error polling {}. Reason: {}'.format(
-            ip_device, str(reason)))
+            ip_target, str(reason)))
         log.log2warning(51006, log_message)
     except:
         log_message = ('''Unknown BACnet error polling {}: [{}, {}, {}]\
-'''.format(ip_device, sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2]))
+'''.format(ip_target, sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2]))
         log.log2warning(51007, log_message)
 
     # Return

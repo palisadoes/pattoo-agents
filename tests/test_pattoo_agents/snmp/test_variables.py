@@ -133,13 +133,13 @@ class TestSNMPVariable(unittest.TestCase):
         """Testing function __init__."""
         # Initialize variables
         sav = SNMPAuth()
-        ip_device = 'localhost'
-        snmpvariable = SNMPVariable(snmpauth=sav, ip_device=ip_device)
+        ip_target = 'localhost'
+        snmpvariable = SNMPVariable(snmpauth=sav, ip_target=ip_target)
 
         # Test
         self.assertEqual(snmpvariable.snmpauth, sav)
         self.assertTrue(isinstance(snmpvariable.snmpauth, SNMPAuth))
-        self.assertEqual(snmpvariable.ip_device, ip_device)
+        self.assertEqual(snmpvariable.ip_target, ip_target)
         self.assertTrue(snmpvariable.valid)
 
         snmpvariable = SNMPVariable()
@@ -150,18 +150,18 @@ class TestSNMPVariable(unittest.TestCase):
         # Test defaults
         snmpvariable = SNMPVariable()
         expected = ('''\
-<SNMPVariable snmpauth=None, ip_device=None, valid=False>''')
+<SNMPVariable snmpauth=None, ip_target=None, valid=False>''')
         result = snmpvariable.__repr__()
         self.assertEqual(expected, result)
 
         # Test non-default
         sav = SNMPAuth()
-        ip_device = 'localhost'
-        snmpvariable = SNMPVariable(snmpauth=sav, ip_device=ip_device)
+        ip_target = 'localhost'
+        snmpvariable = SNMPVariable(snmpauth=sav, ip_target=ip_target)
         expected = ('''\
 <SNMPVariable snmpauth=<SNMPAuth version=2, community='public', port=161, \
 secname=None, authprotocol=None authpassword=None, privpassword=None, \
-privprotocol=None>, ip_device='localhost', valid=True>''')
+privprotocol=None>, ip_target='localhost', valid=True>''')
         result = snmpvariable.__repr__()
         self.assertEqual(expected, result)
 
@@ -181,8 +181,8 @@ class TestSNMPVariableList(unittest.TestCase):
 
         # Test non-default
         sav = SNMPAuth()
-        ip_device = 'localhost'
-        svl = SNMPVariableList(snmpauth=sav, ip_devices=ip_device)
+        ip_target = 'localhost'
+        svl = SNMPVariableList(snmpauth=sav, ip_targets=ip_target)
         self.assertTrue(bool(svl.snmpvariables))
 
         for item in svl.snmpvariables:
@@ -198,13 +198,13 @@ class TestSNMPVariableList(unittest.TestCase):
 
         # Test non-default
         sav = SNMPAuth()
-        ip_device = 'localhost'
-        svl = SNMPVariableList(snmpauth=sav, ip_devices=ip_device)
+        ip_target = 'localhost'
+        svl = SNMPVariableList(snmpauth=sav, ip_targets=ip_target)
         expected = ('''\
 <SNMPVariableList snmpvariables=[<SNMPVariable snmpauth=<SNMPAuth version=2, \
 community='public', port=161, secname=None, authprotocol=None \
 authpassword=None, privpassword=None, privprotocol=None>, \
-ip_device='localhost', valid=True>]>''')
+ip_target='localhost', valid=True>]>''')
         result = svl.__repr__()
         self.assertEqual(expected, result)
 

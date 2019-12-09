@@ -63,14 +63,14 @@ class ConfigSNMP(Config):
             )
 
             # Create the SNMPVariableList
-            snmpvariablelist = SNMPVariableList(snmpauth, group['ip_devices'])
+            snmpvariablelist = SNMPVariableList(snmpauth, group['ip_targets'])
             snmpvariables = snmpvariablelist.snmpvariables
             result.extend(snmpvariables)
 
         # Return
         return result
 
-    def device_polling_targets(self):
+    def target_polling_points(self):
         """Get list of dicts of SNMP information in configuration file.
 
         Args:
@@ -98,10 +98,10 @@ class ConfigSNMP(Config):
                 continue
 
             # Process data
-            if 'ip_devices' and datapoint_key in group:
-                for ip_device in group['ip_devices']:
-                    poll_targets = self._polling_targets(group[datapoint_key])
-                    dpt = TargetPollingPoints(ip_device)
+            if 'ip_targets' and datapoint_key in group:
+                for ip_target in group['ip_targets']:
+                    poll_targets = self._polling_points(group[datapoint_key])
+                    dpt = TargetPollingPoints(ip_target)
                     dpt.add(poll_targets)
                     result.append(dpt)
         return result
@@ -127,7 +127,7 @@ def _validate_snmp(config_dict):
     seed_dict['snmp_privprotocol'] = None
     seed_dict['snmp_privpassword'] = None
     seed_dict['snmp_port'] = 161
-    seed_dict['ip_devices'] = []
+    seed_dict['ip_targets'] = []
 
     # Start populating information
     data = []
@@ -146,7 +146,7 @@ def _validate_snmp(config_dict):
             continue
 
         # Validate IP addresses and OIDs
-        if isinstance(new_dict['ip_devices'], list) is False:
+        if isinstance(new_dict['ip_targets'], list) is False:
             continue
 
         # Append data to list
@@ -168,7 +168,7 @@ def _validate_oids(config_dict):
     """
     # Initialize key variables
     seed_dict = {}
-    seed_dict['ip_devices'] = []
+    seed_dict['ip_targets'] = []
     seed_dict['oids'] = []
 
     # Start populating information

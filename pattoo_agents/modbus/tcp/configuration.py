@@ -10,7 +10,7 @@ from pattoo_shared import data as lib_data
 from pattoo_shared.variables import TargetPollingPoints
 from pattoo_shared.configuration import Config
 from pattoo_agents.modbus.variables import (
-    InputRegisterVariable, HoldingRegisterVariable, DeviceRegisterVariables)
+    InputRegisterVariable, HoldingRegisterVariable, TargetRegisterVariables)
 from .constants import PATTOO_AGENT_MODBUSTCPD
 
 
@@ -61,13 +61,13 @@ class ConfigModbusTCP(Config):
         return result
 
     def _create_drv(self, data, register_type):
-        """Create a list of DeviceRegisterVariables for polling.
+        """Create a list of TargetRegisterVariables for polling.
 
         Args:
             data: Configuration dict
 
         Returns:
-            result: list of DeviceRegisterVariables
+            result: list of TargetRegisterVariables
 
         """
         # Initialize key variables
@@ -79,7 +79,7 @@ class ConfigModbusTCP(Config):
             # Screen data for keys and correct type
             if register_type not in ['input_registers', 'holding_registers']:
                 return []
-            if isinstance(data['ip_devices'], list) is False and isinstance(
+            if isinstance(data['ip_targets'], list) is False and isinstance(
                     data[register_type], list) is False:
                 return []
 
@@ -87,15 +87,15 @@ class ConfigModbusTCP(Config):
             unit = _get_unit(data)
 
             # Create polling targets
-            for ip_device in data['ip_devices']:
-                poll_targets = self._polling_targets(data[register_type])
-                dpt = TargetPollingPoints(ip_device)
+            for ip_target in data['ip_targets']:
+                poll_targets = self._polling_points(data[register_type])
+                dpt = TargetPollingPoints(ip_target)
                 dpt.add(poll_targets)
                 dpts.append(dpt)
 
             # Unpack the TargetPollingPoints
             for dpt in dpts:
-                ip_device = dpt.device
+                ip_target = dpt.target
                 m_dict = {}
                 variables = []
 
@@ -117,8 +117,8 @@ class ConfigModbusTCP(Config):
                                 register=register, count=count,
                                 unit=unit, multiplier=multiplier))
 
-                # Create DeviceRegisterVariables object
-                drv = DeviceRegisterVariables(ip_device)
+                # Create TargetRegisterVariables object
+                drv = TargetRegisterVariables(ip_target)
                 drv.add(variables)
                 result.append(drv)
 

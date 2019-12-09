@@ -237,8 +237,8 @@ class Performance(object):
                 # Add more metadata
                 meta = []
                 meta.append(DataPointMetadata(
-                    '{}_device'.format(self.create.key('disk_partition')),
-                    item.device))
+                    '{}_target'.format(self.create.key('disk_partition')),
+                    item.target))
                 meta.append(DataPointMetadata(
                     '{}_mountpoint'.format(self.create.key('disk_partition')),
                     item.mountpoint))

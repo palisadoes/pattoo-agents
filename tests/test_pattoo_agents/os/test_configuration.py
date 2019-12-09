@@ -70,10 +70,10 @@ class TestConfigHubd(unittest.TestCase):
         """Testing function __init__."""
         pass
 
-    def test_ip_devices(self):
-        """Testing function ip_devices."""
+    def test_ip_targets(self):
+        """Testing function ip_targets."""
         # Test
-        result = self.config.ip_devices()
+        result = self.config.ip_targets()
         self.assertEqual(isinstance(result, list), True)
         self.assertEqual(len(result), 1)
         for item in result:

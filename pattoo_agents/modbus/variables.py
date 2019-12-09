@@ -142,30 +142,30 @@ class HoldingRegisterVariable(RegisterVariable):
                 self.valid = False
 
 
-class DeviceRegisterVariables(object):
+class TargetRegisterVariables(object):
     """Object defining a list of RegisterVariable objects.
 
-    Stores RegisterVariables polled from a specific ip_device.
+    Stores RegisterVariables polled from a specific ip_target.
 
     """
 
-    def __init__(self, device):
+    def __init__(self, target):
         """Initialize the class.
 
         Args:
-            device: Device polled to get the RegisterVariable objects
+            target: Target polled to get the RegisterVariable objects
 
         Returns:
             None
 
         Variables:
-            self.data: List of RegisterVariables retrieved from the device
+            self.data: List of RegisterVariables retrieved from the target
             self.valid: True if the object is populated with RegisterVariables
 
         """
         # Initialize key variables
         self.data = []
-        self.device = device
+        self.target = target
         self.valid = False
 
     def __repr__(self):
@@ -180,10 +180,10 @@ class DeviceRegisterVariables(object):
         """
         # Create a printable variation of the value
         result = (
-            '<{0} device={1}.valid={2}, data={3}'
+            '<{0} target={1}.valid={2}, data={3}'
             ''.format(
                 self.__class__.__name__,
-                repr(self.device), repr(self.valid), repr(self.data)
+                repr(self.target), repr(self.valid), repr(self.data)
             )
         )
         return result
@@ -208,4 +208,4 @@ class DeviceRegisterVariables(object):
                 self.data.append(item)
 
                 # Set object as being.valid
-                self.valid = False not in [bool(self.data), bool(self.device)]
+                self.valid = False not in [bool(self.data), bool(self.target)]

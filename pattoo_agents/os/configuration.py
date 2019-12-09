@@ -96,8 +96,8 @@ class ConfigHubd(Config):
         # Instantiate the Config parent
         Config.__init__(self)
 
-    def ip_devices(self):
-        """Get devices.
+    def ip_targets(self):
+        """Get targets.
 
         Args:
             None
@@ -108,7 +108,7 @@ class ConfigHubd(Config):
         """
         # Get result
         key = PATTOO_AGENT_OS_HUBD
-        sub_key = 'ip_devices'
+        sub_key = 'ip_targets'
         result = configuration.search(
             key, sub_key, self._configuration, die=True)
         return result

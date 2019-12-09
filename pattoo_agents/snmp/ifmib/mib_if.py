@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Class interacts with devices supporting IfMIB. (32 Bit Counters)."""
+"""Class interacts with targets supporting IfMIB. (32 Bit Counters)."""
 
 
 from collections import defaultdict
@@ -9,7 +9,7 @@ from pattoo_agents.snmp import snmp
 
 
 class Query(object):
-    """Class interacts with devices supporting IfMIB.
+    """Class interacts with targets supporting IfMIB.
 
     Args:
         None
@@ -19,7 +19,7 @@ class Query(object):
 
     Key Methods:
 
-        everything: Returns all needed layer 1 MIB information from the device.
+        everything: Returns all needed layer 1 MIB information from the target.
             Keyed by OID's MIB name (primary key), ifIndex (secondary key)
 
     """
@@ -38,7 +38,7 @@ class Query(object):
         self._query = snmp.SNMP(snmpvariable)
 
     def everything(self):
-        """Get layer 1 data from device using Layer 1 OIDs.
+        """Get layer 1 data from target using Layer 1 OIDs.
 
         Args:
             None
@@ -111,7 +111,7 @@ class Query(object):
         return final
 
     def ifinoctets(self):
-        """Return dict of IFMIB ifInOctets for each ifIndex for device.
+        """Return dict of IFMIB ifInOctets for each ifIndex for target.
 
         Args:
             None
@@ -127,7 +127,7 @@ class Query(object):
         return result
 
     def ifoutoctets(self):
-        """Return dict of IFMIB ifOutOctets for each ifIndex for device.
+        """Return dict of IFMIB ifOutOctets for each ifIndex for target.
 
         Args:
             None
@@ -143,7 +143,7 @@ class Query(object):
         return result
 
     def ifdescr(self):
-        """Return dict of IFMIB ifDescr for each ifIndex for device.
+        """Return dict of IFMIB ifDescr for each ifIndex for target.
 
         Args:
             None
@@ -158,7 +158,7 @@ class Query(object):
         return result
 
     def ifalias(self):
-        """Return dict of IFMIB ifAlias for each ifIndex for device.
+        """Return dict of IFMIB ifAlias for each ifIndex for target.
 
         Args:
 
@@ -172,7 +172,7 @@ class Query(object):
         return result
 
     def ifname(self):
-        """Return dict of IFMIB ifName for each ifIndex for device.
+        """Return dict of IFMIB ifName for each ifIndex for target.
 
         Args:
             None
@@ -187,7 +187,7 @@ class Query(object):
         return result
 
     def ifindex(self):
-        """Return dict of IFMIB ifindex for each ifIndex for device.
+        """Return dict of IFMIB ifindex for each ifIndex for target.
 
         Args:
             None
@@ -202,7 +202,7 @@ class Query(object):
         return result
 
     def ifadminstatus(self):
-        """Return dict of IFMIB ifAdminStatus for each ifIndex for device.
+        """Return dict of IFMIB ifAdminStatus for each ifIndex for target.
 
         Args:
             None
@@ -217,7 +217,7 @@ class Query(object):
         return result
 
     def ifinmulticastpkts(self):
-        """Return dict of IFMIB ifInMulticastPkts for each ifIndex for device.
+        """Return dict of IFMIB ifInMulticastPkts for each ifIndex for target.
 
         Args:
             None
@@ -232,7 +232,7 @@ class Query(object):
         return result
 
     def ifoutmulticastpkts(self):
-        """Return dict of IFMIB ifOutMulticastPkts for each ifIndex for device.
+        """Return dict of IFMIB ifOutMulticastPkts for each ifIndex for target.
 
         Args:
             None
@@ -247,7 +247,7 @@ class Query(object):
         return result
 
     def ifinbroadcastpkts(self):
-        """Return dict of IFMIB ifInBroadcastPkts for each ifIndex for device.
+        """Return dict of IFMIB ifInBroadcastPkts for each ifIndex for target.
 
         Args:
             None
@@ -262,7 +262,7 @@ class Query(object):
         return result
 
     def ifoutbroadcastpkts(self):
-        """Return dict of IFMIB ifOutBroadcastPkts for each ifIndex for device.
+        """Return dict of IFMIB ifOutBroadcastPkts for each ifIndex for target.
 
         Args:
             None
@@ -277,7 +277,7 @@ class Query(object):
         return result
 
     def ifhcinucastpkts(self):
-        """Return dict of IFMIB ifHCInUcastPkts for each ifIndex for device.
+        """Return dict of IFMIB ifHCInUcastPkts for each ifIndex for target.
 
         Args:
             None
@@ -292,7 +292,7 @@ class Query(object):
         return result
 
     def ifhcoutucastpkts(self):
-        """Return dict of IFMIB ifHCOutUcastPkts for each ifIndex for device.
+        """Return dict of IFMIB ifHCOutUcastPkts for each ifIndex for target.
 
         Args:
             None
@@ -307,7 +307,7 @@ class Query(object):
         return result
 
     def ifhcinmulticastpkts(self):
-        """Return dict IFMIB ifHCInMulticastPkts for each ifIndex for device.
+        """Return dict IFMIB ifHCInMulticastPkts for each ifIndex for target.
 
         Args:
             None
@@ -322,7 +322,7 @@ class Query(object):
         return result
 
     def ifhcoutmulticastpkts(self):
-        """Return dict IFMIB ifHCOutMulticastPkts for each ifIndex for device.
+        """Return dict IFMIB ifHCOutMulticastPkts for each ifIndex for target.
 
         Args:
             None
@@ -337,7 +337,7 @@ class Query(object):
         return result
 
     def ifhcinbroadcastpkts(self):
-        """Return dict IFMIB ifHCInBroadcastPkts for each ifIndex for device.
+        """Return dict IFMIB ifHCInBroadcastPkts for each ifIndex for target.
 
         Args:
             None
@@ -352,7 +352,7 @@ class Query(object):
         return result
 
     def ifhcoutbroadcastpkts(self):
-        """Return dict IFMIB ifHCOutBroadcastPkts for each ifIndex for device.
+        """Return dict IFMIB ifHCOutBroadcastPkts for each ifIndex for target.
 
         Args:
             None
@@ -367,7 +367,7 @@ class Query(object):
         return result
 
     def ifhcinoctets(self):
-        """Return dict of IFMIB ifHCInOctets for each ifIndex for device.
+        """Return dict of IFMIB ifHCInOctets for each ifIndex for target.
 
         Args:
             None
@@ -383,7 +383,7 @@ class Query(object):
         return result
 
     def ifhcoutoctets(self):
-        """Return dict of IFMIB ifHCOutOctets for each ifIndex for device.
+        """Return dict of IFMIB ifHCOutOctets for each ifIndex for target.
 
         Args:
             None
