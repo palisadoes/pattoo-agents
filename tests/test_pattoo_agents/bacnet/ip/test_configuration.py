@@ -26,7 +26,7 @@ This script is not installed in the \
     sys.exit(2)
 
 # Pattoo imports
-from pattoo_shared.variables import PollingTarget, DevicePollingTargets
+from pattoo_shared.variables import PollingPoint, TargetPollingPoints
 from pattoo_agents.bacnet.ip import configuration
 from tests.libraries.configuration import UnittestConfig
 
@@ -61,10 +61,10 @@ class TestConfigBACnetIP(unittest.TestCase):
 
         # Test each dpt
         item = result[0]
-        self.assertEqual(isinstance(item, DevicePollingTargets), True)
+        self.assertEqual(isinstance(item, TargetPollingPoints), True)
         self.assertEqual(item.device, 'localhost-bacnet')
         for index, value in enumerate(item.data):
-            self.assertEqual(isinstance(value, PollingTarget), True)
+            self.assertEqual(isinstance(value, PollingPoint), True)
             self.assertEqual(value.address, points[index])
 
 

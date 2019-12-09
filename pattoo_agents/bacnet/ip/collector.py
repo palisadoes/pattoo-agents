@@ -114,7 +114,7 @@ class _PollBACnetIP(object):
 
         Args:
             ip_device: Device to poll
-            polltargets: List of PollingTarget objects to poll
+            polltargets: List of PollingPoint objects to poll
             bacnet: BAC0 connect object
 
         Returns:
@@ -167,7 +167,7 @@ def poll_device_address(ip_device, address, object2poll, bacnet):
 
     Args:
         ip_device: Device to poll
-        polltargets: List of PollingTarget objects to poll
+        polltargets: List of PollingPoint objects to poll
         bacnet: BAC0 connect object
 
     Returns:

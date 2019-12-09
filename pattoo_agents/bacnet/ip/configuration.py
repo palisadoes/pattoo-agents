@@ -7,7 +7,7 @@ import itertools
 # Import project libraries
 from pattoo_shared import configuration
 from pattoo_shared import data as lib_data
-from pattoo_shared.variables import DevicePollingTargets
+from pattoo_shared.variables import TargetPollingPoints
 from pattoo_shared.configuration import Config
 from .constants import PATTOO_AGENT_BACNETIPD
 from pattoo_agents.modbus.variables import (
@@ -57,7 +57,7 @@ class ConfigBACnetIP(Config):
             group: Group name to filter results by
 
         Returns:
-            result: List of DevicePollingTargets objects
+            result: List of TargetPollingPoints objects
 
         """
         # Initialize key variables
@@ -80,7 +80,7 @@ class ConfigBACnetIP(Config):
             if 'ip_devices' and datapoint_key in group:
                 for ip_device in group['ip_devices']:
                     poll_targets = self._polling_targets(group[datapoint_key])
-                    dpt = DevicePollingTargets(ip_device)
+                    dpt = TargetPollingPoints(ip_device)
                     dpt.add(poll_targets)
                     result.append(dpt)
         return result

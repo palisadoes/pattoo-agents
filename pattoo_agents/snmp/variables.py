@@ -2,7 +2,7 @@
 
 # Import pattoo libraries
 from pattoo_agents.snmp import oid as class_oid
-from pattoo_shared.variables import PollingTarget
+from pattoo_shared.variables import PollingPoint
 
 
 class SNMPAuth(object):

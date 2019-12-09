@@ -71,7 +71,7 @@ def _snmpwalks(ip_snmpvariables, ip_polltargets):
 
     Args:
         ip_snmpvariables: Dict of type SNMPVariable keyed by ip_device
-        ip_polltargets: Dict keyed by ip_device with PollingTarget
+        ip_polltargets: Dict keyed by ip_device with PollingPoint
             lists to poll
 
     Returns:
@@ -106,7 +106,7 @@ def _walker(snmpvariable, polltargets):
 
     Args:
         snmpvariable: SNMPVariable to poll
-        polltargets: List of PollingTarget objects to poll
+        polltargets: List of PollingPoint objects to poll
 
     Returns:
         ddv: TargetDataPoints for the SNMPVariable device
