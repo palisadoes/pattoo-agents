@@ -9,7 +9,7 @@ import collections
 from pattoo_agents.snmp import configuration
 from pattoo_shared.variables import (
     AgentKey, DataPointMetadata, DataPoint, TargetDataPoints, AgentPolledData)
-from pattoo_agents.snmp.constants import PATTOO_AGENT_SNMPD
+from pattoo_agents.snmp.constants import PATTOO_AGENT_SNMP_IFMIBD
 from pattoo_agents.snmp.ifmib.mib_if import Query
 
 
@@ -31,7 +31,7 @@ def poll():
     ip_polltargets = {}
 
     # Initialize AgentPolledData
-    agent_program = PATTOO_AGENT_SNMPD
+    agent_program = PATTOO_AGENT_SNMP_IFMIBD
     agentdata = AgentPolledData(agent_program, config)
 
     # Get SNMP OIDs to be polled (Along with authorizations and ip_targets)
@@ -145,7 +145,7 @@ def _create_datapoints(items):
     # Initialize key variables
     result = []
     ifindex_lookup = _metadata(items)
-    prefix = AgentKey(PATTOO_AGENT_SNMPD)
+    prefix = AgentKey(PATTOO_AGENT_SNMP_IFMIBD)
 
     # Process the results
     for key, polled_datapoints in items.items():

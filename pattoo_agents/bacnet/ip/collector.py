@@ -187,8 +187,8 @@ def poll_target_address(ip_target, address, object2poll, bacnet):
         log.log2warning(51004, log_message)
     except UnknownObjectError:
         log_message = ('''\
-Unknown BACnet object {} requested from target {}.\
-'''.format(object2poll, ip_target))
+Unknown BACnet object {} requested from target {} at address {}.\
+'''.format(object2poll, ip_target, address))
         log.log2warning(51005, log_message)
     except Exception as reason:
         log_message = ('BACnet error polling {}. Reason: {}'.format(
