@@ -10,6 +10,7 @@ from BAC0.core.io.IOExceptions import (
 
 # Pattoo libraries
 from pattoo_agents.bacnet.ip import configuration
+from pattoo_agents import network
 from pattoo_shared import data
 from pattoo_shared import log
 from pattoo_shared.constants import DATA_FLOAT, DATA_STRING
@@ -63,23 +64,9 @@ class _PollBACnetIP(object):
         self._bacnet = bacnet
 
         config = configuration.ConfigBACnetIP()
-        self._ip_polltargets = {}
 
-        # Get SNMP OIDs to be polled (Along with authorizations and ip_targets)
-        target_poll_targets = config.target_polling_points()
-
-        # Create a dict of oid lists keyed by ip_target
-        for dpt in target_poll_targets:
-            # Ignore invalid data
-            if dpt.valid is False:
-                continue
-
-            # Process
-            next_target = dpt.target
-            if next_target in self._ip_polltargets:
-                self._ip_polltargets[next_target].extend(dpt.data)
-            else:
-                self._ip_polltargets[next_target] = dpt.data
+        # Get points to be polled (Along with authorizations and ip_targets)
+        self._target_poll_targets = config.target_polling_points()
 
     def data(self):
         """Get agent data.
@@ -94,45 +81,45 @@ class _PollBACnetIP(object):
 
         """
         # Initialize key variables
-        arguments = []
         ddv_list = []
 
         # Poll all targets in sequence
-        for ip_target, dpts in sorted(self._ip_polltargets.items()):
-            arguments.append((ip_target, dpts))
-
-        for ip_target, dpts in arguments:
-            result = self._get_target_datapoints(ip_target, dpts)
+        for item in self._target_poll_targets:
+            result = self._get_target_datapoints(item)
             if result.valid is True:
                 ddv_list.append(result)
 
         # Return
         return ddv_list
 
-    def _get_target_datapoints(self, ip_target, polltargets):
+    def _get_target_datapoints(self, item):
         """Poll each spoke in parallel.
 
         Args:
-            ip_target: Target to poll
-            polltargets: List of PollingPoint objects to poll
-            bacnet: BAC0 connect object
+            item: TargetPollingPoints object
 
         Returns:
             ddv: TargetDataPoints for the SNMPVariable target
 
         """
         # Intialize data gathering
+        ip_target = item.target
         ddv = TargetDataPoints(ip_target)
         prefix = AgentKey(PATTOO_AGENT_BACNETIPD)
 
+        # BAC0 only works with IP addresses
+        ip_address = network.get_ip_address(ip_target)
+        if bool(ip_address) is False:
+            return ddv
+
         # Get list of type DataPoint
         datapoints = []
-        for polltarget in polltargets:
+        for polltarget in item.data:
             # Get polling results
             value = poll_target_address(
-                ip_target, polltarget.address, 'presentValue', self._bacnet)
+                ip_address, polltarget.address, 'presentValue', self._bacnet)
             name = poll_target_address(
-                ip_target, polltarget.address, 'objectName', self._bacnet)
+                ip_address, polltarget.address, 'objectName', self._bacnet)
 
             # Skip if invalid data is received
             if value is None:

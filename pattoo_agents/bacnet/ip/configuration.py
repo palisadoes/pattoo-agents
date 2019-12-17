@@ -1,17 +1,11 @@
 #!/usr/bin/env python3
 """Classe to manage SNMP agent configurations."""
 
-# Standard imports
-import itertools
-
 # Import project libraries
 from pattoo_shared import configuration
-from pattoo_shared import data as lib_data
 from pattoo_shared.variables import TargetPollingPoints
 from pattoo_shared.configuration import Config
 from .constants import PATTOO_AGENT_BACNETIPD
-from pattoo_agents.modbus.variables import (
-    InputRegisterVariable, HoldingRegisterVariable, TargetRegisterVariables)
 
 
 class ConfigBACnetIP(Config):

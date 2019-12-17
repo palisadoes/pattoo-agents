@@ -8,6 +8,7 @@ PattooShared>=0.0.61
 
 # Miscellaneous packages
 
+ipaddress
 psutil
 Flask
 gunicorn
