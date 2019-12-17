@@ -41,22 +41,6 @@ def poll(agent_program):
     ddv = TargetDataPoints(agent_hostname)
 
     #########################################################################
-    # Set non timeseries values
-    #########################################################################
-
-    metadata = []
-    metadata.append(
-        DataPointMetadata('operating_system_release', platform.release()))
-    metadata.append(
-        DataPointMetadata('operating_system_type', platform.system()))
-    metadata.append(
-        DataPointMetadata('operating_system_version', platform.version()))
-    metadata.append(
-        DataPointMetadata('operating_system_cpus', psutil.cpu_count()))
-    metadata.append(
-        DataPointMetadata('operating_system_hostname', socket.getfqdn()))
-
-    #########################################################################
     # Get timeseries values
     #########################################################################
 
@@ -94,6 +78,10 @@ class Performance(object):
         """
         # Initialize variables
         self.create = AgentKey('agent_os')
+
+        #######################################################################
+        # Set non timeseries values
+        #######################################################################
         self.metadata = []
         self.metadata.append(
             DataPointMetadata(self.create.key('release'), platform.release()))
