@@ -3,7 +3,7 @@
 
 # Import project libraries
 from pattoo_shared import configuration
-from pattoo_shared.variables import TargetPollingPoints
+from pattoo_shared.variables import IPTargetPollingPoints
 from pattoo_shared.configuration import Config
 from .constants import PATTOO_AGENT_BACNETIPD
 
@@ -51,7 +51,7 @@ class ConfigBACnetIP(Config):
             group: Group name to filter results by
 
         Returns:
-            result: List of TargetPollingPoints objects
+            result: List of IPTargetPollingPoints objects
 
         """
         # Initialize key variables
@@ -75,7 +75,7 @@ class ConfigBACnetIP(Config):
                 for ip_target in group['ip_targets']:
                     poll_targets = self.get_polling_points(
                         group[datapoint_key])
-                    dpt = TargetPollingPoints(ip_target)
+                    dpt = IPTargetPollingPoints(ip_target)
                     dpt.add(poll_targets)
                     if dpt.valid is True:
                         result.append(dpt)
