@@ -10,7 +10,7 @@ from BAC0.core.io.IOExceptions import (
 
 # Pattoo libraries
 from pattoo_agents.bacnet.ip import configuration
-from pattoo_agents import network
+from pattoo_shared import network
 from pattoo_shared import data
 from pattoo_shared import log
 from pattoo_shared.constants import DATA_FLOAT, DATA_STRING
@@ -108,7 +108,7 @@ class _PollBACnetIP(object):
         prefix = AgentKey(PATTOO_AGENT_BACNETIPD)
 
         # BAC0 only works with IP addresses
-        ip_address = network.get_ip_address(ip_target)
+        ip_address = network.get_ipaddress(ip_target)
         if bool(ip_address) is False:
             return ddv
 

@@ -73,8 +73,10 @@ class ConfigBACnetIP(Config):
             # Process data
             if 'ip_targets' and datapoint_key in group:
                 for ip_target in group['ip_targets']:
-                    poll_targets = self._polling_points(group[datapoint_key])
+                    poll_targets = self.get_polling_points(
+                        group[datapoint_key])
                     dpt = TargetPollingPoints(ip_target)
                     dpt.add(poll_targets)
-                    result.append(dpt)
+                    if dpt.valid is True:
+                        result.append(dpt)
         return result
