@@ -7,7 +7,7 @@ import itertools
 # Import project libraries
 from pattoo_shared import configuration
 from pattoo_shared import data as lib_data
-from pattoo_shared.variables import TargetPollingPoints
+from pattoo_shared.variables import IPTargetPollingPoints
 from pattoo_shared.configuration import Config
 from pattoo_agents.modbus.variables import (
     InputRegisterVariable, HoldingRegisterVariable, TargetRegisterVariables)
@@ -88,18 +88,20 @@ class ConfigModbusTCP(Config):
 
             # Create polling targets
             for ip_target in data['ip_targets']:
-                poll_targets = self._polling_points(data[register_type])
-                dpt = TargetPollingPoints(ip_target)
+                poll_targets = self.get_polling_points(
+                    data[register_type])
+                dpt = IPTargetPollingPoints(ip_target)
                 dpt.add(poll_targets)
-                dpts.append(dpt)
+                if dpt.valid is True:
+                    dpts.append(dpt)
 
-            # Unpack the TargetPollingPoints
+            # Unpack the IPTargetPollingPoints
             for dpt in dpts:
                 ip_target = dpt.target
                 m_dict = {}
                 variables = []
 
-                # Extract data from TargetPollingPoints
+                # Extract data from IPTargetPollingPoints
                 for item in dpt.data:
                     multiplier = item.multiplier
                     if multiplier not in m_dict:

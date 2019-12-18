@@ -1,17 +1,11 @@
 #!/usr/bin/env python3
 """Classe to manage SNMP agent configurations."""
 
-# Standard imports
-import itertools
-
 # Import project libraries
 from pattoo_shared import configuration
-from pattoo_shared import data as lib_data
-from pattoo_shared.variables import TargetPollingPoints
+from pattoo_shared.variables import IPTargetPollingPoints
 from pattoo_shared.configuration import Config
 from .constants import PATTOO_AGENT_BACNETIPD
-from pattoo_agents.modbus.variables import (
-    InputRegisterVariable, HoldingRegisterVariable, TargetRegisterVariables)
 
 
 class ConfigBACnetIP(Config):
@@ -57,7 +51,7 @@ class ConfigBACnetIP(Config):
             group: Group name to filter results by
 
         Returns:
-            result: List of TargetPollingPoints objects
+            result: List of IPTargetPollingPoints objects
 
         """
         # Initialize key variables
@@ -79,8 +73,10 @@ class ConfigBACnetIP(Config):
             # Process data
             if 'ip_targets' and datapoint_key in group:
                 for ip_target in group['ip_targets']:
-                    poll_targets = self._polling_points(group[datapoint_key])
-                    dpt = TargetPollingPoints(ip_target)
+                    poll_targets = self.get_polling_points(
+                        group[datapoint_key])
+                    dpt = IPTargetPollingPoints(ip_target)
                     dpt.add(poll_targets)
-                    result.append(dpt)
+                    if dpt.valid is True:
+                        result.append(dpt)
         return result

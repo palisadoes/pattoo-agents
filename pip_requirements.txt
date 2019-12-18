@@ -4,10 +4,11 @@
 
 # Pattoo packages
 
-PattooShared>=0.0.61
+PattooShared>=0.0.63
 
 # Miscellaneous packages
 
+ipaddress
 psutil
 Flask
 gunicorn

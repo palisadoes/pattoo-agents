@@ -7,7 +7,7 @@ from copy import deepcopy
 # Import project libraries
 from pattoo_shared import configuration
 from pattoo_shared.configuration import Config
-from pattoo_shared.variables import TargetPollingPoints
+from pattoo_shared.variables import IPTargetPollingPoints
 from .constants import PATTOO_AGENT_SNMPD
 from .variables import SNMPAuth, SNMPVariableList
 
@@ -77,7 +77,7 @@ class ConfigSNMP(Config):
             group: Group name to filter results by
 
         Returns:
-            result: List of TargetPollingPoints objects
+            result: List of IPTargetPollingPoints objects
 
         """
         # Initialize key variables
@@ -100,10 +100,12 @@ class ConfigSNMP(Config):
             # Process data
             if 'ip_targets' and datapoint_key in group:
                 for ip_target in group['ip_targets']:
-                    poll_targets = self._polling_points(group[datapoint_key])
-                    dpt = TargetPollingPoints(ip_target)
+                    poll_targets = self.get_polling_points(
+                        group[datapoint_key])
+                    dpt = IPTargetPollingPoints(ip_target)
                     dpt.add(poll_targets)
-                    result.append(dpt)
+                    if dpt.valid is True:
+                        result.append(dpt)
         return result
 
 

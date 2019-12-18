@@ -57,11 +57,11 @@ class UnittestConfig(object):
                 'ip_bind_port': 6060,
             },
             'pattoo_agent_bacnetipd': {
-                'agent_ip_address': 'localhost_agent_ip_address',
+                'agent_ip_address': '127.0.0.50',
                 'polling_groups': [
                     {
                         'group_name': 'TEST',
-                        'ip_targets': ['localhost-bacnet'],
+                        'ip_targets': ['127.0.0.60'],
                         'points': [
                             {'address': 123},
                             {'address': 345}
