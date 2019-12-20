@@ -113,7 +113,7 @@ other daemons that could be using BACnet'''.format(agent_ip_address))
 
             # Sleep
             duration = time() - ts_start
-            sleep(interval - duration)
+            sleep(abs(interval - duration))
 
 
 def main():

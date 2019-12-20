@@ -82,7 +82,7 @@ class PollingAgent(Agent):
 
             # Sleep
             duration = time() - ts_start
-            sleep(interval - duration)
+            sleep(abs(interval - duration))
 
 
 def main():
