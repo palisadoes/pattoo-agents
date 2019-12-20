@@ -7,7 +7,7 @@ Posts system data to remote host over HTTP.
 
 # Standard libraries
 from __future__ import print_function
-from time import sleep
+from time import sleep, time
 import sys
 import os
 
@@ -64,6 +64,8 @@ class PollingAgent(Agent):
 
         # Post data to the remote server
         while True:
+            # Get start time
+            ts_start = time()
 
             # Get system data
             agentdata = collector.poll(self._parent)
@@ -79,7 +81,8 @@ class PollingAgent(Agent):
                 server.purge()
 
             # Sleep
-            sleep(interval)
+            duration = time() - ts_start
+            sleep(interval - duration)
 
 
 def main():
