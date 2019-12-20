@@ -7,7 +7,7 @@ Retrieve's system data from remote host over HTTP.
 
 # Standard libraries
 from __future__ import print_function
-from time import sleep
+from time import sleep, time
 import sys
 import os
 import socket
@@ -27,7 +27,6 @@ else:
 # Pattoo libraries
 from pattoo_shared import log
 from pattoo_shared.agent import Agent, AgentCLI
-from pattoo_shared import agent
 from pattoo_shared import files
 from pattoo_shared.phttp import PassiveAgent
 from pattoo_agents.os.constants import (
@@ -67,10 +66,14 @@ class PollingAgent(Agent):
 
         # Post data to the remote server
         while True:
+            # Get start time
+            ts_start = time()
+
             _parallel_poll()
 
             # Sleep
-            sleep(interval)
+            duration = time() - ts_start
+            sleep(interval - duration)
 
 
 def _parallel_poll():
