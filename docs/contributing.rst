@@ -2,9 +2,13 @@ How To Contribute
 =================
 
 PLACEHOLDER THIS DOES NOT WORK YET
+
 PLACEHOLDER THIS DOES NOT WORK YET
+
 PLACEHOLDER THIS DOES NOT WORK YET
+
 PLACEHOLDER THIS DOES NOT WORK YET
+
 PLACEHOLDER THIS DOES NOT WORK YET
 
 Below is the workflow for having your contribution accepted into the ``pattoo-agents`` repository.
@@ -78,6 +82,7 @@ Commits
 -------
 
 ``pattoo-agents`` strives to maintain a proper log of development through well structured git commits. The links below offer insight and advice on the topic of commit messages:
+
 #. https://robots.thoughtbot.com/5-useful-tips-for-a-better-commit-message
 #. http://chris.beams.io/posts/git-commit/
 
