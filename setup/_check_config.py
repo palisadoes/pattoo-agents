@@ -58,7 +58,7 @@ Section "{}" not found in configuration file in directory {}. Please fix.\
     secondary_key_check(config, 'main', secondaries)
     secondaries = ['ip_address', 'ip_bind_port']
     secondary_key_check(config, 'pattoo_api_agentd', secondaries)
-    secondaries = ['polling_interval', 'ip_address', 'ip_bind_port']
+    secondaries = ['polling_interval', 'ip_listen_address', 'ip_bind_port']
     secondary_key_check(config, 'polling', secondaries)
 
     # Print Status
