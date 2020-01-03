@@ -56,7 +56,7 @@ Section "{}" not found in configuration file in directory {}. Please fix.\
         'log_level', 'log_directory', 'cache_directory',
         'daemon_directory']
     secondary_key_check(config, 'main', secondaries)
-    secondaries = ['ip_address', 'ip_bind_port']
+    secondaries = ['ip_listen_address', 'ip_bind_port']
     secondary_key_check(config, 'pattoo_api_agentd', secondaries)
     secondaries = ['polling_interval', 'ip_address', 'ip_bind_port']
     secondary_key_check(config, 'polling', secondaries)
