@@ -48,7 +48,7 @@ You will need to edit a configuration file in ``etc/``\ directory. Pattoo will r
 For the sake of simplicity we will assume there is one file called ``etc/config.yaml``
 
 
-#. Make sure you have configured the ``main`` and ``remote_api`` sections of ``etc/config.yaml`` file before adding any sections for ``pattoo-agent-os`` related daemons. The :doc:`configuration` file explains this in detail.
+#. Make sure you have configured the ``main`` and ``remote_api`` sections of ``etc/config.yaml`` file before adding any sections for ``pattoo_agent_os`` related daemons. The :doc:`configuration` file explains this in detail.
 #. After doing this, edit the ``etc/config.yaml`` file to change configuration options specific to the daemons . An explanation follows.
 
 pattoo_agent_snmpd Section

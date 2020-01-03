@@ -6,7 +6,7 @@ After installing your agents, you will need to edit a configuration file in the 
 
 For the sake of simplicity we will assume there is one file called ``etc/config.yaml``.
 
-Make sure you have configured the ``main`` and ``polling`` sections of ``etc/config.yaml`` file before adding any sections for ``pattoo-agent-os`` related daemons.
+Make sure you have configured the ``main`` and ``polling`` sections of ``etc/config.yaml`` file before adding any sections for ``pattoo_agent_os`` related daemons.
 
 Custom Directory Location
 -------------------------

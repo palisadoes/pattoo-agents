@@ -37,7 +37,7 @@ How to get the daemons running to collect data.
    agent
    pattoo_agent_bacnetipd
    pattoo_agent_modbustcpd
-   pattoo-agent-os
+   pattoo_agent_os
    pattoo_agent_snmpd
 
 Miscellaneous Information
