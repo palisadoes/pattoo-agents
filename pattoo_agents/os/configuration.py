@@ -12,7 +12,7 @@ from .constants import (
     PATTOO_AGENT_OS_SPOKED, PATTOO_AGENT_OS_HUBD, PATTOO_AGENT_OS_AUTONOMOUSD)
 
 
-class ConfigSpoked(Config):
+class ConfigSpoked(object):
     """Class gathers all configuration information.
 
     Only processes the following YAML keys in the configuration file:
@@ -31,8 +31,13 @@ class ConfigSpoked(Config):
             None
 
         """
-        # Instantiate the Config parent
-        Config.__init__(self)
+        # Get the configuration directory
+        # Expand linux ~ notation for home directories if provided.
+        _config_directory = log.check_environment()
+        config_directory = os.path.expanduser(_config_directory)
+        config_file = '{}{}{}.yaml'.format(
+            config_directory, os.sep, PATTOO_AGENT_OS_SPOKED)
+        self._configuration = files.read_yaml_file(config_file)
 
     def ip_listen_address(self):
         """Get ip_listen_address.
