@@ -2,29 +2,43 @@
 Configuration
 =============
 
-After installing your agents, you will need to edit a configuration file in the ``etc/`` directory. Pattoo will read any ``.yaml`` files found in this directory for configuration parameters.
+After installation, you will need to create a configuration file in a directory dedicated to ``pattoo``.
 
-For the sake of simplicity we will assume there is one file called ``etc/config.yaml``.
+Set the  Configuration Directory Location
+-----------------------------------------
 
-Make sure you have configured the ``main`` and ``polling`` sections of ``etc/config.yaml`` file before adding any sections for ``pattoo_agent_os`` related daemons.
+You must set the location of the configuration directory by using the ``PATTOO_CONFIGDIR`` environmental variable. Here is how to do this:
 
-Custom Directory Location
--------------------------
+.. code-block:: bash
 
-You can selectively set the location of the configuration directory by using the ``PATTOO_CONFIGDIR`` environmental variable.
+    $ export PATTOO_CONFIGDIR=/path/to/configuration/directory
 
-This can be useful for:
+``pattoo`` will only read the configuration placed in a file named ``pattoo.yaml`` in this directory.
 
+Make sure that files in this directory are readable by the user that will be running ``pattoo`` daemons or scripts.
 
-#. Automated deployments
-#. Software developer code testing
+Copy the Template to Your Configuration Directory
+-------------------------------------------------
 
-By default the ``etc/`` directory of the repository is used for all configuration file searches.
+Copy the template file in the ``examples/etc`` directory to the ``PATTOO_CONFIGDIR`` location.
 
-Mandatory Configuration Sections
---------------------------------
+**NOTE:** If a ``/path/to/configuration/directory/pattoo.yaml`` file already exists in the directory then skip this step and edit the file according to the steps in following sections.
 
-**NOTE:** The indentations in the YAML configuration are important. Make sure indentations line up.
+.. code-block:: bash
+
+    $ cp examples/etc/pattoo.yaml.template \
+      /path/to/configuration/directory/pattoo.yaml
+
+The next step is to edit the contents of ``pattoo.yaml``
+
+Edit Your Configuration
+-----------------------
+
+Take some time to read up on ``YAML`` formatted files if you are not familiar with them. A background knowledge is always helpful.
+
+The ``pattoo.yaml`` file created from the template will have sections that you will need to edit with custom values. Don't worry, these sections are easily identifiable as they all start with ``PATTOO_``
+
+**NOTE:** The indentations in the YAML configuration are important. Make sure indentations line up. Dashes '-' indicate one item in a list of items (if applicable).
 
 .. code-block:: yaml
 
@@ -67,7 +81,7 @@ This table outlines the purpose of each configuration parameter
      - Directory used to store daemon related data that needs to be maintained between reboots
    * - ``polling``
      -
-     - **Note** The ``polling`` section is not required for ``patoo-os-spoked`` configurations
+     -
    * -
      - ``ip_address``
      - IP address of remote ``pattoo`` server
