@@ -6,7 +6,6 @@ import os
 
 # Import project libraries
 from pattoo_shared import configuration
-from pattoo_shared.configuration import Config
 from pattoo_shared import files, log
 from .constants import (
     PATTOO_AGENT_OS_SPOKED, PATTOO_AGENT_OS_HUBD, PATTOO_AGENT_OS_AUTONOMOUSD)
@@ -84,7 +83,7 @@ class ConfigSpoked(object):
         return result
 
 
-class ConfigHubd(Config):
+class ConfigHubd(object):
     """Class for PATTOO_AGENT_OS_HUBD configuration information.
 
     Only processes the following YAML keys in the configuration file:
@@ -103,8 +102,13 @@ class ConfigHubd(Config):
             None
 
         """
-        # Instantiate the Config parent
-        Config.__init__(self)
+        # Get the configuration directory
+        # Expand linux ~ notation for home directories if provided.
+        _config_directory = log.check_environment()
+        config_directory = os.path.expanduser(_config_directory)
+        config_file = '{}{}{}.yaml'.format(
+            config_directory, os.sep, PATTOO_AGENT_OS_HUBD)
+        self._configuration = files.read_yaml_file(config_file)
 
     def ip_targets(self):
         """Get targets.
@@ -121,6 +125,29 @@ class ConfigHubd(Config):
         sub_key = 'ip_targets'
         result = configuration.search(
             key, sub_key, self._configuration, die=True)
+        return result
+
+    def polling_interval(self):
+        """Get targets.
+
+        Args:
+            None
+
+        Returns:
+            result: result
+
+        """
+        # Get result
+        key = PATTOO_AGENT_OS_HUBD
+        sub_key = 'polling_interval'
+        intermediate = configuration.search(
+            key, sub_key, self._configuration, die=False)
+
+        # Default to 300
+        if bool(intermediate) is False:
+            result = 300
+        else:
+            result = abs(int(intermediate))
         return result
 
 
