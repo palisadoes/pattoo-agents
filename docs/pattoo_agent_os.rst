@@ -2,7 +2,7 @@
 Pattoo Operating System Agents
 ==============================
 
-``pattoo-agent-os`` daemons provide performance data on any Linux system it runs on. The data is presented in ``json`` format and can either be posted using HTTP to a remote server or viewed on the server on which it runs by visiting a well known URL.
+``pattoo_agent_os`` daemons provide performance data on any Linux system it runs on. The data is presented in ``json`` format and can either be posted using HTTP to a remote server or viewed on the server on which it runs by visiting a well known URL.
 
 The ``json`` data is formatted for easy ingestion by `the Pattoo Server <https://pattoo.readthedocs.io/>`_
 
@@ -20,7 +20,7 @@ Follow these steps.
 Usage
 -----
 
-``pattoo-agent-os`` contains multiple daemons.
+``pattoo_agent_os`` contains multiple daemons.
 
 
 #. ``pattoo_agent_os_autonomousd.py`` which will post ``linux`` system data in ``json`` format to a remote ``pattoo`` server
@@ -85,7 +85,7 @@ You will need to edit a configuration file in ``etc/``\ directory. Pattoo will r
 For the sake of simplicity we will assume there is one file called ``etc/config.yaml``
 
 
-#. Make sure you have configured the ``main`` and ``remote_api`` sections of ``etc/config.yaml`` file before adding any sections for ``pattoo-agent-os`` related daemons. The :doc:`configuration` file explains this in detail.
+#. Make sure you have configured the ``main`` and ``remote_api`` sections of ``etc/config.yaml`` file before adding any sections for ``pattoo_agent_os`` related daemons. The :doc:`configuration` file explains this in detail.
 #. After doing this, edit the ``etc/config.yaml`` file to change configuration options specific to the daemons . An explanation follows.
 
 pattoo_agent_os_hubd Section
@@ -177,4 +177,4 @@ There is no ``pattoo_agent_os_autonomousd`` section. The parameters in the ``mai
 Testing
 -------
 
-If you are running ``pattoo_agent_os_spoked`` on your local system, then you can test it by pointing your browser to ``http://localhost:5000/pattoo-agent-os`` to view the system data.
+If you are running ``pattoo_agent_os_spoked`` on your local system, then you can test it by pointing your browser to ``http://localhost:5000/pattoo_agent_os`` to view the system data.
