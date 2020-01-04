@@ -24,11 +24,11 @@ else:
 
 # Pattoo libraries
 from pattoo_shared import log
-from pattoo_shared.configuration import Config
 from pattoo_shared.phttp import PostAgent
 from pattoo_shared.agent import Agent, AgentCLI
 from pattoo_agents.snmp.constants import PATTOO_AGENT_SNMP_IFMIBD
 from pattoo_agents.snmp.ifmib import collector
+from pattoo_agents.snmp.configuration import ConfigSNMPIfMIB as Config
 
 
 class PollingAgent(Agent):

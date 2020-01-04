@@ -41,20 +41,22 @@ class UnittestConfig(object):
             os.makedirs(self._config_directory, mode=0o750, exist_ok=True)
 
         self._config = {
-            'main': {
-                'log_directory': self._log_directory,
-                'log_level': 'debug',
-                'cache_directory': self._cache_directory,
-                'daemon_directory': self._daemon_directory,
-            },
-            'polling': {
-                'ip_address': '127.0.0.7',
-                'ip_bind_port': 6067,
-                'polling_interval': 20
-            },
-            'pattoo_api_agentd': {
-                'ip_listen_address': '127.0.0.1',
-                'ip_bind_port': 6060,
+            'pattoo': {
+                'pattoo': {
+                    'log_directory': self._log_directory,
+                    'log_level': 'debug',
+                    'cache_directory': self._cache_directory,
+                    'daemon_directory': self._daemon_directory,
+                },
+                'pattoo_agent_api': {
+                    'ip_address': '127.0.0.7',
+                    'ip_bind_port': 6067,
+                    'polling_interval': 20
+                },
+                'pattoo_api_agentd': {
+                    'ip_listen_address': '127.0.0.1',
+                    'ip_bind_port': 6060,
+                }
             },
             'pattoo_agent_bacnetipd': {
                 'agent_ip_address': '127.0.0.50',
