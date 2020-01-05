@@ -1,29 +1,29 @@
 
-Pattoo SNMP Agents
-==================
+Pattoo SNMP IfMIB Agent For Network Devices
+===========================================
 
-``pattoo_agent_snmpd`` polls data on any SNMP enabled system and reports it to the ``pattoo`` server.
+``pattoo_agent_snmp_ifmibd`` polls SNMP IfMIB data from SNMP enabled systems and reports it to the ``pattoo`` server.
 
 Installation
 ------------
 
-These steps outline what needs to be done to get ``pattoo_agent_snmpd`` working.
+These steps outline what needs to be done to get ``pattoo_agent_snmp_ifmibd`` working.
 
 #. Follow the installation steps in the :doc:`installation` file.
-#. Configure the ``pattoo.yaml`` configuration file following the steps in :doc:`configuration`. This file tells ``pattoo_agent_snmpd``, and all other agents, how to communicate with the ``pattoo`` server.
-#. Create a ``pattoo_agent_snmpd.yaml`` configuration file. Details on how to do this follow.
+#. Configure the ``pattoo.yaml`` configuration file following the steps in :doc:`configuration`. This file tells ``pattoo_agent_snmp_ifmibd``, and all other agents, how to communicate with the ``pattoo`` server.
+#. Create a ``pattoo_agent_snmp_ifmibd.yaml`` configuration file. Details on how to do this follow.
 #. Start the desired daemons as explained in sections to follow. You may want to make these ``systemd`` daemons, if so follow the steps in the :doc:`installation` file.
 
 Setting the  Configuration Directory Location
 ---------------------------------------------
 
-``pattoo_agent_snmpd`` is a standard ``pattoo`` agent and needs its configuration directory defined by using the ``PATTOO_CONFIGDIR`` environmental variable. Here is how to do this from the Linux command line:
+``pattoo_agent_snmp_ifmibd`` is a standard ``pattoo`` agent and needs its configuration directory defined by using the ``PATTOO_CONFIGDIR`` environmental variable. Here is how to do this from the Linux command line:
 
 .. code-block:: bash
 
    $ export PATTOO_CONFIGDIR=/path/to/configuration/directory
 
-``pattoo_agent_snmpd`` client will read its own ``pattoo_agent_snmpd.yaml`` configuration file located this directory when ``PATTOO_CONFIGDIR`` is set.
+``pattoo_agent_snmp_ifmibd`` client will read its own ``pattoo_agent_snmp_ifmibd.yaml`` configuration file located this directory when ``PATTOO_CONFIGDIR`` is set.
 
 You can automatically set this variable each time you log in by adding these lines to your ``~/.bash_profile`` file.
 
@@ -34,13 +34,13 @@ You can automatically set this variable each time you log in by adding these lin
 Make sure that files in this directory are readable by the user that will be running standard ``pattoo`` agent daemons or scripts.
 
 
-Configuring ``pattoo_agent_snmpd.yaml``
----------------------------------------
+Configuring ``pattoo_agent_snmp_ifmibd.yaml``
+---------------------------------------------
 
-Let's get started on configuring ``pattoo_agent_snmpd.yaml``.
+Let's get started on configuring ``pattoo_agent_snmp_ifmibd.yaml``.
 
-``pattoo_agent_snmpd`` Section
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+``pattoo_agent_snmp_ifmibd`` Section
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Here is a sample of what should be added. An explanation follows.
 
@@ -181,14 +181,14 @@ This table outlines the purpose of each configuration parameter
 Polling
 -------
 
-Use ``pattoo_agent_snmpd`` to poll your devices. The daemon has a simple command structure below.
+Use ``pattoo_agent_snmp_ifmibd`` to poll your devices. The daemon has a simple command structure below.
 
-You will need a ``pattoo_agent_snmpd.yaml`` configuration file in the ``PATTOO_CONFIGDIR`` directory before you start.
+You will need a ``pattoo_agent_snmp_ifmibd.yaml`` configuration file in the ``PATTOO_CONFIGDIR`` directory before you start.
 
 .. code-block:: bash
 
-   $ bin/pattoo_agent_snmpd.py --help
-   usage: pattoo_agent_snmpd.py [-h] [--start] [--stop] [--status] [--restart]
+   $ bin/pattoo_agent_snmp_ifmibd.py --help
+   usage: pattoo_agent_snmp_ifmibd.py [-h] [--start] [--stop] [--status] [--restart]
                             [--force]
 
    optional arguments:
@@ -211,7 +211,7 @@ Start the daemon using this command.
 
 .. code-block:: bash
 
-  $ bin/pattoo_agent_snmpd.py --start
+  $ bin/pattoo_agent_snmp_ifmibd.py --start
 
 Stopping
 ~~~~~~~~
@@ -219,7 +219,7 @@ Stop the daemon using this command.
 
 .. code-block:: bash
 
-    $ bin/pattoo_agent_snmpd.py --stop
+    $ bin/pattoo_agent_snmp_ifmibd.py --stop
 
 
 Restarting
@@ -228,13 +228,13 @@ Restart the daemon using this command.
 
 .. code-block:: bash
 
-    $ bin/pattoo_agent_snmpd.py --restart
+    $ bin/pattoo_agent_snmp_ifmibd.py --restart
 
 
 Start Polling at Boot
 ^^^^^^^^^^^^^^^^^^^^^
 
-:doc:`configuration` provides information on how to get the ``pattoo_agent_snmpd`` daemon to start at boot.
+:doc:`configuration` provides information on how to get the ``pattoo_agent_snmp_ifmibd`` daemon to start at boot.
 
 Troubleshooting
 ---------------

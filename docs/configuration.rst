@@ -4,23 +4,44 @@ Configuration
 
 After installation, you will need to create a configuration file in a directory dedicated to ``pattoo``.
 
-Set the  Configuration Directory Location
------------------------------------------
+About ``pattoo`` Configuration Files
+------------------------------------
 
-You must set the location of the configuration directory by using the ``PATTOO_CONFIGDIR`` environmental variable. Here is how to do this:
+``pattoo`` is designed to be very modular with each component having its own configuration file. This allows third parties to easily create add-on software to make it more usable.
+
+Software that communicates with the ``pattoo`` server are called clients. There are two types of clients, agent clients and web clients. We will only discuss agent clients in this document.
+
+``pattoo`` agent clients that use the ``pattoo`` libraries will all require a ``pattoo.yaml`` configuration file. This file has these main functions:
+
+#. Defining the location of key directories for both operation and troubleshooting
+#. Defining how clients should contact the ``pattoo`` server
+
+Let's talk about the configuration directory location before we describe how this is done.
+
+Setting the  Configuration Directory Location
+---------------------------------------------
+
+You must first set the location of the configuration directory by using the ``PATTOO_CONFIGDIR`` environmental variable. Here is how to do this from the Linux command line:
 
 .. code-block:: bash
 
     $ export PATTOO_CONFIGDIR=/path/to/configuration/directory
 
-``pattoo`` will only read the configuration placed in a file named ``pattoo.yaml`` in this directory.
+``pattoo`` clients will read the ``pattoo.yaml`` located in this directory when ``PATTOO_CONFIGDIR`` is set.
 
-Make sure that files in this directory are readable by the user that will be running ``pattoo`` daemons or scripts.
+You can automatically set this variable each time you log in by adding these lines to your ``~/.bash_profile`` file.
+
+.. code-block:: bash
+
+    export PATTOO_CONFIGDIR=/path/to/configuration/directory
+
+
+Make sure that files in this directory are readable by the user that will be running ``pattoo`` agent daemons or scripts.
 
 Copy the Template to Your Configuration Directory
 -------------------------------------------------
 
-Copy the template file in the ``examples/etc`` directory to the ``PATTOO_CONFIGDIR`` location.
+You can create your first ``pattoo.yaml`` configuration file by copying the template file in the ``examples/etc`` directory to the ``PATTOO_CONFIGDIR`` location.
 
 **NOTE:** If a ``/path/to/configuration/directory/pattoo.yaml`` file already exists in the directory then skip this step and edit the file according to the steps in following sections.
 
@@ -42,14 +63,13 @@ The ``pattoo.yaml`` file created from the template will have sections that you w
 
 .. code-block:: yaml
 
-   main:
+   pattoo:
        log_level: debug
-       log_directory: ~/GitHub/pattoo-agents/log
-       cache_directory: ~/GitHub/pattoo-agents/cache
-       daemon_directory: ~/GitHub/pattoo-agents/daemon
+       log_directory: PATTOO_LOG_DIRECTORY
+       cache_directory: PATTOO_CACHE_DIRECTORY
+       daemon_directory: PATTOO_DAEMON_DIRECTORY
 
-   polling:
-       polling_interval: 300
+   pattoo_agent_api:
        ip_address: 192.168.1.100
        ip_bind_port: 20201
 
@@ -64,9 +84,9 @@ This table outlines the purpose of each configuration parameter
    * - Section
      - Config Options
      - Description
-   * - ``main``
+   * - ``pattoo``
      -
-     -
+     - This section defines the locations of key directories for both operation and troubleshooting
    * -
      - ``log_directory``
      - Path to logging directory. Make sure the username running the daemons have RW access to files there.
@@ -79,9 +99,9 @@ This table outlines the purpose of each configuration parameter
    * -
      - ``daemon_directory``
      - Directory used to store daemon related data that needs to be maintained between reboots
-   * - ``polling``
+   * - ``pattoo_agent_api``
      -
-     -
+     - This section provides information needed by ``pattoo`` agent clients when contacting the pattoo server
    * -
      - ``ip_address``
      - IP address of remote ``pattoo`` server
