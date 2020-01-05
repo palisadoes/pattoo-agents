@@ -26,7 +26,7 @@ Follow these steps.
 Configuring Agents as systemd Daemons
 -------------------------------------
 
-You can also setup all the ``patoo-agents`` agents as system daemons by executing the ``setup/systemd/bin/install_systemd.py`` script.
+You can also setup all the ``pattoo-agents`` agents as system daemons by executing the ``setup/systemd/bin/install_systemd.py`` script.
 
 You have to specify a ``--config_dir`` defining the configuration file directory.
 

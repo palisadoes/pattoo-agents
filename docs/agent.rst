@@ -26,10 +26,13 @@ Here is a description of currently supported ``pattoo`` agents.
      - Documentation can be found here. :doc:`pattoo_agent_os`
    * - ``pattoo_agent_os_autonomousd``
      - Python3 based daemon that posts  ``pattoo`` to a central server.
-     - Documentation can be found here. :doc:`pattoo_agent_os`
+     - Documentation can be found here. :doc:`pattoo_agent_os_autonomousd`
    * - ``pattoo_agent_snmpd``
      - Python3 based daemon that polls remote ``ip_devices`` for SNMP data.
      - Documentation can be found here. :doc:`pattoo_agent_snmpd`
+   * - ``pattoo_agent_snmp_ifmibd``
+     - Python3 based daemon that polls remote ``ip_devices`` for SNMP ifMIB data.
+     - Documentation can be found here. :doc:`pattoo_agent_snmp_ifmibd`
 
 Creating Custom Agents
 ----------------------
