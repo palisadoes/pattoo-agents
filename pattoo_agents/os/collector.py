@@ -18,24 +18,22 @@ from pattoo_shared.constants import (
     DATA_INT, DATA_COUNT64, DATA_FLOAT)
 
 
-def poll(agent_program):
+def poll(agent_program, polling_interval):
     """Get all agent data.
 
     Performance data on linux server on which this application is installed.
 
     Args:
         agentdata: AgentPolledData object for all data gathered by the agent
+        polling_interval: Polling interval in seconds
 
     Returns:
         None
 
     """
-    # Initialize key variables.
-    config = Config()
-
     # Initialize AgentPolledData
     agent_hostname = socket.getfqdn()
-    agentdata = AgentPolledData(agent_program, config)
+    agentdata = AgentPolledData(agent_program, polling_interval)
 
     # Intialize data gathering
     ddv = TargetDataPoints(agent_hostname)

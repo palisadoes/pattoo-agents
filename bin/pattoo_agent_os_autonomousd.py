@@ -61,7 +61,7 @@ class PollingAgent(Agent):
         """
         # Initialize key variables
         config = Config()
-        interval = config.polling_interval()
+        _pi = config.polling_interval()
 
         # Post data to the remote server
         while True:
@@ -69,7 +69,7 @@ class PollingAgent(Agent):
             ts_start = time()
 
             # Get system data
-            agentdata = collector.poll(self._parent)
+            agentdata = collector.poll(self._parent, _pi)
 
             # Post to remote server
             server = PostAgent(agentdata)
@@ -83,7 +83,7 @@ class PollingAgent(Agent):
 
             # Sleep
             duration = time() - ts_start
-            sleep(abs(interval - duration))
+            sleep(abs(_pi - duration))
 
 
 def main():

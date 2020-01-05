@@ -149,13 +149,16 @@ def _spoked_url(ip_target, ip_bind_port):
 
     """
     # Initialize key variables
+    config = configuration.ConfigHubd()
+    _pi = config.polling_interval()
+
     hostname = ip_target
     if ':' in ip_target:
         hostname = '[{}]'.format(hostname)
 
     # Return
-    url = 'http://{}:{}{}'.format(
-        ip_target, ip_bind_port, PATTOO_AGENT_OS_SPOKED_API_PREFIX)
+    url = ('http://{}:{}{}/{}'.format(
+        ip_target, ip_bind_port, PATTOO_AGENT_OS_SPOKED_API_PREFIX, _pi))
     return url
 
 
