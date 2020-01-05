@@ -11,7 +11,7 @@ from pymodbus.pdu import ExceptionResponse
 from pymodbus.exceptions import ModbusIOException, ConnectionException
 
 # Pattoo libraries
-from pattoo_agents.modbus.tcp import configuration
+from pattoo_agents.modbus.tcp.configuration import ConfigModbusTCP as Config
 from pattoo_agents.modbus.variables import (
     InputRegisterVariable, HoldingRegisterVariable, RegisterVariable)
 from pattoo_shared import log
@@ -34,12 +34,13 @@ def poll():
 
     """
     # Initialize key variables.
-    config = configuration.ConfigModbusTCP()
+    config = Config()
+    _pi = config.polling_interval()
     arguments = []
 
     # Initialize AgentPolledData
     agent_program = PATTOO_AGENT_MODBUSTCPD
-    agentdata = AgentPolledData(agent_program, config)
+    agentdata = AgentPolledData(agent_program, _pi)
 
     # Get registers to be polled
     drvs = config.registervariables()

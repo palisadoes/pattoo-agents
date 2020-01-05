@@ -6,12 +6,12 @@ import multiprocessing
 
 
 # Pattoo libraries
-from pattoo_agents.snmp import configuration
 from pattoo_agents.snmp import snmp
 from pattoo_shared import data
 from pattoo_shared.variables import (
     AgentKey, DataPoint, DataPointMetadata, TargetDataPoints, AgentPolledData)
 from pattoo_agents.snmp.constants import PATTOO_AGENT_SNMPD
+from pattoo_agents.snmp.configuration import ConfigSNMP as Config
 
 
 def poll():
@@ -27,7 +27,7 @@ def poll():
 
     """
     # Initialize key variables.
-    config = configuration.ConfigSNMP()
+    config = Config()
     ip_snmpvariables = {}
     ip_polltargets = {}
 

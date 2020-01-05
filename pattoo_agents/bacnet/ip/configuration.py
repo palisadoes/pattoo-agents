@@ -2,13 +2,12 @@
 """Classe to manage SNMP agent configurations."""
 
 # Import project libraries
-from pattoo_shared import configuration
+from pattoo_shared import configuration, files
 from pattoo_shared.variables import IPTargetPollingPoints
-from pattoo_shared.configuration import Config
 from .constants import PATTOO_AGENT_BACNETIPD
 
 
-class ConfigBACnetIP(Config):
+class ConfigBACnetIP(object):
     """Class gathers all configuration information."""
 
     def __init__(self):
@@ -21,8 +20,10 @@ class ConfigBACnetIP(Config):
             None
 
         """
-        # Instantiate the Config parent
-        Config.__init__(self)
+        # Get the configuration directory
+        config_file = configuration.agent_config_filename(
+            PATTOO_AGENT_BACNETIPD)
+        self._configuration = files.read_yaml_file(config_file)
 
     def agent_ip_address(self):
         """Get list polling target information in configuration file..
@@ -73,10 +74,33 @@ class ConfigBACnetIP(Config):
             # Process data
             if 'ip_targets' and datapoint_key in group:
                 for ip_target in group['ip_targets']:
-                    poll_targets = self.get_polling_points(
+                    poll_targets = configuration.get_polling_points(
                         group[datapoint_key])
                     dpt = IPTargetPollingPoints(ip_target)
                     dpt.add(poll_targets)
                     if dpt.valid is True:
                         result.append(dpt)
+        return result
+
+    def polling_interval(self):
+        """Get targets.
+
+        Args:
+            None
+
+        Returns:
+            result: result
+
+        """
+        # Get result
+        key = PATTOO_AGENT_BACNETIPD
+        sub_key = 'polling_interval'
+        intermediate = configuration.search(
+            key, sub_key, self._configuration, die=False)
+
+        # Default to 300
+        if bool(intermediate) is False:
+            result = 300
+        else:
+            result = abs(int(intermediate))
         return result

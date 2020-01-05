@@ -15,19 +15,20 @@ from .constants import (
 API = Flask(__name__)
 
 
-@API.route(PATTOO_AGENT_OS_SPOKED_API_PREFIX)
-def home():
+@API.route(
+    '{}/<int:polling_interval>'.format(PATTOO_AGENT_OS_SPOKED_API_PREFIX))
+def home(polling_interval):
     """Display api data on home page.
 
     Args:
-        None
+        polling_interval: Polling interval of the requester
 
     Returns:
         None
 
     """
     # Process and present
-    agentdata = collector.poll(PATTOO_AGENT_OS_SPOKED)
+    agentdata = collector.poll(PATTOO_AGENT_OS_SPOKED, polling_interval)
     pdp = converter.agentdata_to_post(agentdata)
     result = converter.posting_data_points(pdp)
     return jsonify(result)

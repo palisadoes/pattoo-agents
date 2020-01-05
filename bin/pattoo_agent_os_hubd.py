@@ -26,6 +26,7 @@ else:
 
 # Pattoo libraries
 from pattoo_shared import log
+from pattoo_shared.configuration import Config
 from pattoo_shared.agent import Agent, AgentCLI
 from pattoo_shared import files
 from pattoo_shared.phttp import PassiveAgent
@@ -128,7 +129,7 @@ def _relay(url):
     """
     # Initialize key variables
     agent_hostname = socket.getfqdn()
-    config = configuration.ConfigHubd()
+    config = Config()
     agent_id = files.get_agent_id(PATTOO_AGENT_OS_HUBD, agent_hostname, config)
 
     # Initialize key variables
@@ -148,13 +149,16 @@ def _spoked_url(ip_target, ip_bind_port):
 
     """
     # Initialize key variables
+    config = configuration.ConfigHubd()
+    _pi = config.polling_interval()
+
     hostname = ip_target
     if ':' in ip_target:
         hostname = '[{}]'.format(hostname)
 
     # Return
-    url = 'http://{}:{}{}'.format(
-        ip_target, ip_bind_port, PATTOO_AGENT_OS_SPOKED_API_PREFIX)
+    url = ('http://{}:{}{}/{}'.format(
+        ip_target, ip_bind_port, PATTOO_AGENT_OS_SPOKED_API_PREFIX, _pi))
     return url
 
 

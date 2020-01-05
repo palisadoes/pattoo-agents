@@ -5,16 +5,15 @@
 import itertools
 
 # Import project libraries
-from pattoo_shared import configuration
+from pattoo_shared import configuration, files
 from pattoo_shared import data as lib_data
 from pattoo_shared.variables import IPTargetPollingPoints
-from pattoo_shared.configuration import Config
 from pattoo_agents.modbus.variables import (
     InputRegisterVariable, HoldingRegisterVariable, TargetRegisterVariables)
 from .constants import PATTOO_AGENT_MODBUSTCPD
 
 
-class ConfigModbusTCP(Config):
+class ConfigModbusTCP(object):
     """Class gathers all configuration information."""
 
     def __init__(self):
@@ -27,8 +26,33 @@ class ConfigModbusTCP(Config):
             None
 
         """
-        # Instantiate the Config parent
-        Config.__init__(self)
+        # Get the configuration directory
+        config_file = configuration.agent_config_filename(
+            PATTOO_AGENT_MODBUSTCPD)
+        self._configuration = files.read_yaml_file(config_file)
+
+    def polling_interval(self):
+        """Get targets.
+
+        Args:
+            None
+
+        Returns:
+            result: result
+
+        """
+        # Get result
+        key = PATTOO_AGENT_MODBUSTCPD
+        sub_key = 'polling_interval'
+        intermediate = configuration.search(
+            key, sub_key, self._configuration, die=False)
+
+        # Default to 300
+        if bool(intermediate) is False:
+            result = 300
+        else:
+            result = abs(int(intermediate))
+        return result
 
     def registervariables(self):
         """Get list polling target information in configuration file..
@@ -88,7 +112,7 @@ class ConfigModbusTCP(Config):
 
             # Create polling targets
             for ip_target in data['ip_targets']:
-                poll_targets = self.get_polling_points(
+                poll_targets = configuration.get_polling_points(
                     data[register_type])
                 dpt = IPTargetPollingPoints(ip_target)
                 dpt.add(poll_targets)
