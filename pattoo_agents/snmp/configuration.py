@@ -3,10 +3,9 @@
 
 # Standard imports
 from copy import deepcopy
-import os
 
 # Import project libraries
-from pattoo_shared import configuration, files, log
+from pattoo_shared import configuration, files
 from pattoo_shared.variables import IPTargetPollingPoints
 from .constants import PATTOO_AGENT_SNMPD, PATTOO_AGENT_SNMP_IFMIBD
 from .variables import SNMPAuth, SNMPVariableList
