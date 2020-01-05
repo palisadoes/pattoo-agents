@@ -30,10 +30,11 @@ def poll():
     config = Config()
     ip_snmpvariables = {}
     ip_polltargets = {}
+    _pi = config.polling_interval()
 
     # Initialize AgentPolledData
     agent_program = PATTOO_AGENT_SNMPD
-    agentdata = AgentPolledData(agent_program, config)
+    agentdata = AgentPolledData(agent_program, _pi)
 
     # Get SNMP OIDs to be polled (Along with authorizations and ip_targets)
     cfg_snmpvariables = config.snmpvariables()
