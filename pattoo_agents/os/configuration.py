@@ -1,12 +1,9 @@
 #!/usr/bin/env python3
 """Pattoo classes that manage various configurations."""
 
-# Standard imports
-import os
-
 # Import project libraries
 from pattoo_shared import configuration
-from pattoo_shared import files, log
+from pattoo_shared import files
 from .constants import (
     PATTOO_AGENT_OS_SPOKED, PATTOO_AGENT_OS_HUBD, PATTOO_AGENT_OS_AUTONOMOUSD)
 

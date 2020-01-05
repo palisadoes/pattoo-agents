@@ -24,11 +24,11 @@ else:
 
 # Pattoo libraries
 from pattoo_shared import log
-from pattoo_shared.configuration import Config
 from pattoo_shared.phttp import PostAgent
 from pattoo_shared.agent import Agent, AgentCLI
 from pattoo_agents.modbus.tcp.constants import PATTOO_AGENT_MODBUSTCPD
 from pattoo_agents.modbus.tcp import collector
+from pattoo_agents.modbus.tcp.configuration import ConfigModbusTCP as Config
 
 
 class PollingAgent(Agent):
@@ -76,7 +76,7 @@ class PollingAgent(Agent):
         """
         # Initialize key variables
         config = Config()
-        interval = config.polling_interval()
+        _pi = config.polling_interval()
 
         # Post data to the remote server
         while True:
@@ -98,7 +98,7 @@ class PollingAgent(Agent):
 
             # Sleep
             duration = time() - ts_start
-            sleep(abs(interval - duration))
+            sleep(abs(_pi - duration))
 
 
 def main():
