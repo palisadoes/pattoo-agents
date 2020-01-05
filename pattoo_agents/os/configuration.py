@@ -30,12 +30,9 @@ class ConfigSpoked(object):
             None
 
         """
-        # Get the configuration directory
-        # Expand linux ~ notation for home directories if provided.
-        _config_directory = log.check_environment()
-        config_directory = os.path.expanduser(_config_directory)
-        config_file = '{}{}{}.yaml'.format(
-            config_directory, os.sep, PATTOO_AGENT_OS_SPOKED)
+        # Get the configuration
+        config_file = configuration.agent_config_filename(
+            PATTOO_AGENT_OS_SPOKED)
         self._configuration = files.read_yaml_file(config_file)
 
     def ip_listen_address(self):
@@ -102,12 +99,9 @@ class ConfigHubd(object):
             None
 
         """
-        # Get the configuration directory
-        # Expand linux ~ notation for home directories if provided.
-        _config_directory = log.check_environment()
-        config_directory = os.path.expanduser(_config_directory)
-        config_file = '{}{}{}.yaml'.format(
-            config_directory, os.sep, PATTOO_AGENT_OS_HUBD)
+        # Get the configuration
+        config_file = configuration.agent_config_filename(
+            PATTOO_AGENT_OS_HUBD)
         self._configuration = files.read_yaml_file(config_file)
 
     def ip_targets(self):
@@ -170,12 +164,9 @@ class ConfigAutonomousd(object):
             None
 
         """
-        # Get the configuration directory
-        # Expand linux ~ notation for home directories if provided.
-        _config_directory = log.check_environment()
-        config_directory = os.path.expanduser(_config_directory)
-        config_file = '{}{}{}.yaml'.format(
-            config_directory, os.sep, PATTOO_AGENT_OS_AUTONOMOUSD)
+        # Get the configuration
+        config_file = configuration.agent_config_filename(
+            PATTOO_AGENT_OS_AUTONOMOUSD)
         self._configuration = files.read_yaml_file(config_file)
 
     def polling_interval(self):

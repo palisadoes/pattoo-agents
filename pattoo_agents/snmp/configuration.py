@@ -26,11 +26,8 @@ class ConfigSNMP(object):
 
         """
         # Get the configuration directory
-        # Expand linux ~ notation for home directories if provided.
-        _config_directory = log.check_environment()
-        config_directory = os.path.expanduser(_config_directory)
-        config_file = '{}{}{}.yaml'.format(
-            config_directory, os.sep, PATTOO_AGENT_SNMPD)
+        config_file = configuration.agent_config_filename(
+            PATTOO_AGENT_SNMPD)
         self._configuration = files.read_yaml_file(config_file)
 
     def snmpvariables(self):
@@ -91,11 +88,8 @@ class ConfigSNMPIfMIB(object):
 
         """
         # Get the configuration directory
-        # Expand linux ~ notation for home directories if provided.
-        _config_directory = log.check_environment()
-        config_directory = os.path.expanduser(_config_directory)
-        config_file = '{}{}{}.yaml'.format(
-            config_directory, os.sep, PATTOO_AGENT_SNMP_IFMIBD)
+        config_file = configuration.agent_config_filename(
+            PATTOO_AGENT_SNMP_IFMIBD)
         self._configuration = files.read_yaml_file(config_file)
 
     def snmpvariables(self):
