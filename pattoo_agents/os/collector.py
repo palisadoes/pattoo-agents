@@ -11,7 +11,6 @@ import socket
 import psutil
 
 # Pattoo libraries
-from pattoo_shared.configuration import Config
 from pattoo_shared.variables import (
     AgentKey, DataPoint, DataPointMetadata, TargetDataPoints, AgentPolledData)
 from pattoo_shared.constants import (
@@ -81,16 +80,44 @@ class Performance(object):
         # Set non timeseries values
         #######################################################################
         self.metadata = []
+
+        # OS release (kernel)
         self.metadata.append(
-            DataPointMetadata(self.create.key('release'), platform.release()))
+            DataPointMetadata(
+                self.create.key('release'),
+                platform.release(),
+                update_checksum=False))
+
+        # OS version
         self.metadata.append(
-            DataPointMetadata(self.create.key('type'), platform.system()))
+            DataPointMetadata(
+                self.create.key('version'),
+                platform.version(),
+                update_checksum=False))
+
+        # Operating sytem type (Linux / Windows)
         self.metadata.append(
-            DataPointMetadata(self.create.key('version'), platform.version()))
+            DataPointMetadata(
+                self.create.key('processor'),
+                platform.processor()))
+
+        # Operating sytem type (Linux / Windows)
         self.metadata.append(
-            DataPointMetadata(self.create.key('cpus'), psutil.cpu_count()))
+            DataPointMetadata(
+                self.create.key('type'),
+                platform.system()))
+
+        # CPU count
         self.metadata.append(
-            DataPointMetadata(self.create.key('hostname'), socket.getfqdn()))
+            DataPointMetadata(
+                self.create.key('cpus'),
+                psutil.cpu_count()))
+
+        # System name
+        self.metadata.append(
+            DataPointMetadata(
+                self.create.key('hostname'),
+                socket.getfqdn()))
 
     def stats_system(self):
         """Update agent with system data.
