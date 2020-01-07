@@ -17,7 +17,7 @@ from pattoo_agents.modbus.variables import (
 from pattoo_shared import log
 from pattoo_shared.constants import DATA_INT
 from pattoo_shared.variables import (
-    AgentKey, DataPoint, DataPointMetadata, TargetDataPoints, AgentPolledData)
+    DataPoint, DataPointMetadata, TargetDataPoints, AgentPolledData)
 from .constants import PATTOO_AGENT_MODBUSTCPD
 
 
@@ -100,7 +100,6 @@ def _serial_poller(drv):
     # Intialize data gathering
     ip_target = drv.target
     ddv = TargetDataPoints(ip_target)
-    prefix = AgentKey(PATTOO_AGENT_MODBUSTCPD)
 
     # Get list of type DataPoint
     datapoints = []
@@ -117,7 +116,7 @@ def _serial_poller(drv):
             try:
                 response = client.read_input_registers(
                     _rv.address, count=_rv.count, unit=_rv.unit)
-                key = prefix.key('input_register')
+                key = 'input_register'
             except ConnectionException as _err:
                 log_message = ('''\
 Cannot connect to target {} to retrieve input register {}, count {}, \
@@ -133,7 +132,7 @@ unit {}'''.format(ip_target, _rv.register, _rv.count, _rv.unit))
         elif isinstance(_rv, HoldingRegisterVariable):
             try:
                 response = client.read_holding_registers(_rv.address)
-                key = prefix.key('holding_register')
+                key = 'holding_register'
             except ConnectionException:
                 log_message = ('''\
 Cannot connect to target {} to retrieve input register {}, count {}, \

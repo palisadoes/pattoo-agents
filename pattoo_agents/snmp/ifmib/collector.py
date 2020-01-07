@@ -7,7 +7,7 @@ import collections
 
 # Pattoo libraries
 from pattoo_shared.variables import (
-    AgentKey, DataPointMetadata, DataPoint, TargetDataPoints, AgentPolledData)
+    DataPointMetadata, DataPoint, TargetDataPoints, AgentPolledData)
 from pattoo_agents.snmp.constants import PATTOO_AGENT_SNMP_IFMIBD
 from pattoo_agents.snmp.ifmib.mib_if import Query
 from pattoo_agents.snmp.configuration import ConfigSNMPIfMIB as Config
@@ -146,7 +146,6 @@ def _create_datapoints(items):
     # Initialize key variables
     result = []
     ifindex_lookup = _metadata(items)
-    prefix = AgentKey(PATTOO_AGENT_SNMP_IFMIBD)
 
     # Process the results
     for key, polled_datapoints in items.items():
@@ -168,7 +167,7 @@ def _create_datapoints(items):
                     continue
 
                 # Create a new Datapoint keyed by MIB equivalent
-                new_key = prefix.key(_key(polled_datapoint.key))
+                new_key = _key(polled_datapoint.key)
                 datapoint = DataPoint(
                     new_key,
                     polled_datapoint.value,
@@ -176,23 +175,21 @@ def _create_datapoints(items):
 
                 # Add metadata to the datapoint
                 datapoint.add(
-                    DataPointMetadata(
-                        prefix.key('oid'),
-                        polled_datapoint.key))
+                    DataPointMetadata('oid', polled_datapoint.key))
                 if bool(ifindex_lookup[ifindex].ifdescr) is True:
                     datapoint.add(
                         DataPointMetadata(
-                            prefix.key('ifDescr'),
+                            'ifDescr',
                             ifindex_lookup[ifindex].ifdescr))
                 if bool(ifindex_lookup[ifindex].ifalias) is True:
                     datapoint.add(
                         DataPointMetadata(
-                            prefix.key('ifAlias'),
+                            'ifAlias',
                             ifindex_lookup[ifindex].ifalias))
                 if bool(ifindex_lookup[ifindex].ifname) is True:
                     datapoint.add(
                         DataPointMetadata(
-                            prefix.key('ifName'),
+                            'ifName',
                             ifindex_lookup[ifindex].ifname))
                 result.append(datapoint)
 

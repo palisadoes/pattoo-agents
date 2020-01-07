@@ -15,7 +15,7 @@ from pattoo_shared import data
 from pattoo_shared import log
 from pattoo_shared.constants import DATA_FLOAT, DATA_STRING
 from pattoo_shared.variables import (
-    AgentKey, DataPoint, DataPointMetadata, TargetDataPoints, AgentPolledData)
+    DataPoint, DataPointMetadata, TargetDataPoints, AgentPolledData)
 from .constants import PATTOO_AGENT_BACNETIPD
 
 
@@ -106,7 +106,6 @@ class _PollBACnetIP(object):
         # Intialize data gathering
         ip_target = item.target
         ddv = TargetDataPoints(ip_target)
-        prefix = AgentKey(PATTOO_AGENT_BACNETIPD)
 
         # BAC0 only works with IP addresses
         ip_address = network.get_ipaddress(ip_target)
@@ -135,14 +134,13 @@ class _PollBACnetIP(object):
 
             # Update datapoints
             datapoint = DataPoint(
-                prefix.key('analog_value_point_{}'.format(polltarget.address)),
+                'analog_value_point_{}'.format(polltarget.address),
                 value,
                 data_type=data_type)
             datapoint.add(
-                DataPointMetadata(prefix.key('target'), ip_target))
+                DataPointMetadata('target', ip_target))
             if name is not None:
-                datapoint.add(DataPointMetadata(
-                    prefix.key('object_name'), name))
+                datapoint.add(DataPointMetadata('object_name', name))
             datapoints.append(datapoint)
 
         # Return

@@ -12,7 +12,7 @@ import psutil
 
 # Pattoo libraries
 from pattoo_shared.variables import (
-    AgentKey, DataPoint, DataPointMetadata, TargetDataPoints, AgentPolledData)
+    DataPoint, DataPointMetadata, TargetDataPoints, AgentPolledData)
 from pattoo_shared.constants import (
     DATA_INT, DATA_COUNT64, DATA_FLOAT)
 
@@ -73,9 +73,6 @@ class Performance(object):
             None
 
         """
-        # Initialize variables
-        self.create = AgentKey('agent_os')
-
         #######################################################################
         # Set non timeseries values
         #######################################################################
@@ -84,40 +81,28 @@ class Performance(object):
         # OS release (kernel)
         self.metadata.append(
             DataPointMetadata(
-                self.create.key('release'),
-                platform.release(),
-                update_checksum=False))
+                'release', platform.release(), update_checksum=False))
 
         # OS version
         self.metadata.append(
             DataPointMetadata(
-                self.create.key('version'),
-                platform.version(),
-                update_checksum=False))
+                'version', platform.version(), update_checksum=False))
 
         # Operating sytem type (Linux / Windows)
         self.metadata.append(
-            DataPointMetadata(
-                self.create.key('processor'),
-                platform.processor()))
+            DataPointMetadata('processor', platform.processor()))
 
         # Operating sytem type (Linux / Windows)
         self.metadata.append(
-            DataPointMetadata(
-                self.create.key('type'),
-                platform.system()))
+            DataPointMetadata('type', platform.system()))
 
         # CPU count
         self.metadata.append(
-            DataPointMetadata(
-                self.create.key('cpus'),
-                psutil.cpu_count()))
+            DataPointMetadata('cpus', psutil.cpu_count()))
 
         # System name
         self.metadata.append(
-            DataPointMetadata(
-                self.create.key('hostname'),
-                socket.getfqdn()))
+            DataPointMetadata('hostname', socket.getfqdn()))
 
     def stats_system(self):
         """Update agent with system data.
@@ -136,7 +121,7 @@ class Performance(object):
 
         result.append(
             DataPoint(
-                self.create.key('process_count'),
+                'process_count',
                 len(psutil.pids()),
                 data_type=DATA_INT).add(self.metadata))
 
@@ -145,19 +130,19 @@ class Performance(object):
 
         result.append(
             DataPoint(
-                self.create.key('load_average_01min'),
+                'load_average_01min',
                 la_01,
                 data_type=DATA_INT).add(self.metadata))
 
         result.append(
             DataPoint(
-                self.create.key('load_average_05min'),
+                'load_average_05min',
                 la_05,
                 data_type=DATA_INT).add(self.metadata))
 
         result.append(
             DataPoint(
-                self.create.key('load_average_15min'),
+                'load_average_15min',
                 la_15,
                 data_type=DATA_INT).add(self.metadata))
 
@@ -168,28 +153,28 @@ class Performance(object):
         # Percentage CPU utilization
         result.extend(_named_tuple_to_dv(
             psutil.cpu_times_percent(),
-            self.create.key('cpu_times_percent'),
+            'cpu_times_percent',
             data_type=DATA_FLOAT,
             metadata=self.metadata))
 
         # Get CPU runtimes
         result.extend(_named_tuple_to_dv(
             psutil.cpu_times(),
-            self.create.key('cpu_times'),
+            'cpu_times',
             data_type=DATA_COUNT64,
             metadata=self.metadata))
 
         # Get CPU stats
         result.extend(_named_tuple_to_dv(
             psutil.cpu_stats(),
-            self.create.key('cpu_stats'),
+            'cpu_stats',
             data_type=DATA_COUNT64,
             metadata=self.metadata))
 
         # Get memory utilization
         result.extend(_named_tuple_to_dv(
             psutil.virtual_memory(),
-            self.create.key('memory'),
+            'memory',
             data_type=DATA_INT,
             metadata=self.metadata))
 
@@ -219,7 +204,7 @@ class Performance(object):
                 data_type = DATA_INT
 
             # No need to specify a suffix as there is only one swap
-            new_key = '{}_{}'.format(self.create.key('swap_memory'), key)
+            new_key = '{}_{}'.format('swap_memory', key)
             _dv = DataPoint(new_key, value, data_type=data_type)
             _dv.add(self.metadata)
             result.append(_dv)
@@ -250,16 +235,16 @@ class Performance(object):
                 # Add more metadata
                 meta = []
                 meta.append(DataPointMetadata(
-                    '{}_device'.format(self.create.key('disk_partition')),
+                    '{}_device'.format('disk_partition'),
                     item.device))
                 meta.append(DataPointMetadata(
-                    '{}_mountpoint'.format(self.create.key('disk_partition')),
+                    '{}_mountpoint'.format('disk_partition'),
                     item.mountpoint))
                 meta.append(DataPointMetadata(
-                    '{}_fstype'.format(self.create.key('disk_partition')),
+                    '{}_fstype'.format('disk_partition'),
                     item.fstype))
                 meta.append(DataPointMetadata(
-                    '{}_opts'.format(self.create.key('disk_partition')),
+                    '{}_opts'.format('disk_partition'),
                     item.opts))
 
                 # Get the partition data
@@ -267,7 +252,7 @@ class Performance(object):
                 for key, value in partition.items():
                     _dv = DataPoint(
                         '{}_disk_usage_{}'.format(
-                            self.create.key('disk_partition'), key),
+                            'disk_partition', key),
                         value, data_type=DATA_INT)
                     _dv.add(meta)
                     _dv.add(self.metadata)
@@ -305,11 +290,10 @@ class Performance(object):
             # Populate data
             disk_dict = disk_named_tuple._asdict()
             for key, value in disk_dict.items():
-                new_key = '{}_{}'.format(self.create.key('disk_io'), key)
+                new_key = '{}_{}'.format('disk_io', key)
                 _dv = DataPoint(new_key, value, data_type=DATA_COUNT64)
                 _dv.add(self.metadata)
-                _dv.add(DataPointMetadata(
-                    self.create.key('disk_partition'), disk))
+                _dv.add(DataPointMetadata('disk_partition', disk))
                 result.append(_dv)
 
         # Add the result to data
@@ -334,12 +318,12 @@ class Performance(object):
             nic_dict = nic_named_tuple._asdict()
             for key, value in nic_dict.items():
                 _dv = DataPoint(
-                    '{}_{}'.format(self.create.key('network_io'), key),
+                    '{}_{}'.format('network_io', key),
                     value,
                     data_type=DATA_COUNT64)
                 _dv.add(self.metadata)
                 _dv.add(DataPointMetadata(
-                    '{}_interface'.format(self.create.key('network_io')),
+                    '{}_interface'.format('network_io'),
                     nic))
                 result.append(_dv)
 
