@@ -59,6 +59,7 @@ class UnittestConfig(object):
                 }
             },
             'pattoo_agent_bacnetipd': {
+                'polling_interval': 893,
                 'agent_ip_address': '127.0.0.50',
                 'polling_groups': [
                     {
@@ -72,6 +73,7 @@ class UnittestConfig(object):
                 ],
             },
             'pattoo_agent_snmpd': {
+                'polling_interval': 912,
                 'polling_groups': [
                     {
                         'group_name': 'TEST',
@@ -99,6 +101,7 @@ class UnittestConfig(object):
                 ]
             },
             'pattoo_agent_modbustcpd': {
+                'polling_interval': 457,
                 'polling_groups': [
                     {
                         'group_name': 'TEST',
@@ -113,12 +116,15 @@ class UnittestConfig(object):
                     }
                 ],
             },
+            'pattoo_agent_os_autonomousd': {
+                'polling_interval': 80
+                },
             'pattoo_agent_os_spoked': {
                 'ip_listen_address': '127.0.0.1',
                 'ip_bind_port': 5000
                 },
             'pattoo_agent_os_hubd': {
-
+                'polling_interval': 98,
                 'ip_targets': [
                     {'ip_address': '127.0.0.1',
                      'ip_bind_port': 5000}]

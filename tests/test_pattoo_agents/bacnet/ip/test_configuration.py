@@ -43,6 +43,15 @@ class TestConfigBACnetIP(unittest.TestCase):
         """Testing function __init__."""
         pass
 
+    def test_polling_interval(self):
+        """Test pattoo_shared.Config inherited method polling_interval."""
+        # Initialize key values
+        expected = 893
+
+        # Test
+        result = self.config.polling_interval()
+        self.assertEqual(result, expected)
+
     def test_agent_ip_address(self):
         """Testing method / function agent_ip_address."""
         # Initialize variables

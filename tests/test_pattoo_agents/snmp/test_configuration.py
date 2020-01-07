@@ -41,6 +41,15 @@ class TestConfigSNMP(unittest.TestCase):
         """Testing function __init__."""
         pass
 
+    def test_polling_interval(self):
+        """Test pattoo_shared.Config inherited method polling_interval."""
+        # Initialize key values
+        expected = 912
+
+        # Test
+        result = self.config.polling_interval()
+        self.assertEqual(result, expected)
+
     def test_snmpvariables(self):
         """Testing function snmpvariables."""
         # Initialize key variables

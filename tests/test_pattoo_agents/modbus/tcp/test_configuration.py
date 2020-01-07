@@ -45,6 +45,15 @@ class TestConfigModbusTCP(unittest.TestCase):
         """Testing function __init__."""
         pass
 
+    def test_polling_interval(self):
+        """Test pattoo_shared.Config inherited method polling_interval."""
+        # Initialize key values
+        expected = 457
+
+        # Test
+        result = self.config.polling_interval()
+        self.assertEqual(result, expected)
+
     def test_registervariables(self):
         """Testing method / function registervariables."""
         # Initialize variables
