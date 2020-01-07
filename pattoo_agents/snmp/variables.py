@@ -29,15 +29,9 @@ class SNMPAuth(object):
             None
 
         """
-        # Initialize variables
-        self.port = 161
-        self.version = 2
-        self.community = 'public'
-        self.secname = None
-        self.authprotocol = None
-        self.authpassword = None
-        self.privprotocol = None
-        self.privpassword = None
+        # Initialize key variables
+        self.authprotocol = 'SHA'
+        self.privprotocol = 'AES'
 
         # Set variables
         self.port = int(port)
@@ -51,15 +45,18 @@ class SNMPAuth(object):
             self.privpassword = None
         else:
             self.community = None
+            self.version = 3
             self.secname = secname
             self.authpassword = authpassword
             self.privpassword = privpassword
-            if isinstance(authprotocol, str) is True and (
-                    authprotocol.upper() in ['MD5', 'SHA']):
-                self.authprotocol = authprotocol.upper()
-            if isinstance(privprotocol, str) is True and (
-                    privprotocol.upper() in ['DES', 'AES']):
-                self.privprotocol = privprotocol.upper()
+            if bool(authprotocol) is True and isinstance(
+                    authprotocol, str) is True:
+                if authprotocol.upper() in ['MD5', 'SHA']:
+                    self.authprotocol = authprotocol.upper()
+            if bool(privprotocol) is True and isinstance(
+                    privprotocol, str) is True:
+                if privprotocol.upper() in ['DES', 'AES']:
+                    self.privprotocol = privprotocol.upper()
 
     def __repr__(self):
         """Return a representation of the attributes of the class.

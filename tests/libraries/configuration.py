@@ -72,6 +72,34 @@ class UnittestConfig(object):
                     }
                 ],
             },
+            'pattoo_agent_snmp_ifmibd': {
+                'polling_interval': 7846,
+                'polling_groups': [
+                    {
+                        'group_name': 'TEST',
+                        'ip_targets': ['localhost'],
+                        'oids': [
+                            {'address': '.1.3.6.1.2.1.2.2.1.14',
+                             'multiplier': 8},
+                            {'address': '.1.3.6.1.2.1.2.2.1.20',
+                             'multiplier': 8}]
+                    }
+                ],
+                'auth_groups': [
+                    {
+                        'group_name': 'TEST',
+                        'snmp_authpassword': '092df34',
+                        'snmp_authprotocol': 'MD5',
+                        'snmp_community': '049s832',
+                        'snmp_port': 161,
+                        'snmp_privpassword': '987dee1234',
+                        'snmp_privprotocol': 'DES',
+                        'snmp_secname': '0981s23df',
+                        'snmp_version': 3,
+                        'ip_targets': ['localhost']
+                    }
+                ]
+            },
             'pattoo_agent_snmpd': {
                 'polling_interval': 912,
                 'polling_groups': [

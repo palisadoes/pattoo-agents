@@ -92,7 +92,7 @@ class ConfigSNMPIfMIB(Config):
         """
         # Instantiate inheritance
         Config.__init__(self)
-                
+
         # Get the configuration directory
         config_file = configuration.agent_config_filename(
             PATTOO_AGENT_SNMP_IFMIBD)
@@ -224,14 +224,14 @@ def _snmpvariables(key, _configuration):
     for group in groups:
         # Save the authentication parameters
         snmpauth = SNMPAuth(
-            version=group['snmp_version'],
-            community=group['snmp_community'],
-            port=group['snmp_port'],
-            secname=group['snmp_secname'],
-            authprotocol=group['snmp_authprotocol'],
-            authpassword=group['snmp_authpassword'],
-            privprotocol=group['snmp_privprotocol'],
-            privpassword=group['snmp_privpassword']
+            version=group.get('snmp_version', 2),
+            community=group.get('community', 'public'),
+            port=group.get('snmp_port', 161),
+            secname=group.get('snmp_secname'),
+            authprotocol=group.get('snmp_authprotocol'),
+            authpassword=group.get('snmp_authpassword'),
+            privprotocol=group.get('snmp_privprotocol'),
+            privpassword=group.get('snmp_privpassword')
         )
 
         # Create the SNMPVariableList
@@ -255,14 +255,6 @@ def _validate_snmp(config_dict):
     """
     # Initialize key variables
     seed_dict = {}
-    seed_dict['snmp_version'] = 2
-    seed_dict['snmp_secname'] = None
-    seed_dict['snmp_community'] = 'public'
-    seed_dict['snmp_authprotocol'] = None
-    seed_dict['snmp_authpassword'] = None
-    seed_dict['snmp_privprotocol'] = None
-    seed_dict['snmp_privpassword'] = None
-    seed_dict['snmp_port'] = 161
     seed_dict['ip_targets'] = []
 
     # Start populating information
