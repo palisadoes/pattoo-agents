@@ -45,17 +45,17 @@ class UnittestConfig(object):
                 'pattoo': {
                     'log_directory': self._log_directory,
                     'log_level': 'debug',
+                    'language': 'abc',
                     'cache_directory': self._cache_directory,
                     'daemon_directory': self._daemon_directory,
                 },
                 'pattoo_agent_api': {
-                    'ip_address': '127.0.0.7',
-                    'ip_bind_port': 6067,
-                    'polling_interval': 20
+                    'ip_address': '127.0.0.11',
+                    'ip_bind_port': 50001,
                 },
-                'pattoo_api_agentd': {
-                    'ip_listen_address': '127.0.0.1',
-                    'ip_bind_port': 6060,
+                'pattoo_web_api': {
+                    'ip_address': '127.0.0.12',
+                    'ip_bind_port': 50002,
                 }
             },
             'pattoo_agent_bacnetipd': {

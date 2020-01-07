@@ -147,6 +147,16 @@ class Performance(object):
                 data_type=DATA_INT).add(self.metadata))
 
         #######################################################################
+        # Set timeseries values (Floats)
+        #######################################################################
+
+        result.append(
+            DataPoint(
+                'cpu_frequency',
+                psutil.cpu_freq().current,
+                data_type=DATA_FLOAT).add(self.metadata))
+
+        #######################################################################
         # Set timeseries values (Named Tuples)
         #######################################################################
 

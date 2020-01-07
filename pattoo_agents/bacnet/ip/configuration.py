@@ -3,11 +3,12 @@
 
 # Import project libraries
 from pattoo_shared import configuration, files
+from pattoo_shared.configuration import Config
 from pattoo_shared.variables import IPTargetPollingPoints
 from .constants import PATTOO_AGENT_BACNETIPD
 
 
-class ConfigBACnetIP(object):
+class ConfigBACnetIP(Config):
     """Class gathers all configuration information."""
 
     def __init__(self):
@@ -20,10 +21,13 @@ class ConfigBACnetIP(object):
             None
 
         """
+        # Instantiate inheritance
+        Config.__init__(self)
+
         # Get the configuration directory
         config_file = configuration.agent_config_filename(
             PATTOO_AGENT_BACNETIPD)
-        self._configuration = files.read_yaml_file(config_file)
+        self._agent_config = files.read_yaml_file(config_file)
 
     def agent_ip_address(self):
         """Get list polling target information in configuration file..
@@ -42,7 +46,7 @@ class ConfigBACnetIP(object):
         key = PATTOO_AGENT_BACNETIPD
         sub_key = 'agent_ip_address'
         result = configuration.search(
-            key, sub_key, self._configuration, die=True)
+            key, sub_key, self._agent_config, die=True)
         return result
 
     def target_polling_points(self):
@@ -63,7 +67,7 @@ class ConfigBACnetIP(object):
         key = PATTOO_AGENT_BACNETIPD
         sub_key = 'polling_groups'
         groups = configuration.search(
-            key, sub_key, self._configuration, die=True)
+            key, sub_key, self._agent_config, die=True)
 
         # Create snmp objects
         for group in groups:
@@ -96,7 +100,7 @@ class ConfigBACnetIP(object):
         key = PATTOO_AGENT_BACNETIPD
         sub_key = 'polling_interval'
         intermediate = configuration.search(
-            key, sub_key, self._configuration, die=False)
+            key, sub_key, self._agent_config, die=False)
 
         # Default to 300
         if bool(intermediate) is False:

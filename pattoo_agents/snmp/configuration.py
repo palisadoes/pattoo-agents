@@ -6,12 +6,13 @@ from copy import deepcopy
 
 # Import project libraries
 from pattoo_shared import configuration, files
+from pattoo_shared.configuration import Config as Config
 from pattoo_shared.variables import IPTargetPollingPoints
 from .constants import PATTOO_AGENT_SNMPD, PATTOO_AGENT_SNMP_IFMIBD
 from .variables import SNMPAuth, SNMPVariableList
 
 
-class ConfigSNMP(object):
+class ConfigSNMP(Config):
     """Class gathers all configuration information."""
 
     def __init__(self):
@@ -24,10 +25,13 @@ class ConfigSNMP(object):
             None
 
         """
+        # Instantiate inheritance
+        Config.__init__(self)
+
         # Get the configuration directory
         config_file = configuration.agent_config_filename(
             PATTOO_AGENT_SNMPD)
-        self._configuration = files.read_yaml_file(config_file)
+        self._agent_config = files.read_yaml_file(config_file)
 
     def snmpvariables(self):
         """Get list of dicts of SNMP information in configuration file.
@@ -40,7 +44,7 @@ class ConfigSNMP(object):
 
         """
         # Get result
-        result = _snmpvariables(PATTOO_AGENT_SNMPD, self._configuration)
+        result = _snmpvariables(PATTOO_AGENT_SNMPD, self._agent_config)
         return result
 
     def target_polling_points(self):
@@ -55,7 +59,7 @@ class ConfigSNMP(object):
         """
         # Get result
         result = _target_polling_points(
-            PATTOO_AGENT_SNMPD, self._configuration)
+            PATTOO_AGENT_SNMPD, self._agent_config)
         return result
 
     def polling_interval(self):
@@ -69,11 +73,11 @@ class ConfigSNMP(object):
 
         """
         # Get result
-        result = _polling_interval(PATTOO_AGENT_SNMPD, self._configuration)
+        result = _polling_interval(PATTOO_AGENT_SNMPD, self._agent_config)
         return result
 
 
-class ConfigSNMPIfMIB(object):
+class ConfigSNMPIfMIB(Config):
     """Class gathers all configuration information."""
 
     def __init__(self):
@@ -86,10 +90,13 @@ class ConfigSNMPIfMIB(object):
             None
 
         """
+        # Instantiate inheritance
+        Config.__init__(self)
+                
         # Get the configuration directory
         config_file = configuration.agent_config_filename(
             PATTOO_AGENT_SNMP_IFMIBD)
-        self._configuration = files.read_yaml_file(config_file)
+        self._agent_config = files.read_yaml_file(config_file)
 
     def snmpvariables(self):
         """Get list of dicts of SNMP information in configuration file.
@@ -102,7 +109,7 @@ class ConfigSNMPIfMIB(object):
 
         """
         # Get result
-        result = _snmpvariables(PATTOO_AGENT_SNMP_IFMIBD, self._configuration)
+        result = _snmpvariables(PATTOO_AGENT_SNMP_IFMIBD, self._agent_config)
         return result
 
     def target_polling_points(self):
@@ -117,7 +124,7 @@ class ConfigSNMPIfMIB(object):
         """
         # Get result
         result = _target_polling_points(
-            PATTOO_AGENT_SNMP_IFMIBD, self._configuration)
+            PATTOO_AGENT_SNMP_IFMIBD, self._agent_config)
         return result
 
     def polling_interval(self):
@@ -132,7 +139,7 @@ class ConfigSNMPIfMIB(object):
         """
         # Get result
         result = _polling_interval(
-            PATTOO_AGENT_SNMP_IFMIBD, self._configuration)
+            PATTOO_AGENT_SNMP_IFMIBD, self._agent_config)
         return result
 
 
