@@ -45,20 +45,21 @@ class UnittestConfig(object):
                 'pattoo': {
                     'log_directory': self._log_directory,
                     'log_level': 'debug',
+                    'language': 'abc',
                     'cache_directory': self._cache_directory,
                     'daemon_directory': self._daemon_directory,
                 },
                 'pattoo_agent_api': {
-                    'ip_address': '127.0.0.7',
-                    'ip_bind_port': 6067,
-                    'polling_interval': 20
+                    'ip_address': '127.0.0.11',
+                    'ip_bind_port': 50001,
                 },
-                'pattoo_api_agentd': {
-                    'ip_listen_address': '127.0.0.1',
-                    'ip_bind_port': 6060,
+                'pattoo_web_api': {
+                    'ip_address': '127.0.0.12',
+                    'ip_bind_port': 50002,
                 }
             },
             'pattoo_agent_bacnetipd': {
+                'polling_interval': 893,
                 'agent_ip_address': '127.0.0.50',
                 'polling_groups': [
                     {
@@ -71,7 +72,36 @@ class UnittestConfig(object):
                     }
                 ],
             },
+            'pattoo_agent_snmp_ifmibd': {
+                'polling_interval': 7846,
+                'polling_groups': [
+                    {
+                        'group_name': 'TEST',
+                        'ip_targets': ['localhost'],
+                        'oids': [
+                            {'address': '.1.3.6.1.2.1.2.2.1.14',
+                             'multiplier': 8},
+                            {'address': '.1.3.6.1.2.1.2.2.1.20',
+                             'multiplier': 8}]
+                    }
+                ],
+                'auth_groups': [
+                    {
+                        'group_name': 'TEST',
+                        'snmp_authpassword': '092df34',
+                        'snmp_authprotocol': 'MD5',
+                        'snmp_community': '049s832',
+                        'snmp_port': 161,
+                        'snmp_privpassword': '987dee1234',
+                        'snmp_privprotocol': 'DES',
+                        'snmp_secname': '0981s23df',
+                        'snmp_version': 3,
+                        'ip_targets': ['localhost']
+                    }
+                ]
+            },
             'pattoo_agent_snmpd': {
+                'polling_interval': 912,
                 'polling_groups': [
                     {
                         'group_name': 'TEST',
@@ -99,6 +129,7 @@ class UnittestConfig(object):
                 ]
             },
             'pattoo_agent_modbustcpd': {
+                'polling_interval': 457,
                 'polling_groups': [
                     {
                         'group_name': 'TEST',
@@ -113,12 +144,15 @@ class UnittestConfig(object):
                     }
                 ],
             },
+            'pattoo_agent_os_autonomousd': {
+                'polling_interval': 80
+                },
             'pattoo_agent_os_spoked': {
                 'ip_listen_address': '127.0.0.1',
                 'ip_bind_port': 5000
                 },
             'pattoo_agent_os_hubd': {
-
+                'polling_interval': 98,
                 'ip_targets': [
                     {'ip_address': '127.0.0.1',
                      'ip_bind_port': 5000}]

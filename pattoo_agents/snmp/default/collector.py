@@ -9,7 +9,7 @@ import multiprocessing
 from pattoo_agents.snmp import snmp
 from pattoo_shared import data
 from pattoo_shared.variables import (
-    AgentKey, DataPoint, DataPointMetadata, TargetDataPoints, AgentPolledData)
+    DataPoint, DataPointMetadata, TargetDataPoints, AgentPolledData)
 from pattoo_agents.snmp.constants import PATTOO_AGENT_SNMPD
 from pattoo_agents.snmp.configuration import ConfigSNMP as Config
 
@@ -115,7 +115,6 @@ def _walker(snmpvariable, polltargets):
     """
     # Intialize data gathering
     ddv = TargetDataPoints(snmpvariable.ip_target)
-    prefix = AgentKey(PATTOO_AGENT_SNMPD)
 
     # Get list of type DataPoint
     datapoints = []
@@ -134,10 +133,10 @@ def _walker(snmpvariable, polltargets):
 
             # Update datapoints
             datapoint = DataPoint(
-                prefix.key(polltarget.address),
+                polltarget.address,
                 value,
                 data_type=_dp.data_type)
-            datapoint.add(DataPointMetadata(prefix.key('oid'), _dp.key))
+            datapoint.add(DataPointMetadata('oid', _dp.key))
             datapoints.append(datapoint)
 
     # Return

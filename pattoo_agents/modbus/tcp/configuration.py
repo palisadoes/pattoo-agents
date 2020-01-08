@@ -6,6 +6,7 @@ import itertools
 
 # Import project libraries
 from pattoo_shared import configuration, files
+from pattoo_shared.configuration import Config
 from pattoo_shared import data as lib_data
 from pattoo_shared.variables import IPTargetPollingPoints
 from pattoo_agents.modbus.variables import (
@@ -13,7 +14,7 @@ from pattoo_agents.modbus.variables import (
 from .constants import PATTOO_AGENT_MODBUSTCPD
 
 
-class ConfigModbusTCP(object):
+class ConfigModbusTCP(Config):
     """Class gathers all configuration information."""
 
     def __init__(self):
@@ -26,10 +27,13 @@ class ConfigModbusTCP(object):
             None
 
         """
+        # Instantiate inheritance
+        Config.__init__(self)
+
         # Get the configuration directory
         config_file = configuration.agent_config_filename(
             PATTOO_AGENT_MODBUSTCPD)
-        self._configuration = files.read_yaml_file(config_file)
+        self._agent_config = files.read_yaml_file(config_file)
 
     def polling_interval(self):
         """Get targets.
@@ -45,7 +49,7 @@ class ConfigModbusTCP(object):
         key = PATTOO_AGENT_MODBUSTCPD
         sub_key = 'polling_interval'
         intermediate = configuration.search(
-            key, sub_key, self._configuration, die=False)
+            key, sub_key, self._agent_config, die=False)
 
         # Default to 300
         if bool(intermediate) is False:
@@ -71,7 +75,7 @@ class ConfigModbusTCP(object):
         key = PATTOO_AGENT_MODBUSTCPD
         sub_key = 'polling_groups'
         groups = configuration.search(
-            key, sub_key, self._configuration, die=True)
+            key, sub_key, self._agent_config, die=True)
 
         # Create Tuple instance to populate
         result = []

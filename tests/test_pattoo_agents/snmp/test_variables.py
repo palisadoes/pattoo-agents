@@ -106,9 +106,9 @@ class TestSNMPAuth(unittest.TestCase):
         self.assertEqual(sav.version, 3)
         self.assertIsNone(sav.community)
         self.assertEqual(sav.secname, secname)
-        self.assertEqual(sav.authprotocol, None)
+        self.assertEqual(sav.authprotocol, 'SHA')
         self.assertEqual(sav.authpassword, authpassword)
-        self.assertEqual(sav.privprotocol, None)
+        self.assertEqual(sav.privprotocol, 'AES')
         self.assertEqual(sav.privpassword, privpassword)
 
     def test___repr__(self):

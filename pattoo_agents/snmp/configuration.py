@@ -6,12 +6,13 @@ from copy import deepcopy
 
 # Import project libraries
 from pattoo_shared import configuration, files
+from pattoo_shared.configuration import Config as Config
 from pattoo_shared.variables import IPTargetPollingPoints
 from .constants import PATTOO_AGENT_SNMPD, PATTOO_AGENT_SNMP_IFMIBD
 from .variables import SNMPAuth, SNMPVariableList
 
 
-class ConfigSNMP(object):
+class ConfigSNMP(Config):
     """Class gathers all configuration information."""
 
     def __init__(self):
@@ -24,10 +25,13 @@ class ConfigSNMP(object):
             None
 
         """
+        # Instantiate inheritance
+        Config.__init__(self)
+
         # Get the configuration directory
         config_file = configuration.agent_config_filename(
             PATTOO_AGENT_SNMPD)
-        self._configuration = files.read_yaml_file(config_file)
+        self._agent_config = files.read_yaml_file(config_file)
 
     def snmpvariables(self):
         """Get list of dicts of SNMP information in configuration file.
@@ -40,7 +44,7 @@ class ConfigSNMP(object):
 
         """
         # Get result
-        result = _snmpvariables(PATTOO_AGENT_SNMPD, self._configuration)
+        result = _snmpvariables(PATTOO_AGENT_SNMPD, self._agent_config)
         return result
 
     def target_polling_points(self):
@@ -55,7 +59,7 @@ class ConfigSNMP(object):
         """
         # Get result
         result = _target_polling_points(
-            PATTOO_AGENT_SNMPD, self._configuration)
+            PATTOO_AGENT_SNMPD, self._agent_config)
         return result
 
     def polling_interval(self):
@@ -69,11 +73,11 @@ class ConfigSNMP(object):
 
         """
         # Get result
-        result = _polling_interval(PATTOO_AGENT_SNMPD, self._configuration)
+        result = _polling_interval(PATTOO_AGENT_SNMPD, self._agent_config)
         return result
 
 
-class ConfigSNMPIfMIB(object):
+class ConfigSNMPIfMIB(Config):
     """Class gathers all configuration information."""
 
     def __init__(self):
@@ -86,10 +90,13 @@ class ConfigSNMPIfMIB(object):
             None
 
         """
+        # Instantiate inheritance
+        Config.__init__(self)
+
         # Get the configuration directory
         config_file = configuration.agent_config_filename(
             PATTOO_AGENT_SNMP_IFMIBD)
-        self._configuration = files.read_yaml_file(config_file)
+        self._agent_config = files.read_yaml_file(config_file)
 
     def snmpvariables(self):
         """Get list of dicts of SNMP information in configuration file.
@@ -102,7 +109,7 @@ class ConfigSNMPIfMIB(object):
 
         """
         # Get result
-        result = _snmpvariables(PATTOO_AGENT_SNMP_IFMIBD, self._configuration)
+        result = _snmpvariables(PATTOO_AGENT_SNMP_IFMIBD, self._agent_config)
         return result
 
     def target_polling_points(self):
@@ -117,7 +124,7 @@ class ConfigSNMPIfMIB(object):
         """
         # Get result
         result = _target_polling_points(
-            PATTOO_AGENT_SNMP_IFMIBD, self._configuration)
+            PATTOO_AGENT_SNMP_IFMIBD, self._agent_config)
         return result
 
     def polling_interval(self):
@@ -132,7 +139,7 @@ class ConfigSNMPIfMIB(object):
         """
         # Get result
         result = _polling_interval(
-            PATTOO_AGENT_SNMP_IFMIBD, self._configuration)
+            PATTOO_AGENT_SNMP_IFMIBD, self._agent_config)
         return result
 
 
@@ -217,14 +224,14 @@ def _snmpvariables(key, _configuration):
     for group in groups:
         # Save the authentication parameters
         snmpauth = SNMPAuth(
-            version=group['snmp_version'],
-            community=group['snmp_community'],
-            port=group['snmp_port'],
-            secname=group['snmp_secname'],
-            authprotocol=group['snmp_authprotocol'],
-            authpassword=group['snmp_authpassword'],
-            privprotocol=group['snmp_privprotocol'],
-            privpassword=group['snmp_privpassword']
+            version=group.get('snmp_version', 2),
+            community=group.get('community', 'public'),
+            port=group.get('snmp_port', 161),
+            secname=group.get('snmp_secname'),
+            authprotocol=group.get('snmp_authprotocol'),
+            authpassword=group.get('snmp_authpassword'),
+            privprotocol=group.get('snmp_privprotocol'),
+            privpassword=group.get('snmp_privpassword')
         )
 
         # Create the SNMPVariableList
@@ -248,14 +255,6 @@ def _validate_snmp(config_dict):
     """
     # Initialize key variables
     seed_dict = {}
-    seed_dict['snmp_version'] = 2
-    seed_dict['snmp_secname'] = None
-    seed_dict['snmp_community'] = 'public'
-    seed_dict['snmp_authprotocol'] = None
-    seed_dict['snmp_authpassword'] = None
-    seed_dict['snmp_privprotocol'] = None
-    seed_dict['snmp_privpassword'] = None
-    seed_dict['snmp_port'] = 161
     seed_dict['ip_targets'] = []
 
     # Start populating information

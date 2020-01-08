@@ -3,12 +3,13 @@
 
 # Import project libraries
 from pattoo_shared import configuration
+from pattoo_shared.configuration import Config
 from pattoo_shared import files
 from .constants import (
     PATTOO_AGENT_OS_SPOKED, PATTOO_AGENT_OS_HUBD, PATTOO_AGENT_OS_AUTONOMOUSD)
 
 
-class ConfigSpoked(object):
+class ConfigSpoked(Config):
     """Class gathers all configuration information.
 
     Only processes the following YAML keys in the configuration file:
@@ -27,10 +28,13 @@ class ConfigSpoked(object):
             None
 
         """
+        # Instantiate inheritance
+        Config.__init__(self)
+
         # Get the configuration
         config_file = configuration.agent_config_filename(
             PATTOO_AGENT_OS_SPOKED)
-        self._configuration = files.read_yaml_file(config_file)
+        self._agent_config = files.read_yaml_file(config_file)
 
     def ip_listen_address(self):
         """Get ip_listen_address.
@@ -46,7 +50,7 @@ class ConfigSpoked(object):
         key = PATTOO_AGENT_OS_SPOKED
         sub_key = 'ip_listen_address'
         result = configuration.search(
-            key, sub_key, self._configuration, die=False)
+            key, sub_key, self._agent_config, die=False)
 
         # Default to 0.0.0.0
         if result is None:
@@ -67,7 +71,7 @@ class ConfigSpoked(object):
         key = PATTOO_AGENT_OS_SPOKED
         sub_key = 'ip_bind_port'
         intermediate = configuration.search(
-            key, sub_key, self._configuration, die=False)
+            key, sub_key, self._agent_config, die=False)
 
         # Default to 6000
         if intermediate is None:
@@ -77,7 +81,7 @@ class ConfigSpoked(object):
         return result
 
 
-class ConfigHubd(object):
+class ConfigHubd(Config):
     """Class for PATTOO_AGENT_OS_HUBD configuration information.
 
     Only processes the following YAML keys in the configuration file:
@@ -96,10 +100,13 @@ class ConfigHubd(object):
             None
 
         """
+        # Instantiate inheritance
+        Config.__init__(self)
+
         # Get the configuration
         config_file = configuration.agent_config_filename(
             PATTOO_AGENT_OS_HUBD)
-        self._configuration = files.read_yaml_file(config_file)
+        self._agent_config = files.read_yaml_file(config_file)
 
     def ip_targets(self):
         """Get targets.
@@ -115,7 +122,7 @@ class ConfigHubd(object):
         key = PATTOO_AGENT_OS_HUBD
         sub_key = 'ip_targets'
         result = configuration.search(
-            key, sub_key, self._configuration, die=True)
+            key, sub_key, self._agent_config, die=True)
         return result
 
     def polling_interval(self):
@@ -132,7 +139,7 @@ class ConfigHubd(object):
         key = PATTOO_AGENT_OS_HUBD
         sub_key = 'polling_interval'
         intermediate = configuration.search(
-            key, sub_key, self._configuration, die=False)
+            key, sub_key, self._agent_config, die=False)
 
         # Default to 300
         if bool(intermediate) is False:
@@ -142,7 +149,7 @@ class ConfigHubd(object):
         return result
 
 
-class ConfigAutonomousd(object):
+class ConfigAutonomousd(Config):
     """Class for PATTOO_AGENT_OS_AUTONOMOUSD configuration information.
 
     Only processes the following YAML keys in the configuration file:
@@ -161,10 +168,13 @@ class ConfigAutonomousd(object):
             None
 
         """
+        # Instantiate inheritance
+        Config.__init__(self)
+
         # Get the configuration
         config_file = configuration.agent_config_filename(
             PATTOO_AGENT_OS_AUTONOMOUSD)
-        self._configuration = files.read_yaml_file(config_file)
+        self._agent_config = files.read_yaml_file(config_file)
 
     def polling_interval(self):
         """Get targets.
@@ -180,7 +190,7 @@ class ConfigAutonomousd(object):
         key = PATTOO_AGENT_OS_AUTONOMOUSD
         sub_key = 'polling_interval'
         intermediate = configuration.search(
-            key, sub_key, self._configuration, die=False)
+            key, sub_key, self._agent_config, die=False)
 
         # Default to 300
         if bool(intermediate) is False:
