@@ -63,7 +63,7 @@ class TestConfigSNMP(unittest.TestCase):
         snmpvariable = result[0]
         self.assertEqual(isinstance(snmpvariable, SNMPVariable), True)
         authvariable = snmpvariable.snmpauth
-        self.assertEqual(authvariable.community, 'public')
+        self.assertEqual(authvariable.community, '8gfljtrwer')
         self.assertEqual(authvariable.port, 161)
         self.assertEqual(authvariable.version, 2)
         self.assertEqual(authvariable.authpassword, None)
