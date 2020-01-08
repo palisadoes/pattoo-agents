@@ -181,16 +181,21 @@ def _create_datapoints(items):
                         DataPointMetadata(
                             'ifDescr',
                             ifindex_lookup[ifindex].ifdescr))
-                if bool(ifindex_lookup[ifindex].ifalias) is True:
-                    datapoint.add(
-                        DataPointMetadata(
-                            'ifAlias',
-                            ifindex_lookup[ifindex].ifalias))
                 if bool(ifindex_lookup[ifindex].ifname) is True:
                     datapoint.add(
                         DataPointMetadata(
                             'ifName',
                             ifindex_lookup[ifindex].ifname))
+
+                # Add metadata to the datapoint (Don't update checksum as this
+                # value may change over time via configuration)
+                if bool(ifindex_lookup[ifindex].ifalias) is True:
+                    datapoint.add(
+                        DataPointMetadata(
+                            'ifAlias',
+                            ifindex_lookup[ifindex].ifalias,
+                            update_checksum=False))
+
                 result.append(datapoint)
 
     return result
