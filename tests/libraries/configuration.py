@@ -118,7 +118,7 @@ class UnittestConfig(object):
                         'group_name': 'TEST',
                         'snmp_authpassword': None,
                         'snmp_authprotocol': None,
-                        'snmp_community': 'public',
+                        'snmp_community': '8gfljtrwer',
                         'snmp_port': 161,
                         'snmp_privpassword': None,
                         'snmp_privprotocol': None,

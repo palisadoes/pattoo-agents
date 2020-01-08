@@ -225,7 +225,7 @@ def _snmpvariables(key, _configuration):
         # Save the authentication parameters
         snmpauth = SNMPAuth(
             version=group.get('snmp_version', 2),
-            community=group.get('community', 'public'),
+            community=group.get('snmp_community', 'public'),
             port=group.get('snmp_port', 161),
             secname=group.get('snmp_secname'),
             authprotocol=group.get('snmp_authprotocol'),
