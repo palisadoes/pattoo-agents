@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Classe to manage OPCUA agent configurations."""
 
+
 # Import project libraries
 from pattoo_shared import configuration, files
 from pattoo_shared.configuration import Config

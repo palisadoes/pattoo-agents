@@ -1,40 +1,27 @@
 #!/usr/bin/env python3
 """Pattoo library for collecting Modbus data."""
 
+
 # Standard libraries
+# from asyncua import Client
 import multiprocessing
-import sys
 import asyncio
 import time
-from pprint import pprint
-from concurrent.futures import ProcessPoolExecutor
 
 # Pattoo libraries
 from pattoo_shared.variables import (
-    DataPoint, DataPointMetadata, TargetDataPoints, AgentPolledData)
+    DataPoint, AgentPolledData, TargetPollingPoints)
 from .constants import PATTOO_AGENT_OPCUAD, OPCUAauth
 from .configuration import ConfigOPCUA as Config
 
 
-def blocking_poll(tpp):
-    """Poll OPCUA agent data.
+def poll():
+    """Get Modbus agent data.
+
+    Performance data from Modbus enabled targets.
 
     Args:
-        tpp: TargetDataPoints object
-
-    Returns:
-        agentdata: AgentPolledData object for all data gathered by the agent
-
-    """
-    time.sleep(0.1)
-    return (tpp, time.time())
-
-
-async def run_blocking_poll(executor):
-    """Get OPCUA agent data using per process asyncio.
-
-    Args:
-        executor: ProcessPoolExecutor object
+        None
 
     Returns:
         agentdata: AgentPolledData object for all data gathered by the agent
@@ -50,44 +37,121 @@ async def run_blocking_poll(executor):
 
     # Get registers to be polled
     tpp_list = config.target_polling_points()
+    arguments = [(tpp,) for tpp in tpp_list]
 
-    # Get current loop and create executor tasks
-    loop = asyncio.get_event_loop()
-    blocking_tasks = [
-        loop.run_in_executor(executor, blocking_poll, tpp) for tpp in tpp_list]
+    # Poll registers for all targets and update the TargetDataPoints
+    ddv_list = _parallel_poller(arguments)
+    agentdata.add(ddv_list)
 
-    # Get results
-    completed, _ = await asyncio.wait(blocking_tasks)
-    results = [t.result() for t in completed]
-    return results
+    # Return data
+    return agentdata
 
 
-def poll():
-    """Get Modbus agent data.
+def _parallel_poller(arguments):
+    """Get data.
 
-    Performance data from Modbus enabled targets.
+    Update the TargetDataPoints with DataPoints
 
     Args:
-        None
+        arguments: List of arguments for _serial_poller
+
+    Returns:
+        ddv_list: List of type TargetDataPoints
+
+    """
+    # Initialize key variables
+    sub_processes_in_pool = max(1, multiprocessing.cpu_count())
+
+    # Create a pool of sub process resources
+    with multiprocessing.Pool(processes=sub_processes_in_pool) as pool:
+
+        # Create sub processes from the pool
+        ddv_list = pool.starmap(_serial_poller, arguments)
+
+    # Wait for all the processes to end and get results
+    pool.join()
+
+    # Return
+    return ddv_list
+
+
+def _serial_poller(argument):
+    """Get OPCUA agent data.
+
+    Args:
+        argument: TargetPollingPoints object
+
+    Returns:
+        agentdata: AgentPolledData object for all data gathered by the agent
+
+    """
+    asyncio.set_event_loop(asyncio.new_event_loop())
+    loop = asyncio.get_event_loop()
+    loop.set_debug(True)
+    value, _ = loop.run_until_complete(_serial_poller_async(argument))
+    loop.close()
+    return value
+
+
+async def _serial_poller_async(tpp):
+    """Poll OPCUA agent data.
+
+    Args:
+        tpp: TargetDataPoints object
 
     Returns:
         agentdata: AgentPolledData object for all data gathered by the agent
 
     """
     # Initialize key variables
-    results = None
+    connected = False
+    values = []
 
-    # Create a process pool for asyncio
-    executor = ProcessPoolExecutor()
+    # Test for validity
+    if isinstance(tpp, TargetPollingPoints) is False:
+        return None
+    if isinstance(tpp.target, OPCUAauth) is False:
+        return None
+    if tpp.valid is False:
+        return None
 
-    # Setup asyncio
-    asyncio.set_event_loop(asyncio.new_event_loop())
-    loop = asyncio.get_event_loop()
-    loop.set_debug(True)
+    # Create URL for polling
+    ip_target = tpp.target.ip_target
+    ip_port = tpp.target.ip_port
+    username = tpp.target.username
+    password = tpp.target.password
 
+    url = 'opc.tcp://{}:{}'.format(ip_target, ip_port)
+
+    for point in tpp.data:
+        print(url, point)
+
+    '''
+    # Create a client object to connect to OPCUA server
+    client = Client(url=url)
+    client.set_user('opcuauser')
+    client.set_password('password')
+
+    # Connect
     try:
-        results = loop.run_until_complete(run_blocking_poll(executor))
-    finally:
-        loop.close()
+        await client.connect()
+        connected = True
+    except:
+        pass
 
-    pprint(results)
+    if connected is True:
+        for point in tpp.data:
+            # Get data
+            try:
+                node = client.get_node(point)
+                value = await node.read_value()
+                values.append(DataPoint(point, value))
+            except:
+                pass
+
+        # Disconnect client
+        await client.disconnect()
+    '''
+
+    time.sleep(0.1)
+    return (tpp, time.time())
