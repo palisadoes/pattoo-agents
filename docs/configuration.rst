@@ -108,9 +108,6 @@ This table outlines the purpose of each configuration parameter
    * -
      - ``ip_bind_port``
      - Port of remote ``pattoo`` server accepting agent data. Default 20201.
-   * -
-     - ``polling_interval``
-     - Interval of data collection and posting in seconds
 
 
 Agent Configuration
