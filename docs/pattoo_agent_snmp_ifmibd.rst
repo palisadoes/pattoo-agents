@@ -48,7 +48,9 @@ Here is a sample of what should be added. An explanation follows.
 
 .. code-block:: yaml
 
-   pattoo_agent_snmpd:
+   pattoo_agent_snmp_ifmibd:
+
+     polling_interval: 300
 
      polling_groups:
 
@@ -113,10 +115,14 @@ This table outlines the purpose of each configuration parameter
      - Sub-Section
      - Config Options
      - Description
-   * - ``pattoo_agent_snmpd:``
+   * - ``pattoo_agent_snmp_ifmibd:``
      -
      -
-     - **Note:** Only required for devices running ``pattoo_agent_snmpd``
+     -
+   * -
+     - ``polling_interval``
+     -
+     - The ``pattoo_agent_snmp_ifmibd`` will report to the ``pattoo`` server every ``polling_interval`` seconds
    * -
      - ``polling_groups:``
      -

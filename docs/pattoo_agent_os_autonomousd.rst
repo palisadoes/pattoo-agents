@@ -57,7 +57,7 @@ Here is a sample of what should be added. An explanation follows.
 
     pattoo_agent_os_autonomousd:
 
-        polling_interval: 10
+        polling_interval: 300
 
 Configuration Explanation
 ~~~~~~~~~~~~~~~~~~~~~~~~~
