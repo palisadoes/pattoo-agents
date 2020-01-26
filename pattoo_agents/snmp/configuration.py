@@ -6,7 +6,7 @@ from copy import deepcopy
 
 # Import project libraries
 from pattoo_shared import configuration, files
-from pattoo_shared.configuration import Config as Config
+from pattoo_shared.configuration import Config
 from pattoo_shared.variables import IPTargetPollingPoints
 from .constants import PATTOO_AGENT_SNMPD, PATTOO_AGENT_SNMP_IFMIBD
 from .variables import SNMPAuth, SNMPVariableList

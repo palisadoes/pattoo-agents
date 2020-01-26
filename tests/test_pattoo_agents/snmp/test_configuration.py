@@ -73,7 +73,7 @@ class TestConfigSNMP(unittest.TestCase):
         self.assertEqual(authvariable.secname, None)
 
     def test_target_polling_points(self):
-        """Testing function oidvariables."""
+        """Testing function target_polling_points."""
         # Initialize key variables.
         result = self.config.target_polling_points()
         oids = ['.1.3.6.1.2.1.2.2.1.10', '.1.3.6.1.2.1.2.2.1.16']

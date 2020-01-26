@@ -50,6 +50,8 @@ Here is a sample of what should be added. An explanation follows.
 
    pattoo_agent_snmpd:
 
+     polling_interval: 300
+
      polling_groups:
 
        - group_name: TEST 1
@@ -116,7 +118,11 @@ This table outlines the purpose of each configuration parameter
    * - ``pattoo_agent_snmpd:``
      -
      -
-     - **Note:** Only required for devices running ``pattoo_agent_snmpd``
+     -
+   * -
+     - ``polling_interval``
+     -
+     - The ``pattoo_agent_snmpd`` will report to the ``pattoo`` server every ``polling_interval`` seconds
    * -
      - ``polling_groups:``
      -

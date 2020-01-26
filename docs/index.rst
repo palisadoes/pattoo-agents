@@ -24,6 +24,7 @@ General information about the project, including the the prerequisite steps to g
    introduction
    installation
    configuration
+   backup
    cron
 
 Agent Setup
@@ -36,12 +37,13 @@ How to get the daemons running to collect data.
    :caption: Agent Setup:
 
    agent
-   pattoo_agent_bacnetipd
-   pattoo_agent_modbustcpd
    pattoo_agent_os_autonomousd
    pattoo_agent_os
    pattoo_agent_snmpd
    pattoo_agent_snmp_ifmibd
+   pattoo_agent_bacnetipd
+   pattoo_agent_modbustcpd
+   pattoo_agent_opcuad
 
 Miscellaneous Information
 -------------------------
