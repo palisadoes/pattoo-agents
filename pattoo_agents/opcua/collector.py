@@ -1,16 +1,20 @@
 #!/usr/bin/env python3
 """Pattoo library for collecting Modbus data."""
 
-
 # Standard libraries
-# from asyncua import Client
 import multiprocessing
 import asyncio
-import time
+
+# PIP libraries
+from asyncua import Client
 
 # Pattoo libraries
 from pattoo_shared.variables import (
-    DataPoint, AgentPolledData, TargetPollingPoints)
+    DataPoint, DataPointMetadata, PollingPoint, AgentPolledData,
+    TargetDataPoints, TargetPollingPoints)
+from pattoo_shared import log
+from pattoo_shared.data import is_numeric
+
 from .constants import PATTOO_AGENT_OPCUAD, OPCUAauth
 from .configuration import ConfigOPCUA as Config
 
@@ -40,8 +44,8 @@ def poll():
     arguments = [(tpp,) for tpp in tpp_list]
 
     # Poll registers for all targets and update the TargetDataPoints
-    ddv_list = _parallel_poller(arguments)
-    agentdata.add(ddv_list)
+    target_datapoints_list = _parallel_poller(arguments)
+    agentdata.add(target_datapoints_list)
 
     # Return data
     return agentdata
@@ -56,7 +60,7 @@ def _parallel_poller(arguments):
         arguments: List of arguments for _serial_poller
 
     Returns:
-        ddv_list: List of type TargetDataPoints
+        target_datapoints_list: List of type TargetDataPoints
 
     """
     # Initialize key variables
@@ -66,13 +70,13 @@ def _parallel_poller(arguments):
     with multiprocessing.Pool(processes=sub_processes_in_pool) as pool:
 
         # Create sub processes from the pool
-        ddv_list = pool.starmap(_serial_poller, arguments)
+        target_datapoints_list = pool.starmap(_serial_poller, arguments)
 
     # Wait for all the processes to end and get results
     pool.join()
 
     # Return
-    return ddv_list
+    return target_datapoints_list
 
 
 def _serial_poller(argument):
@@ -82,15 +86,14 @@ def _serial_poller(argument):
         argument: TargetPollingPoints object
 
     Returns:
-        agentdata: AgentPolledData object for all data gathered by the agent
+        datapoints: List of DataPoint objects
 
     """
     asyncio.set_event_loop(asyncio.new_event_loop())
     loop = asyncio.get_event_loop()
-    loop.set_debug(True)
-    value, _ = loop.run_until_complete(_serial_poller_async(argument))
+    target_datapoints = loop.run_until_complete(_serial_poller_async(argument))
     loop.close()
-    return value
+    return target_datapoints
 
 
 async def _serial_poller_async(tpp):
@@ -100,12 +103,11 @@ async def _serial_poller_async(tpp):
         tpp: TargetDataPoints object
 
     Returns:
-        agentdata: AgentPolledData object for all data gathered by the agent
+        target_datapoints: TargetDataPoints object
 
     """
     # Initialize key variables
     connected = False
-    values = []
 
     # Test for validity
     if isinstance(tpp, TargetPollingPoints) is False:
@@ -120,38 +122,60 @@ async def _serial_poller_async(tpp):
     ip_port = tpp.target.ip_port
     username = tpp.target.username
     password = tpp.target.password
-
     url = 'opc.tcp://{}:{}'.format(ip_target, ip_port)
 
-    for point in tpp.data:
-        print(url, point)
+    # Intialize data gathering
+    target_datapoints = TargetDataPoints(ip_target)
 
-    '''
     # Create a client object to connect to OPCUA server
     client = Client(url=url)
-    client.set_user('opcuauser')
-    client.set_password('password')
+    client.set_user(username)
+    client.set_password(password)
 
     # Connect
     try:
+        print('boo', username, password, url)
         await client.connect()
         connected = True
     except:
+        log_message = (
+            'Authentication for polling target {} is incorrect'.format(url))
+        log.log2warning(51011, log_message)
         pass
 
     if connected is True:
         for point in tpp.data:
+            # Make sure we have the right data type
+            if isinstance(point, PollingPoint) is False:
+                log_message = ('''\
+Invalid polling point {} for OPC UA URL {}'''.format(point, url))
+                log.log2info(51012, log_message)
+                continue
+
             # Get data
+            address = point.address
             try:
-                node = client.get_node(point)
+                node = client.get_node(address)
                 value = await node.read_value()
-                values.append(DataPoint(point, value))
             except:
-                pass
+                log_message = ('''\
+Cannot get value from polling point {} for OPC UA URL {}\
+'''.format(address, url))
+                log.log2info(51013, log_message)
+                continue
+
+            # Create datapoint
+            if bool(point.multiplier) is True:
+                if is_numeric(value) is True and (
+                        is_numeric(point.multiplier) is True):
+                    value = value * point.multiplier
+            else:
+                value = 0
+            datapoint = DataPoint(address, value)
+            datapoint.add(DataPointMetadata('OPCUA Server', ip_target))
+            target_datapoints.add(datapoint)
 
         # Disconnect client
         await client.disconnect()
-    '''
 
-    time.sleep(0.1)
-    return (tpp, time.time())
+    return target_datapoints

@@ -156,7 +156,22 @@ class UnittestConfig(object):
                 'ip_targets': [
                     {'ip_address': '127.0.0.1',
                      'ip_bind_port': 5000}]
-                }
+                },
+            'pattoo_agent_opcuad': {
+                'polling_interval': 102,
+                'polling_groups': [
+                    {
+                        'group_name': 'TEST OPCUA',
+                        'ip_target': 'unittest.opcua.tcp.target.net',
+                        'ip_port': 7844,
+                        'username': 'nTbJazc6q3MaMazT',
+                        'password': 'eQ6KnJcCk3qLkB73',
+                        'nodes': [
+                            {'address': 1, 'multiplier': 2},
+                            {'address': 3, 'multiplier': 4}]
+                    }
+                ]
+            }
         }
 
     def create(self):
