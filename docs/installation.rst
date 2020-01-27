@@ -44,8 +44,8 @@ Follow these steps.
 #. Populate the mandatory sections of the :doc:`configuration`
 #. Follow the configuration steps for each daemon as explained in the :doc:`agent`.
 
-Configuring Agents as systemd Daemons
--------------------------------------
+Configuring systemd Daemons
+---------------------------
 
 You can also setup all the ``pattoo-agents`` agents as system daemons by executing the ``setup/systemd/bin/install_systemd.py`` script.
 
