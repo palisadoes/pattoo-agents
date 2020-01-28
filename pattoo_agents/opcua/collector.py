@@ -4,9 +4,12 @@
 # Standard libraries
 import multiprocessing
 import asyncio
+import sys
+from time import sleep
 
 # PIP libraries
 from asyncua import Client
+from asyncua.ua.uaerrors import BadNodeIdUnknown
 
 # Pattoo libraries
 from pattoo_shared.variables import (
@@ -89,6 +92,10 @@ def _serial_poller(argument):
         datapoints: List of DataPoint objects
 
     """
+    # Sleep for a very short time to make sure process stabilizes
+    sleep(0.1)
+
+    # Get data
     asyncio.set_event_loop(asyncio.new_event_loop())
     loop = asyncio.get_event_loop()
     target_datapoints = loop.run_until_complete(_serial_poller_async(argument))
@@ -134,7 +141,6 @@ async def _serial_poller_async(tpp):
 
     # Connect
     try:
-        print('boo', username, password, url)
         await client.connect()
         connected = True
     except:
@@ -157,7 +163,15 @@ Invalid polling point {} for OPC UA URL {}'''.format(point, url))
             try:
                 node = client.get_node(address)
                 value = await node.read_value()
+            except BadNodeIdUnknown:
+                log_message = ('''\
+OPC UA node {} not found on server {}'''.format(address, url))
+                log.log2warning(51015, log_message)
+                continue
             except:
+                _exception = sys.exc_info()
+                log_message = ('OPC UA server communication error')
+                log.log2exception(51014, _exception, message=log_message)
                 log_message = ('''\
 Cannot get value from polling point {} for OPC UA URL {}\
 '''.format(address, url))
