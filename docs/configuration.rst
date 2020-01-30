@@ -27,14 +27,13 @@ You must first set the location of the configuration directory by using the ``PA
 
     $ export PATTOO_CONFIGDIR=/path/to/configuration/directory
 
-``pattoo`` clients will read the ``pattoo.yaml`` located in this directory when ``PATTOO_CONFIGDIR`` is set.
+``pattoo`` applications will read the configuration files located in this directory when ``PATTOO_CONFIGDIR`` is set.
 
 You can automatically set this variable each time you log in by adding these lines to your ``~/.bash_profile`` file.
 
 .. code-block:: bash
 
     export PATTOO_CONFIGDIR=/path/to/configuration/directory
-
 
 Make sure that files in this directory are readable by the user that will be running ``pattoo`` agent daemons or scripts.
 
@@ -64,12 +63,15 @@ The ``pattoo.yaml`` file created from the template will have sections that you w
 .. code-block:: yaml
 
    pattoo:
+
        log_level: debug
        log_directory: PATTOO_LOG_DIRECTORY
        cache_directory: PATTOO_CACHE_DIRECTORY
        daemon_directory: PATTOO_DAEMON_DIRECTORY
+       language: en
 
    pattoo_agent_api:
+
        ip_address: 192.168.1.100
        ip_bind_port: 20201
 
@@ -99,6 +101,9 @@ This table outlines the purpose of each configuration parameter
    * -
      - ``daemon_directory``
      - Directory used to store daemon related data that needs to be maintained between reboots
+   * -
+     - ``language``
+     - Language spoken by the human users of ``pattoo``. Defaults to ``en`` (English)
    * - ``pattoo_agent_api``
      -
      - This section provides information needed by ``pattoo`` agent clients when contacting the pattoo server

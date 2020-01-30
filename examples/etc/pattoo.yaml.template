@@ -1,4 +1,4 @@
-main:
+pattoo:
 
     log_level: debug
     log_directory: PATTOO_LOG_DIRECTORY
@@ -6,5 +6,6 @@ main:
     daemon_directory: PATTOO_DAEMON_DIRECTORY
 
 pattoo_agent_api:
-    ip_address: 192.168.1.100
+
+    ip_address: 192.168.1.234
     ip_bind_port: 20201
