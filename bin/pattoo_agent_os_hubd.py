@@ -128,9 +128,8 @@ def _relay(url):
 
     """
     # Initialize key variables
-    agent_hostname = socket.getfqdn()
     config = Config()
-    agent_id = files.get_agent_id(PATTOO_AGENT_OS_HUBD, agent_hostname, config)
+    agent_id = files.get_agent_id(PATTOO_AGENT_OS_HUBD, config)
 
     # Initialize key variables
     passive = PassiveAgent(PATTOO_AGENT_OS_HUBD, agent_id, url)
