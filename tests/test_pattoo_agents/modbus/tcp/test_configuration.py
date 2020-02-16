@@ -13,16 +13,15 @@ ROOT_DIR = os.path.abspath(os.path.join(
                 os.path.abspath(os.path.join(
                         EXEC_DIR,
                         os.pardir)), os.pardir)), os.pardir)), os.pardir))
-
-if EXEC_DIR.endswith(
-        '/pattoo-agents/tests/test_pattoo_agents/modbus/tcp') is True:
+_EXPECTED = ('''\
+{0}pattoo-agents{0}tests{0}test_pattoo_agents{0}modbus{0}tcp'''.format(os.sep))
+if EXEC_DIR.endswith(_EXPECTED) is True:
     # We need to prepend the path in case PattooShared has been installed
     # elsewhere on the system using PIP. This could corrupt expected results
     sys.path.insert(0, ROOT_DIR)
 else:
-    print('''\
-This script is not installed in the \
-"pattoo-agents/tests/test_pattoo_agents/modbus/tcp" directory. Please fix.''')
+    print('''This script is not installed in the "{0}" directory. Please fix.\
+'''.format(_EXPECTED))
     sys.exit(2)
 
 # Pattoo imports
