@@ -41,7 +41,7 @@ Follow these steps.
 
       $ pip3 install -r pip_requirements.txt
 
-#. Populate the mandatory sections of the :doc:`configuration`
+#. Use the :doc:`configuration` to create a working configuration.
 #. Follow the configuration steps for each daemon as explained in the :doc:`agent`.
 
 Configuring systemd Daemons

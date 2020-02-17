@@ -1,22 +1,60 @@
-
-Configuration
-=============
+###################
+Configuration Guide
+###################
 
 After installation, you will need to create a configuration file in a directory dedicated to ``pattoo``.
 
-About ``pattoo`` Configuration Files
-------------------------------------
+*********************************************
+Setting the  Configuration Directory Location
+*********************************************
 
-``pattoo`` is designed to be very modular with each component having its own configuration file. This allows third parties to easily create add-on software to make it more usable.
+You must first set the location of the configuration directory by using the ``PATTOO_CONFIGDIR`` environmental variable. Here is how to do this from the Linux command line:
 
-Software that communicates with the ``pattoo`` server are called clients. There are two types of clients, agent clients and web clients. We will only discuss agent clients in this document.
+.. code-block:: bash
 
-``pattoo`` agent clients that use the ``pattoo`` libraries will all require a ``pattoo.yaml`` configuration file. This file has these main functions:
+    $ export PATTOO_CONFIGDIR=/path/to/configuration/directory
 
-#. Defining the location of key directories for both operation and troubleshooting
-#. Defining how clients should contact the ``pattoo`` server
+``pattoo`` applications will read the configuration files located in this directory when ``PATTOO_CONFIGDIR`` is set.
 
-Let's talk about the configuration directory location before we describe how this is done.
+You can automatically set this variable each time you log in by adding these lines to your ``~/.bash_profile`` file.
+
+.. code-block:: bash
+
+    export PATTOO_CONFIGDIR=/path/to/configuration/directory
+
+Make sure that files in this directory are readable by the user that will be running ``pattoo`` agent daemons or scripts.
+
+*********************
+Configuration Options
+*********************
+
+There are two ways to configure ``pattoo``. These are the:
+
+#. Quick Method
+#. Expert Method
+
+Quick Method
+============
+
+Use the quick method if you are new to ``pattoo``.
+
+Run the ``setup/configure.py`` script. It will prompt you for all configuration parameters. The defaults should be sufficient in most cases.
+
+Here's the command to run:
+
+.. code-block:: bash
+
+    setup/configure.py
+
+Next Steps:
+
+#. Run the installation script next as outlined in the :doc:`installation` guide.
+#. You will now need to configure each agent individually. See the :doc:`agent` file for details on how to configure each type of agent.
+
+Expert Method
+=============
+
+This section goes into configuration parameters in great detail.
 
 Setting the  Configuration Directory Location
 ---------------------------------------------
@@ -119,11 +157,3 @@ Agent Configuration
 -------------------
 
 You will now need to configure each agent individually. See the :doc:`agent` file for details on how to configure each type of agent.
-
-Notes
------
-
-Here are some additional tips.
-
-
-#. You can create a separate configuration file for each section. If you are doing this, make sure there is only one file per agent section. Keep the mandtatory configurations sections in a separate file for simplicity. Practice on a test system before doing this. *Start with a single file first to gain confidence.*
