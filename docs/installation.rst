@@ -39,7 +39,7 @@ Follow these steps.
 
    .. code-block:: bash
 
-      $ pip3 install -r pip_requirements.txt
+      $ pip3 install --user --requirement pip_requirements.txt
 
 #. Use the :doc:`configuration` to create a working configuration.
 #. Follow the configuration steps for each daemon as explained in the :doc:`agent`.
