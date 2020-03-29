@@ -48,7 +48,7 @@ def poll(bacnet):
     return agentdata
 
 
-class _PollBACnetIP(object):
+class _PollBACnetIP():
     """Poll BACnetIP targets."""
 
     def __init__(self, bacnet):

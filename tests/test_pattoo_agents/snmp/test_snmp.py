@@ -31,7 +31,7 @@ from pattoo_agents.snmp.snmp import SNMP
 from tests.libraries.configuration import UnittestConfig
 
 
-class MockSNMP(object):
+class MockSNMP():
     """Mock for use of SNMP."""
 
     def __init__(self, snmpvariable):
