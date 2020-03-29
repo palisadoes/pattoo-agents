@@ -140,7 +140,8 @@ Start Polling at Boot
 Testing
 ^^^^^^^
 
-If you are running ``pattoo_agent_os_spoked`` on your local system, then you can test it by pointing your browser to ``http://localhost:5000/pattoo-os`` to view the system data.
+If you are running ``pattoo_agent_os_spoked`` on your local system, then you can test it by pointing your browser to ``http://localhost:5000/pattoo-agent-os/300`` to view the system data. In this case ``300`` is a reference to the polling interval of the polling device. On  a Linux system you should be able to see the results by using this command ``curl http://localhost:5000/pattoo-agent-os/300 | json_pp`` or  ``curl http://localhost:5000/pattoo-agent-os/300`` if you don't have JSON Pretty Print installed.
+
 
 
 Configuring the ``Hub`` Daemon
