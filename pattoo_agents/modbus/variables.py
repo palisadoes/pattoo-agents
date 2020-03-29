@@ -3,7 +3,7 @@
 from pattoo_shared import data
 
 
-class RegisterVariable(object):
+class RegisterVariable():
     """Variable representation for Register data for Modbus polling."""
 
     def __init__(self, register=None, count=1, unit=0, multiplier=1):
@@ -142,7 +142,7 @@ class HoldingRegisterVariable(RegisterVariable):
                 self.valid = False
 
 
-class TargetRegisterVariables(object):
+class TargetRegisterVariables():
     """Object defining a list of RegisterVariable objects.
 
     Stores RegisterVariables polled from a specific ip_target.

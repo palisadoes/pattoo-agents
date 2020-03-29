@@ -15,7 +15,7 @@ from pattoo_agents.snmp import oid as class_oid
 from pattoo_agents.snmp.variables import SNMPVariable
 
 
-class SNMP(object):
+class SNMP():
     """Class to interact with targets using SNMP."""
 
     def __init__(self, snmpvariable):
@@ -339,7 +339,7 @@ your command AND make sure you set --.valid=True. Error: {}\
         return (_contactable, exists, values)
 
 
-class _Session(object):
+class _Session():
     """Class to create an SNMP session with a target."""
 
     def __init__(self, snmpvariable, context_name=''):

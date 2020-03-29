@@ -5,7 +5,7 @@ from pattoo_agents.snmp import oid as class_oid
 from pattoo_shared.variables import PollingPoint
 
 
-class SNMPAuth(object):
+class SNMPAuth():
     """Variable representation for data for SNMP polling."""
 
     def __init__(self, version=2, community='public', port=161,
@@ -83,7 +83,7 @@ class SNMPAuth(object):
         )
 
 
-class SNMPVariable(object):
+class SNMPVariable():
     """Variable representation for data for SNMP polling."""
 
     def __init__(self, snmpauth=None, ip_target=None):
@@ -129,7 +129,7 @@ class SNMPVariable(object):
         )
 
 
-class SNMPVariableList(object):
+class SNMPVariableList():
     """Variable representation for data for SNMP polling."""
 
     def __init__(self, snmpauth=None, ip_targets=None):

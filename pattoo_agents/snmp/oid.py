@@ -5,7 +5,7 @@ from pattoo_shared import log
 from pattoo_shared import data
 
 
-class OIDstring(object):
+class OIDstring():
     """Class to manipulate OID strings and validate OIDs."""
 
     def __init__(self, oid):

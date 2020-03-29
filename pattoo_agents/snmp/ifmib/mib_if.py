@@ -8,7 +8,7 @@ from pattoo_shared.variables import DataPoint
 from pattoo_agents.snmp import snmp
 
 
-class Query(object):
+class Query():
     """Class interacts with targets supporting IfMIB.
 
     Args:

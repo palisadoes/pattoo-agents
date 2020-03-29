@@ -59,7 +59,7 @@ def poll(agent_program, polling_interval):
     return agentdata
 
 
-class Performance(object):
+class Performance():
     """Operating system performance."""
 
     def __init__(self):
