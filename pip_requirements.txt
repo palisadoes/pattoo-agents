@@ -9,7 +9,7 @@ PattooShared==0.0.84
 # Miscellaneous packages
 
 ipaddress
-psutil
+psutil>=5.7.0
 Flask
 gunicorn
 requests
