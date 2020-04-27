@@ -5,6 +5,8 @@ After=network.target
 
 [Service]
 Environment="PATTOO_CONFIGDIR=x"
+RuntimeDirectory=PATTOO_SYSTEM_DAEMON_DIRECTORY
+
 User=pattoo
 Group=pattoo
 ExecStart=
