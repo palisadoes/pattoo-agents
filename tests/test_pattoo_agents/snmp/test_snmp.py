@@ -23,7 +23,7 @@ else:
     sys.exit(2)
 
 
-# Import Colovore libraries
+# Import libraries
 from pattoo_shared.variables import DataPoint
 from pattoo_agents.snmp.variables import (
     SNMPAuth, SNMPVariable, SNMPVariableList)
